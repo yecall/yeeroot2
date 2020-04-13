@@ -1,0 +1,12 @@
+[workspace]
+members = [
+	"bin/node/cli",
+	"bootnodes-router",
+	"client/cli",
+	"switch",
+	"utils/build-script-utils"
+]
+
+[profile.release]
+# Substrate runtime requires unwinding.
+panic = "unwind"
