@@ -10,7 +10,7 @@ mod cli {
 
     use std::{fs, env, path::Path};
     use yc_cli::structopt::clap::Shell;
-    use substrate_build_script_utils::{generate_cargo_keys, rerun_if_git_head_changed};
+    use yeeroot_build_script_utils::{generate_cargo_keys, rerun_if_git_head_changed};
 
     pub fn main() {
         build_shell_completion();

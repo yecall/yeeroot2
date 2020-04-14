@@ -3,6 +3,7 @@ members = [
 	"bin/node/cli",
 	"bootnodes-router",
 	"client/cli",
+	"dev",
 	"switch",
 	"utils/build-script-utils"
 ]

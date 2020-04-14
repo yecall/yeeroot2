@@ -380,14 +380,6 @@ pub struct BootnodesRouterCmd {
 	#[structopt(long = "port", value_name = "PORT")]
 	pub port: Option<u16>,
 
-	/// Specify custom base path.
-	#[structopt(long = "base-path", short = "d", value_name = "PATH", parse(from_os_str))]
-	pub base_path: Option<PathBuf>,
-
-	/// Sets a custom logging filter
-	#[structopt(short = "l", long = "log", value_name = "LOG_PATTERN")]
-	pub log: Option<String>,
-
 	/// Whether use dev params or not
 	#[structopt(long = "dev-params")]
 	pub dev_params: bool,
@@ -407,7 +399,41 @@ pub struct SwitchCmd {
 	#[structopt(flatten)]
 	pub import_params: ImportParams,
 
-	// todo
+	/// Specify HTTP RPC server TCP port
+	#[structopt(long = "rpc-port", value_name = "PORT")]
+	pub rpc_port: Option<u16>,
+
+	/// Specify WebSockets RPC server TCP port
+	#[structopt(long = "ws-port", value_name = "PORT")]
+	pub ws_port: Option<u16>,
+
+	/// Listen to all RPC interfaces (default is local)
+	#[structopt(long = "rpc-external")]
+	pub rpc_external: bool,
+
+	/// Listen to all Websocket interfaces (default is local)
+	#[structopt(long = "ws-external")]
+	pub ws_external: bool,
+
+	/// Whether use dev params or not
+	#[structopt(long = "dev-params")]
+	pub dev_params: bool,
+
+	///Specify miner poll interval
+	#[structopt(long = "job-refresh-interval ", value_name = "INTERVAL" ,default_value = "6000")]
+	pub job_refresh_interval: u64,
+
+	/// start miner
+	#[structopt( long = "mine")]
+	pub mine: bool,
+
+	/// enable work manager
+	#[structopt( long = "enable-work-manager")]
+	pub enable_work_manager: bool,
+
+	/// Shard count on dev mode
+	#[structopt(long = "dev-shard-count")]
+	pub dev_shard_count: Option<u16>,
 }
 
 
@@ -419,8 +445,6 @@ impl CliConfiguration for BootnodesRouterCmd {
 	fn import_params(&self) -> Option<&ImportParams> {
 		Some(&self.import_params)
 	}
-
-	// todo
 }
 
 impl CliConfiguration for SwitchCmd {
@@ -431,6 +455,4 @@ impl CliConfiguration for SwitchCmd {
 	fn import_params(&self) -> Option<&ImportParams> {
 		Some(&self.import_params)
 	}
-
-	// todo
 }

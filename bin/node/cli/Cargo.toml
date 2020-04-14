@@ -122,6 +122,7 @@ nix = "0.17"
 serde_json = "1.0"
 
 [build-dependencies]
+yeeroot-build-script-utils = { package = "yeeroot-build-script-utils", path = "../../../utils/build-script-utils"}
 substrate-build-script-utils = { version = "2.0.0-alpha.5", package = "substrate-build-script-utils", git = "https://github.com/yeeco/substrate.git", branch = "master" }
 structopt = { version = "0.3.8", optional = true }
 node-transaction-factory = { package = "node-transaction-factory", version = "0.8.0-alpha.5", optional = true, git = "https://github.com/yeeco/substrate.git", branch = "master" }
