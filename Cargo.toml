@@ -1,11 +1,41 @@
 [workspace]
 members = [
 	"bin/node/cli",
+	"bin/node/runtime",
 	"bootnodes-router",
 	"client/cli",
+	"client/consensus/pow",
+	"client/context",
+	"client/crfg",
+	"client/finality-tracker",
+	"client/rpc",
+	"client/sharding",
+	"client/util",
+	"client/util/merkle",
 	"dev",
+	"foreign/chain",
+	"foreign/network",
+	"foreign/network-libp2p",
+	"foreign/relay",
+	"frame/assets",
+	"frame/balances",
+	"frame/crfg",
+	"frame/executive",
+	"frame/pow",
+	"frame/relay",
+	"frame/sharding",
+	"frame/storage",
+	"frame/tracker",
+	"primitives/hrp",
+	"primitives/sharding",
+	"primitives/srml",
 	"switch",
-	"utils/build-script-utils"
+	"switch/mining2",
+	"switch/rpc",
+	"switch/rpc-servers",
+	"utils/build-script-utils",
+	"utils/serde-hex",
+	"utils/wasm-builder"
 ]
 
 [profile.release]

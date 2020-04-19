@@ -21,22 +21,22 @@ tokio = { version = "0.2.9", features = [ "signal", "rt-core", "rt-threaded" ] }
 futures = "0.3.4"
 fdlimit = "0.1.4"
 serde_json = "1.0.41"
-sc-informant = { package = "sc-informant", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sp-panic-handler = { package = "sp-panic-handler", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-client-api = { package = "sc-client-api", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sp-blockchain = { package = "sp-blockchain", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-network = { package = "sc-network", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sp-runtime = { package = "sp-runtime", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sp-utils = { package = "sp-utils", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sp-core = { package = "sp-core", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-service = { package = "sc-service", version = "0.8.0-alpha.5", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sp-state-machine = { package = "sp-state-machine", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-telemetry = { package = "sc-telemetry", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-substrate-prometheus-endpoint = { package = "substrate-prometheus-endpoint", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sp-keyring = { package = "sp-keyring", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sc-informant = { package = "sc-informant", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sp-panic-handler = { package = "sp-panic-handler", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sc-client-api = { package = "sc-client-api", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sp-blockchain = { package = "sp-blockchain", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sc-network = { package = "sc-network", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sp-runtime = { package = "sp-runtime", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sp-utils = { package = "sp-utils", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sp-core = { package = "sp-core", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sc-service = { package = "sc-service", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sp-state-machine = { package = "sp-state-machine", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sc-telemetry = { package = "sc-telemetry", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+substrate-prometheus-endpoint = { package = "substrate-prometheus-endpoint", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sp-keyring = { package = "sp-keyring", git = "https://github.com/yeeco/substrate.git", branch = "master" }
 names = "0.11.0"
 structopt = "0.3.8"
-sc-tracing = { package = "sc-tracing", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sc-tracing = { package = "sc-tracing", git = "https://github.com/yeeco/substrate.git", branch = "master" }
 chrono = "0.4.10"
 parity-util-mem = { version = "0.6.0", default-features = false, features = ["primitive-types"] }
 # custom command dependencies

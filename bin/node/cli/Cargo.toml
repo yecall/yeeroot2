@@ -9,10 +9,14 @@ license = "GPL-3.0"
 default-run = "yeeroot2"
 repository = "https://github.com/yeeco/yeeroot2/"
 
+
 [package.metadata.wasm-pack.profile.release]
 # `wasm-opt` has some problems on linux, see
 # https://github.com/rustwasm/wasm-pack/issues/781 etc.
 wasm-opt = false
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
 
 [badges]
 travis-ci = { repository = "paritytech/substrate" }
@@ -41,104 +45,98 @@ structopt = { version = "0.3.8", optional = true }
 tracing = "0.1.10"
 
 # primitives
-sp-authority-discovery = { package = "sp-authority-discovery", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sp-consensus-babe = { package = "sp-consensus-babe", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-grandpa-primitives = { package = "sp-finality-grandpa", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
-sp-core = { package = "sp-core", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
-sp-runtime = { package = "sp-runtime", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
-sp-timestamp = { package = "sp-timestamp", version = "2.0.0-alpha.5", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master"  }
-sp-finality-tracker = { package = "sp-finality-tracker", version = "2.0.0-alpha.5", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master"  }
-sp-inherents = { package = "sp-inherents", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
-sp-keyring = { package = "sp-keyring", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
-sp-io = { package = "sp-io", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sp-consensus = { package = "sp-consensus", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
+sp-authority-discovery = { version = "2.0.0-dev",  git = "https://github.com/yeeco/substrate.git" }
+sp-consensus-babe = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
+grandpa-primitives = { version = "2.0.0-dev", package = "sp-finality-grandpa", git = "https://github.com/yeeco/substrate.git" }
+sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sp-timestamp = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git" }
+sp-finality-tracker = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git" }
+sp-inherents = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sp-keyring = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sp-io = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sp-consensus = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sp-transaction-pool = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
 
 # client dependencies
-sc-client-api = { package = "sc-client-api", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-client = { package = "sc-client", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-chain-spec = { package = "sc-chain-spec", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-transaction-pool = { package = "sc-transaction-pool", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sp-transaction-pool = { package = "sp-transaction-pool", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-network = { package = "sc-network", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-consensus-babe = { package = "sc-consensus-babe", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-grandpa = { version = "0.8.0-alpha.5", package = "sc-finality-grandpa", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-client-db = { package = "sc-client-db", version = "0.8.0-alpha.5", default-features = false , git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-offchain = { package = "sc-offchain", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
-sc-rpc = { package = "sc-rpc", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-basic-authorship = { package = "sc-basic-authorship", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-service = { package = "sc-service", version = "0.8.0-alpha.5", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-tracing = { package = "sc-tracing", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-telemetry = { package = "sc-telemetry", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-authority-discovery = { package = "sc-authority-discovery", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-
-# yee subcommand dependencies
-yee-bootnodes-router = { package = "yee-bootnodes-router", path = "../../../bootnodes-router"}
-yee-switch = { package = "yee-switch", path = "../../../switch" }
+sc-client-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-client = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-chain-spec = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-transaction-pool = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-network = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-consensus-babe = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
+grandpa = { version = "0.8.0-dev", package = "sc-finality-grandpa", git = "https://github.com/yeeco/substrate.git" }
+sc-client-db = { version = "0.8.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git" }
+sc-offchain = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-rpc = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-basic-authorship = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-service = { version = "0.8.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git" }
+sc-tracing = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-telemetry = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-authority-discovery = { version = "0.8.0-dev",  git = "https://github.com/yeeco/substrate.git" }
 
 # frame dependencies
-pallet-indices = { package = "pallet-indices", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-pallet-timestamp = { package = "pallet-timestamp", version = "2.0.0-alpha.5", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-pallet-contracts = { package = "pallet-contracts", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-frame-system = { package = "frame-system", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-pallet-balances = { package = "pallet-balances", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-pallet-transaction-payment = { package = "pallet-transaction-payment", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-frame-support = { package = "frame-support", version = "2.0.0-alpha.5", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-pallet-im-online = { package = "pallet-im-online", version = "2.0.0-alpha.5", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-pallet-authority-discovery = { package = "pallet-authority-discovery", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-pallet-staking = { package = "pallet-staking", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+pallet-indices = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+pallet-timestamp = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git" }
+pallet-contracts = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+frame-system = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+pallet-balances = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+pallet-transaction-payment = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+frame-support = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git" }
+pallet-im-online = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git" }
+pallet-authority-discovery = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+pallet-staking = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
 
 # node-specific dependencies
-node-runtime = { package = "node-runtime", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-node-rpc = { package = "node-rpc", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-node-primitives = { package = "node-primitives", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
-node-executor = { package = "node-executor", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
+node-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+node-rpc = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+node-primitives = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+node-executor = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
 
 # CLI-specific dependencies
-yc-cli = { package = "yc-cli", optional = true, path = "../../../client/cli" }
-#sc-cli = { package = "sc-cli", version = "0.8.0-alpha.5", optional = true, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-frame-benchmarking-cli = { package = "frame-benchmarking-cli", version = "2.0.0-alpha.5", optional = true, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-node-transaction-factory = { package = "node-transaction-factory", version = "0.8.0-alpha.5", optional = true, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-node-inspect = { package = "node-inspect", version = "0.8.0-alpha.5", optional = true, git = "https://github.com/yeeco/substrate.git", branch = "master"  }
+yc-cli = { optional = true, path = "../../../client/cli"}
+frame-benchmarking-cli = { version = "2.0.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git" }
+node-transaction-factory = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git" }
+node-inspect = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git" }
 
 # WASM-specific dependencies
 wasm-bindgen = { version = "0.2.57", optional = true }
 wasm-bindgen-futures = { version = "0.4.7", optional = true }
-browser-utils = { package = "substrate-browser-utils", optional = true, version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+browser-utils = { package = "substrate-browser-utils", git = "https://github.com/yeeco/substrate.git", optional = true, version = "0.8.0-dev"}
+
+# yee subcommand dependencies
+yee-bootnodes-router = { package = "yee-bootnodes-router", optional = true, path = "../../../bootnodes-router" }
+yee-switch = { package = "yee-switch", optional = true, path = "../../../switch" }
 
 [target.'cfg(target_arch="x86_64")'.dependencies]
-node-executor = { package = "node-executor", version = "2.0.0-alpha.4", features = [ "wasmtime" ], git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-cli = { package = "sc-cli", version = "0.8.0-alpha.4", optional = true, features = [ "wasmtime" ], git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-service = { package = "sc-service", version = "0.8.0-alpha.4", default-features = false, features = [ "wasmtime" ], git = "https://github.com/yeeco/substrate.git", branch = "master" }
+node-executor = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", features = [ "wasmtime" ] }
+sc-cli = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git", features = [ "wasmtime" ] }
+sc-service = { version = "0.8.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", features = [ "wasmtime" ] }
 
 [dev-dependencies]
-sc-keystore = { package = "sc-keystore", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
-sc-consensus-babe = { package = "sc-consensus-babe", version = "0.8.0-alpha.5", features = ["test-helpers"], git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-consensus-epochs = { package = "sc-consensus-epochs", version = "0.8.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-service-test = { package = "sc-service-test", version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sc-keystore = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-consensus-babe = { version = "0.8.0-dev", features = ["test-helpers"], git = "https://github.com/yeeco/substrate.git" }
+sc-consensus-epochs = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-service-test = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
 futures = "0.3.4"
 tempfile = "3.1.0"
 assert_cmd = "1.0"
 nix = "0.17"
 serde_json = "1.0"
+regex = "1"
+platforms = "0.2.1"
 
 [build-dependencies]
-yeeroot-build-script-utils = { package = "yeeroot-build-script-utils", path = "../../../utils/build-script-utils"}
-substrate-build-script-utils = { version = "2.0.0-alpha.5", package = "substrate-build-script-utils", git = "https://github.com/yeeco/substrate.git", branch = "master" }
 structopt = { version = "0.3.8", optional = true }
-node-transaction-factory = { package = "node-transaction-factory", version = "0.8.0-alpha.5", optional = true, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-node-inspect = { package = "node-inspect", version = "0.8.0-alpha.5", optional = true, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-frame-benchmarking-cli = { package = "frame-benchmarking-cli", version = "2.0.0-alpha.5", optional = true, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-yee-bootnodes-router = { package = "yee-bootnodes-router", path = "../../../bootnodes-router", optional = true }
-yee-switch = { package = "yee-switch", path = "../../../switch", optional = true }
+node-transaction-factory = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git" }
+node-inspect = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git" }
+frame-benchmarking-cli = { version = "2.0.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git" }
+yeeroot-build-script-utils = { path = "../../../utils/build-script-utils", optional = true }
 
-
-[build-dependencies.yc-cli]
-package = "yc-cli"
-path = "../../../client/cli"
-optional = true
-
-[build-dependencies.vergen]
-version = "3.0.4"
+[build-dependencies.sc-cli]
+version = "0.8.0-dev"
+package = "sc-cli"
+git = "https://github.com/yeeco/substrate.git"
 optional = true
 
 [features]
@@ -154,13 +152,13 @@ cli = [
 	"node-transaction-factory",
 	"yc-cli",
 	"frame-benchmarking-cli",
-	"sc-service/rocksdb",
+	"sc-service/db",
 	"structopt",
-	"vergen",
-	"yee-bootnodes-router",
-	"yee-switch",
+	"yeeroot-build-script-utils",
+    "yee-bootnodes-router",
+    "yee-switch",
 ]
-runtime-benchmarks = [ "node-runtime/runtime-benchmarks" ]
-
-[package.metadata.docs.rs]
-targets = ["x86_64-unknown-linux-gnu"]
+runtime-benchmarks = [
+	"node-runtime/runtime-benchmarks",
+	"frame-benchmarking-cli",
+]

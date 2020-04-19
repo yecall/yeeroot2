@@ -7,6 +7,6 @@ edition = "2018"
 [dependencies]
 error-chain = "0.12"
 libp2p-core = "0.18"
-sp-core = { package = "sp-core", version = "2.0.0-alpha.5", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
-# sc-service = { package = "sc-service", version = "0.8.0-alpha.5", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sc-network = { package = "sc-network", version = "0.8.0-alpha.5", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sp-core = { package = "sp-core", git = "https://github.com/yeeco/substrate.git", branch = "master"  }
+# sc-service = { package = "sc-service", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master" }
+sc-network = { package = "sc-network", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "master" }
