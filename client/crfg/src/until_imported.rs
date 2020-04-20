@@ -27,8 +27,8 @@ use client::ImportNotifications;
 use futures::prelude::*;
 use futures::stream::Fuse;
 use parking_lot::Mutex;
-use runtime_primitives::traits::{Block as BlockT, Header as HeaderT, NumberFor};
-use substrate_primitives::ed25519::Public as AuthorityId;
+use sp_runtime::traits::{Block as BlockT, Header as HeaderT, NumberFor};
+use sp_core::ed25519::Public as AuthorityId;
 use tokio::timer::Interval;
 
 use std::collections::{HashMap, VecDeque};

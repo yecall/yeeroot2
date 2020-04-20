@@ -7,5 +7,5 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-#pow-primitives = { package = "yee-consensus-pow-primitives", path = "../../primitives/pow" }
-#sp-runtime = { package = "sp-runtime", git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "master" }
+pow-primitives = { package = "yee-consensus-pow-primitives", path = "../../primitives/pow" }
+sp-runtime = { package = "sp-runtime", git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "master" }

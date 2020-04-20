@@ -29,20 +29,17 @@ use {
     log::{warn, info},
     tokio::timer::Delay,
 };
-use {
-    consensus_common::{
-        SyncOracle, ImportBlock,
-        BlockImport, BlockOrigin, ForkChoiceStrategy,
-    },
-    inherents::InherentDataProviders,
-    runtime_primitives::{
-        codec::{Decode, Encode, Codec},
-        traits::{
-            Block, Header,
-            Digest, DigestFor, DigestItemFor, NumberFor,
-        },
-    },
+use codec::{Decode, Encode, Codec};
+use sp_consensus::{
+    SyncOracle, BlockImportParams,
+    BlockImport, BlockOrigin, ForkChoiceStrategy,
 };
+use sp_inherents::InherentDataProviders;
+use sp_runtime::{
+    generic::Digest,
+    traits::{Block, Header, DigestFor, DigestItemFor, NumberFor}
+};
+
 use super::{
     CompatibleDigestItem, WorkProof, ProofNonce,
 };
@@ -51,7 +48,7 @@ use crate::pow::check_work_proof;
 use yee_sharding::{ShardingDigestItem, ScaleOutPhaseDigestItem};
 use crate::ShardExtra;
 use crate::verifier::check_scale;
-use primitives::H256;
+use sp_core::H256;
 use ansi_term::Colour;
 
 pub trait PowWorker<JM: JobManager> {

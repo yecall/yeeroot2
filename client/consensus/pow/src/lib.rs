@@ -24,7 +24,8 @@ use {
     parking_lot::RwLock,
 };
 use sc_client_api::BlockchainEvents;
-use sp_runtime::{RuntimeString, traits::{Block as BlockT, DigestItemFor, ProvideRuntimeApi, NumberFor}};
+use sp_runtime::{RuntimeString, traits::{Block, DigestItemFor, NumberFor}};
+use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
 use sp_consensus::{BlockImport, Environment, Proposer, SyncOracle};
 use sp_consensus::import_queue::{
@@ -45,8 +46,8 @@ pub use job::{JobManager, DefaultJobManager, DefaultJob};
 use yee_sharding::{ShardingDigestItem, ScaleOutPhaseDigestItem};
 use yee_srml_pow::RewardCondition;
 use yee_sharding_primitives::ScaleOut;
-use primitive_types::H256;
-use substrate_service::ServiceFactory;
+use sp_core::H256;
+// use substrate_service::ServiceFactory;
 use yee_context::Context;
 
 mod job;
@@ -157,11 +158,11 @@ pub fn import_queue<F, C, AccountId, AuthorityId>(
     <F as ServiceFactory>::Configuration: ForeignChainConfig + Clone + Send + Sync,
     DigestItemFor<F::Block>: CompatibleDigestItem<F::Block, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<F::Block>, u16>,
     C: ProvideRuntimeApi + 'static + Send + Sync,
-    C: HeaderBackend<BlockT>,
-    C: BlockBody<BlockT>,
-    C: BlockchainEvents<BlockT>,
-    C: ChainHead<BlockT>,
-    <C as ProvideRuntimeApi>::Api: ShardingAPI<BlockT> + YeePOWApi<BlockT>,
+    C: HeaderBackend<Block>,
+    C: BlockBody<Block>,
+    C: BlockchainEvents<Block>,
+    C: ChainHead<Block>,
+    <C as ProvideRuntimeApi>::Api: ShardingAPI<Block> + YeePOWApi<Block>,
     AccountId: Codec + Send + Sync + Clone + Default + 'static,
     AuthorityId: Decode + Encode + Clone + Send + Sync + 'static,
     substrate_service::config::Configuration<<F as ServiceFactory>::Configuration, <F as ServiceFactory>::Genesis> : Clone,

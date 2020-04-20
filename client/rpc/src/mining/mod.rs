@@ -17,26 +17,26 @@
 
 pub mod primitives;
 
-use substrate_service::{ServiceFactory, ComponentClient, FullComponents, Components};
+//use substrate_service::{ServiceFactory, ComponentClient, FullComponents, Components};
 use yee_consensus_pow::{JobManager, DefaultJob, PowSeal,
                         WorkProof as DefaultWorkProof, ProofNonce as DefaultProofNonce, ProofMulti as DefaultProofMulti};
 use yee_consensus_pow_primitives::PowTarget;
 use parking_lot::RwLock;
-use yee_runtime::opaque::Block;
+//use yee_runtime::opaque::Block;
 use std::sync::Arc;
 use jsonrpc_derive::rpc;
 use log::{info, warn};
 use basic_authorship::ProposerFactory;
 use jsonrpc_core::BoxFuture;
 use jsonrpc_core::futures::future::{self, Future, IntoFuture};
-use runtime_primitives::traits::{Block as BlockT, ProvideRuntimeApi, BlakeTwo256, Header};
+use sp_runtime::traits::{Block as BlockT, ProvideRuntimeApi, BlakeTwo256, Header};
 use consensus_common::{Environment, Proposer};
 use crate::errors;
 use client::{ChainHead, blockchain::HeaderBackend};
 use tokio::timer::Interval;
 use std::time::{Instant, Duration};
-use parity_codec::alloc::collections::HashMap;
-use parity_codec::{Decode, Encode};
+use std::collections::HashMap;
+use codec::{Decode, Encode};
 use std::ops::Add;
 use self::primitives::{Job, WorkProof, ProofNonce, ProofMulti, JobResult};
 use std::fmt::Debug;

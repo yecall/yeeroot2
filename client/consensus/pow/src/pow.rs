@@ -19,16 +19,14 @@
 use std::sync::Arc;
 use std::fmt::Debug;
 use std::collections::hash_map::HashMap;
-use runtime_primitives::{
-    codec::{
-        Decode, Encode,
-    },
-    traits::{Block, DigestItemFor, DigestFor, Digest, Header, Hash as HashT, BlakeTwo256,
-             Zero, As, SimpleArithmetic, NumberFor},
-    generic::BlockId,
+use codec::{Decode, Encode};
+use sp_runtime::{
+    traits::{Block, DigestItemFor, DigestFor, Header, Hash as HashT, BlakeTwo256,
+             Zero, NumberFor},
+    generic::{BlockId, Digest},
     Proof as ExtrinsicProof,
 };
-use client::blockchain::HeaderBackend;
+use sp_blockchain::HeaderBackend;
 use pow_primitives::{PowTarget, YeePOWApi};
 use crate::CompatibleDigestItem;
 use yee_sharding::ShardingDigestItem;
@@ -40,7 +38,7 @@ use merkle_light::proof::Proof;
 use merkle_light::merkle::MerkleTree;
 use yee_runtime::{Call, BalancesCall, UncheckedExtrinsic};
 use yee_sharding_primitives::utils::shard_num_for;
-use primitives::{Blake2Hasher, H256};
+use sp_core::{Blake2Hasher, H256};
 use hash_db::Hasher as BlakeHasher;
 use std::iter::FromIterator;
 use yee_merkle::{ProofHash, ProofAlgorithm, MultiLayerProof};

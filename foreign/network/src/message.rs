@@ -18,8 +18,8 @@
 //! Network packet message types. These get serialized and put into the lower level protocol payload.
 
 use bitflags::bitflags;
-use runtime_primitives::{traits::{Block as BlockT, Header as HeaderT}};
-use parity_codec::{Encode, Decode, Input, Output};
+use sp_runtime::{traits::{Block as BlockT, Header as HeaderT}};
+use codec::{Encode, Decode, Input, Output};
 
 /// Type alias for using the message type using block type parameters.
 pub type Message<B> = generic::Message<

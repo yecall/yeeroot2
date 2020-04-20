@@ -20,7 +20,7 @@
 pub use network_libp2p::NetworkConfiguration;
 use crate::chain::Client;
 use crate::{IdentifySpecialization, ExHashT};
-use runtime_primitives::traits::{Block as BlockT};
+use sp_runtime::traits::{Block as BlockT};
 use std::sync::Arc;
 use serde::export::PhantomData;
 

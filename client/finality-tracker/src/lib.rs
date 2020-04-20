@@ -1,7 +1,7 @@
-use runtime_primitives::{
+use sp_runtime::{
     generic::DigestItem,
 };
-use parity_codec::{Encode, Decode};
+use codec::{Encode, Decode};
 
 pub const FINALITY_TRACKER_MODULE_LOG_PREFIX: u8 = 4;
 

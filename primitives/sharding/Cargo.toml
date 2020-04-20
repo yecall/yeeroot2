@@ -17,7 +17,7 @@ edition = "2018"
 hex = "0.3.1"
 yee-primitives = { package = "hrp", path = "../../primitives/hrp" }
 rand = "0.6.5"
-schnorrkel = "0.1.1"
+schnorrkel = "0.9"
 
 [features]
 default = ["std"]

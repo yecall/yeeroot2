@@ -18,24 +18,28 @@ use std::sync::Arc;
 use std::time::{Duration, Instant};
 
 use log::{debug, warn, info};
-use parity_codec::Encode;
+use codec::Encode;
 use futures::prelude::*;
 use tokio::timer::Delay;
 use parking_lot::RwLock;
 
-use client::{
-	backend::Backend, BlockchainEvents, CallExecutor, Client, error::Error as ClientError
-};
+use sc_client_api::{BlockchainEvents, CallExecutor};
+
+// use client::{
+// 	backend::Backend, Client, error::Error as ClientError
+// };
 use grandpa::{
-	BlockNumberOps, Equivocation, Error as GrandpaError, round::State as RoundState, voter, VoterSet,
+	BlockNumberOps, Error as GrandpaError, Equivocation, round::State as RoundState, voter, VoterSet,
 };
-use runtime_primitives::generic::BlockId;
-use runtime_primitives::traits::{
-	As, Block as BlockT, Header as HeaderT, NumberFor, One, Zero,
+use sp_runtime::{
+	generic::BlockId,
+	traits::{
+		Block as BlockT, Header as HeaderT, NumberFor, One, Zero,
+	}
 };
-use substrate_primitives::{Blake2Hasher, ed25519, H256, Pair};
-use substrate_telemetry::{telemetry, CONSENSUS_INFO};
-use client::blockchain::HeaderBackend;
+use sp_core::{Blake2Hasher, ed25519, H256, Pair};
+use sc_telemetry::{telemetry, CONSENSUS_INFO};
+use sp_blockchain::HeaderBackend;
 pub use fg_primitives::BLOCK_FINAL_LATENCY;
 
 use crate::{

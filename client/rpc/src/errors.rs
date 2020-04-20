@@ -18,7 +18,7 @@
 use error_chain::*;
 use jsonrpc_core as rpc;
 use log::warn;
-use consensus_common;
+use sp_consensus;
 
 error_chain! {
 	links {

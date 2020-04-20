@@ -1,12 +1,12 @@
-use parity_codec::{Encode, Decode};
+use codec::{Encode, Decode};
 use jsonrpc_derive::rpc;
 use jsonrpc_core::BoxFuture;
 use crate::errors;
 use jsonrpc_core::futures::future::{self, Future, IntoFuture};
 use serde::{Serialize, Deserialize, Serializer, Deserializer};
-use runtime_primitives::traits::{Block as BlockT};
+use sp_runtime::traits::{Block as BlockT};
 use std::marker::PhantomData;
-use substrate_primitives::H256;
+use sp_core::H256;
 
 #[derive(Clone, Serialize, Deserialize, Debug)]
 struct RelayData(Vec<u8>);

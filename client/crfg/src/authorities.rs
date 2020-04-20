@@ -18,11 +18,11 @@
 
 use fork_tree::ForkTree;
 use parking_lot::RwLock;
-use substrate_primitives::ed25519;
+use sp_core::ed25519;
 use grandpa::VoterSet;
-use parity_codec::{Encode, Decode};
+use codec::{Encode, Decode};
 use log::{debug, info};
-use substrate_telemetry::{telemetry, CONSENSUS_INFO};
+use sc_telemetry::{telemetry, CONSENSUS_INFO};
 
 use std::cmp::Ord;
 use std::fmt::Debug;

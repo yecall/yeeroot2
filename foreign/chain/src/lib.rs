@@ -23,11 +23,11 @@ use {
     tokio::runtime::TaskExecutor,
 };
 use {
-    substrate_service::{
-        ComponentExHash,
-        FactoryFullConfiguration, NetworkProvider,
-        LightComponents, ServiceFactory,
-    },
+    // substrate_service::{
+    //     ComponentExHash,
+    //     FactoryFullConfiguration, NetworkProvider,
+    //     LightComponents, ServiceFactory,
+    // },
 };
 
 pub trait ForeignChainConfig {

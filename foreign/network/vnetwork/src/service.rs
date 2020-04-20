@@ -20,25 +20,25 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use log::{trace};
 use futures::{sync::oneshot, sync::mpsc};
 use parking_lot::{Mutex, RwLock};
-use consensus::import_queue::{ImportQueue, Link};
+use sp_consensus::import_queue::{ImportQueue, Link};
 use crate::consensus_gossip::ConsensusGossip;
 use crate::protocol::{Context, FromNetworkMsg, Protocol, ConnectedPeer, ProtocolMsg, ProtocolStatus};
 use crate::config::Params;
 use crossbeam_channel::{self as channel, Receiver, Sender, TryRecvError};
 use crate::error::Error;
-use runtime_primitives::{traits::{Block as BlockT, NumberFor}, ConsensusEngineId};
+use sp_runtime::{traits::{Block as BlockT, NumberFor}, ConsensusEngineId};
 use crate::specialization::NetworkSpecialization;
 use crate::IdentifySpecialization;
 
 use tokio::prelude::task::AtomicTask;
 use std::marker::PhantomData;
 
-use substrate_network::{ExHashT, Severity};
+use sc_network::{ExHashT, Severity};
 
 /// Type that represents fetch completion future.
 pub type FetchFuture = oneshot::Receiver<Vec<u8>>;
 
-use substrate_network::service::{NetworkMsg, NetworkChan, NetworkPort, network_channel, PeerId};
+use sc_network::service::{NetworkMsg, NetworkChan, NetworkPort, network_channel, PeerId};
 
 /*
 /// Sync status

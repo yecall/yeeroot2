@@ -6,8 +6,8 @@ use merkle_light::{
     hash::Algorithm,
     proof::Proof,
 };
-use parity_codec::{Encode, Decode};
-use runtime_primitives::traits::{Hash as HashT, BlakeTwo256};
+use codec::{Encode, Decode};
+use sp_runtime::traits::{Hash as HashT, BlakeTwo256};
 use log::error;
 
 #[derive(Debug, Clone)]

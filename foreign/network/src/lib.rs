@@ -40,7 +40,7 @@ pub use network_libp2p::{
 pub use message::{generic as generic_message};
 pub use error::Error;
 #[doc(hidden)]
-pub use runtime_primitives::traits::Block as BlockT;
+pub use sp_runtime::traits::Block as BlockT;
 
 #[cfg(test)]
 mod test;

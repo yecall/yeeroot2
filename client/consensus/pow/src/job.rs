@@ -31,31 +31,26 @@ use {
 	},
 };
 use {
-	sp_blockchain::blockchain::HeaderBackend,
+	sp_blockchain::HeaderBackend,
 	sp_consensus::{
-		Environment, Proposer, BlockOrigin,  ForkChoiceStrategy, ImportBlock, BlockImport
+		Environment, Proposer, BlockOrigin, BlockImportParams, ForkChoiceStrategy, BlockImport
 	},
 	sp_inherents::InherentDataProviders,
 	sp_runtime::{
 		traits::{Block, ProvideRuntimeApi, DigestItemFor, NumberFor, Digest, Header},
 	},
+	sc_client_api::backend::TransactionFor,
 };
-use {
-	super::{
-		worker::to_common_error,
-	},
-};
+use super::worker::to_common_error;
 use std::time::Duration;
 use crate::{PowSeal, WorkProof, CompatibleDigestItem, ShardExtra};
-use parity_codec::{Decode, Encode};
+use codec::{Decode, Encode};
 use log::info;
-use {
-	pow_primitives::YeePOWApi,
-};
+use pow_primitives::YeePOWApi;
 use crate::pow::{check_work_proof, gen_extrinsic_proof, calc_pow_target};
 use yee_sharding::{ShardingDigestItem, ScaleOutPhaseDigestItem};
 use crate::verifier::check_scale;
-use primitives::H256;
+use sp_core::H256;
 use ansi_term::Colour;
 use yee_context::Context;
 
@@ -231,7 +226,7 @@ impl<B, C, E, AccountId, AuthorityId, I> JobManager for DefaultJobManager<B, C, 
 
 			check_scale::<B, AccountId>(&job.header, self.shard_extra.clone())?;
 
-			let import_block: ImportBlock<B> = ImportBlock {
+			let import_block: BlockImportParams<B, TransactionFor<B>> = BlockImportParams {
 				origin: BlockOrigin::Own,
 				header: job.header,
 				justification: None,
@@ -240,7 +235,7 @@ impl<B, C, E, AccountId, AuthorityId, I> JobManager for DefaultJobManager<B, C, 
 				body: Some(job.body),
 				finalized: false,
 				auxiliary: Vec::new(),
-				fork_choice: ForkChoiceStrategy::LongestChain,
+				fork_choice: Some(ForkChoiceStrategy::LongestChain),
 			};
 			block_import.import_block(import_block, Default::default())?;
 			info!("{} @ {} {:?}", Colour::Green.bold().paint("Block mined"), number, hash);

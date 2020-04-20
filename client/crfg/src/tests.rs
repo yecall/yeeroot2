@@ -16,26 +16,33 @@
 
 //! Tests and test helpers for CRFG.
 
+use std::collections::{HashMap, HashSet};
+use std::result;
 use super::*;
 use network::test::{Block, DummySpecialization, Hash, TestNetFactory, Peer, PeersClient};
 use network::test::{PassThroughVerifier};
 use network::config::{ProtocolConfig, Roles};
 use parking_lot::Mutex;
 use tokio::runtime::current_thread;
-use keyring::AuthorityKeyring;
-use client::{
-	BlockchainEvents, error::Result,
-	blockchain::Backend as BlockchainBackend,
-	runtime_api::{Core, RuntimeVersion, ApiExt},
+//use sp_keyring::AuthorityKeyring;
+
+use sc_client_api::{BlockchainEvents,  ApiExt};
+use sp_core::{Core, RuntimeVersion};
+use sp_consensus::{BlockOrigin, ForkChoiceStrategy, ImportedAux, ImportBlock, ImportResult};
+use sp_runtime::{
+	generic::BlockId,
+	traits::{ApiRef, ProvideRuntimeApi}
 };
-use test_client::{self, runtime::BlockNumber};
-use consensus_common::{BlockOrigin, ForkChoiceStrategy, ImportedAux, ImportBlock, ImportResult};
-use consensus_common::import_queue::{SharedBlockImport, SharedJustificationImport};
-use std::collections::{HashMap, HashSet};
-use std::result;
-use runtime_primitives::traits::{ApiRef, ProvideRuntimeApi};
-use runtime_primitives::generic::BlockId;
-use substrate_primitives::{NativeOrEncoded, ExecutionContext};
+
+// use client::{
+// 	error::Result,
+// 	blockchain::Backend as BlockchainBackend,
+// 	runtime_api::{},
+// };
+// use test_client::{self, runtime::BlockNumber};
+// use consensus_common::import_queue::{SharedBlockImport, SharedJustificationImport};
+
+use sp_core::{NativeOrEncoded, ExecutionContext};
 
 use authorities::AuthoritySet;
 use consensus_changes::ConsensusChanges;

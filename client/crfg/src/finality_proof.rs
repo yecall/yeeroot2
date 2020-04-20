@@ -31,20 +31,22 @@
 
 use grandpa::VoterSet;
 
-use client::{
-	blockchain::Backend as BlockchainBackend,
-	error::{Error as ClientError, ErrorKind as ClientErrorKind, Result as ClientResult},
-	light::fetcher::RemoteCallRequest,
-};
-use parity_codec::{Encode, Decode};
+// use client::{
+// 	blockchain::Backend as BlockchainBackend,
+// 	error::{Error as ClientError, ErrorKind as ClientErrorKind, Result as ClientResult},
+// };
+use sc_client_api::light::RemoteCallRequest;
+use codec::{Encode, Decode};
 use grandpa::BlockNumberOps;
-use runtime_primitives::generic::BlockId;
-use runtime_primitives::traits::{
-	NumberFor, Block as BlockT, Header as HeaderT, One,
+use sp_runtime::{
+	generic::BlockId,
+	traits::{
+		NumberFor, Block as BlockT, Header as HeaderT, One,
+	}
 };
-use substrate_primitives::{ed25519, H256};
+use sp_core::{ed25519, H256};
 use ed25519::Public as AuthorityId;
-use substrate_telemetry::{telemetry, CONSENSUS_INFO};
+use sc_telemetry::{telemetry, CONSENSUS_INFO};
 
 use crate::justification::CrfgJustification;
 

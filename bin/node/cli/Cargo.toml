@@ -60,7 +60,7 @@ sp-transaction-pool = { version = "2.0.0-dev", git = "https://github.com/yeeco/s
 
 # client dependencies
 sc-client-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-client = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
+yc-client = { path = "../../../client" }
 sc-chain-spec = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
 sc-transaction-pool = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
 sc-network = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
@@ -131,13 +131,14 @@ structopt = { version = "0.3.8", optional = true }
 node-transaction-factory = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git" }
 node-inspect = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git" }
 frame-benchmarking-cli = { version = "2.0.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git" }
-yeeroot-build-script-utils = { path = "../../../utils/build-script-utils", optional = true }
+#yeeroot-build-script-utils = { path = "../../../utils/build-script-utils", optional = true }
+substrate-build-script-utils = { version = "2.0.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git" }
 
-[build-dependencies.sc-cli]
-version = "0.8.0-dev"
-package = "sc-cli"
-git = "https://github.com/yeeco/substrate.git"
-optional = true
+#[build-dependencies.sc-cli]
+#version = "0.8.0-dev"
+#package = "sc-cli"
+#git = "https://github.com/yeeco/substrate.git"
+#optional = true
 
 [features]
 default = [ "cli" ]
@@ -154,7 +155,7 @@ cli = [
 	"frame-benchmarking-cli",
 	"sc-service/db",
 	"structopt",
-	"yeeroot-build-script-utils",
+	"substrate-build-script-utils",
     "yee-bootnodes-router",
     "yee-switch",
 ]

@@ -16,8 +16,8 @@
 
 /// Integrate crfg finality with substrate service
 
-use client;
-use service::{FullBackend, FullExecutor, ServiceFactory};
+//use client;
+//use service::{FullBackend, FullExecutor, ServiceFactory};
 
 pub type BlockImportForService<F> = crate::CrfgBlockImport<
 	FullBackend<F>,

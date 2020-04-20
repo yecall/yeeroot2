@@ -20,34 +20,29 @@
 use {
     std::{marker::PhantomData, sync::Arc},
 };
+use sp_consensus::{
+    BlockOrigin, BlockImportParams,
+    ForkChoiceStrategy,
+    import_queue::Verifier,
+};
+use sp_runtime::{
+    Justification,
+    Proof,
+    generic,
+    generic::Digest,
+    traits::{
+        Block, Header,
+        AuthorityIdFor, DigestItemFor,
+        NumberFor,
+        BlakeTwo256,
+        ProvideRuntimeApi,
+    },
+};
+use sp_inherents::InherentDataProviders;
+use codec::{Encode, Decode};
+use sp_blockchain::HeaderBackend;
+use sc_client_api::BlockchainEvents;
 use {
-    consensus_common::{
-        BlockOrigin, ImportBlock,
-        ForkChoiceStrategy,
-        import_queue::Verifier,
-    },
-    inherents::InherentDataProviders,
-    runtime_primitives::{
-        codec::{Decode, Encode},
-        Justification,
-        Proof,
-        generic,
-        traits::{
-            Block, Header,
-            AuthorityIdFor, Digest, DigestItemFor,
-            NumberFor,
-            BlakeTwo256,
-            ProvideRuntimeApi,
-        },
-    },
-    substrate_service::ServiceFactory,
-    client::{
-        self,
-        BlockchainEvents,
-        ChainHead,
-        blockchain::HeaderBackend,
-        BlockBody,
-    },
     yee_sharding_primitives::ShardingAPI,
     util::relay_decode::RelayTransfer,
     foreign_chain::{ForeignChain, ForeignChainConfig},
@@ -63,7 +58,7 @@ use yee_merkle::{ProofHash, ProofAlgorithm, MultiLayerProof};
 use ansi_term::Colour;
 use log::{debug, info, warn, error};
 use parking_lot::RwLock;
-use primitives::H256;
+use sp_core::H256;
 use yee_context::Context;
 
 /// Verifier for POW blocks.
@@ -439,7 +434,6 @@ impl<F, C, AccountId, AuthorityId> PowVerifier<F, C, AccountId, AuthorityId> whe
 
     /// check other digest
     fn check_other_logs(&self, header: &<F::Block as Block>::Header) -> Result<(), String> {
-
         Ok(())
     }
 }

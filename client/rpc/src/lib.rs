@@ -23,21 +23,29 @@ use substrate_service::{Components, ComponentClient, ComponentBlock, ComponentEx
                         ServiceFactory, DefaultRpcHandlerConstructor};
 use tokio::runtime::TaskExecutor;
 use std::sync::Arc;
-use substrate_rpc_services::{self, apis::system::SystemInfo};
-use runtime_primitives::{
+
+use sc_rpc_api::{
+    chain,
+    state,
+    author,
+    Subscriptions,
+    system::SystemInfo,
+};
+use sc_rpc_server::RpcHandler;
+use sp_runtime::{
     BuildStorage, traits::{Block as BlockT, Header as HeaderT, ProvideRuntimeApi}, generic::BlockId
 };
-use client::{self, Client, runtime_api};
-use network::{self, OnDemand};
-use transaction_pool::txpool::{self, Options as TransactionPoolOptions, Pool as TransactionPool};
+// use client::{self, Client, runtime_api};
+use sc_network::{self, config::OnDemand};
+use sc_transaction_pool::txpool::{self, Options as TransactionPoolOptions, Pool as TransactionPool};
 use std::marker::PhantomData;
 use crate::mining::{Mining, MiningApi};
 use crate::misc::{MiscApi, Misc};
 use parking_lot::RwLock;
 use yee_consensus_pow::{JobManager, DefaultJob};
-use yee_runtime::opaque::{Block};
-use substrate_primitives::{ed25519::Pair, Pair as PairT};
-use parity_codec::{Decode, Encode, Codec};
+// use sp_runtime::opaque::{Block};
+use sp_core::{ed25519::Pair, Pair as PairT};
+use codec::{Decode, Encode, Codec};
 use serde::de::Unexpected::Other;
 
 pub struct FullRpcHandlerConstructor;
@@ -75,12 +83,12 @@ impl<C: Components> RpcHandlerConstructor<C> for FullRpcHandlerConstructor where
         task_executor: TaskExecutor,
         transaction_pool: Arc<TransactionPool<C::TransactionPoolApi>>,
         extra: Self::RpcExtra,
-    ) -> substrate_rpc_services::RpcHandler{
+    ) -> RpcHandler{
         let client = client.clone();
-        let subscriptions = substrate_rpc_services::apis::Subscriptions::new(task_executor);
-        let chain = substrate_rpc_services::apis::chain::Chain::new(client.clone(), subscriptions.clone());
-        let state = substrate_rpc_services::apis::state::State::new(client.clone(), subscriptions.clone());
-        let author = substrate_rpc_services::apis::author::Author::new(
+        let subscriptions = Subscriptions::new(task_executor);
+        let chain = chain::Chain::new(client.clone(), subscriptions.clone());
+        let state = state::State::new(client.clone(), subscriptions.clone());
+        let author = author::Author::new(
             client.clone(), transaction_pool.clone(), subscriptions
         );
         let system = substrate_rpc_services::apis::system::System::new(

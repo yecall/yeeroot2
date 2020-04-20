@@ -16,8 +16,8 @@
 // along with YeeChain.  If not, see <https://www.gnu.org/licenses/>.
 
 pub mod identify_specialization;
-use parity_codec::{Encode, Decode};
-use runtime_primitives::generic::DigestItem;
+use codec::{Encode, Decode};
+use sp_runtime::generic::DigestItem;
 
 /// Generated module index in construct_runtime!
 /// module specific log entries are prefixed by it and

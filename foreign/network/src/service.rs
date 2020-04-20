@@ -31,7 +31,7 @@ use crate::protocol::{self, Protocol, FromNetworkMsg, ProtocolMsg};
 use crate::config::Params;
 use crossbeam_channel::{self as channel, Receiver, Sender, TryRecvError};
 use crate::error::Error;
-use runtime_primitives::{traits::{Block as BlockT, NumberFor, Header}, ConsensusEngineId};
+use sp_runtime::{traits::{Block as BlockT, NumberFor, Header}, ConsensusEngineId};
 use crate::{IdentifySpecialization, identify_specialization::ForeignIdentifySpecialization};
 
 use tokio::prelude::task::AtomicTask;
@@ -571,10 +571,10 @@ struct VNetworkHolder<B: BlockT + 'static, I: IdentifySpecialization>{
 
 	peerset: ForeignPeersetHandle,
 	network_service: Arc<Mutex<NetworkService<Message<B>, I>>>,
-	network_port_list: Arc<RwLock<HashMap<u16, substrate_network::service::NetworkPort<B>>>>,
+	network_port_list: Arc<RwLock<HashMap<u16, sc_network::service::NetworkPort<B>>>>,
 	from_network_port: Arc<FromNetworkPort<B>>,
-	protocol_sender_list: Arc<RwLock<HashMap<u16, Sender<substrate_network::protocol::FromNetworkMsg<B>>>>>,
-	chain_list: Arc<RwLock<HashMap<u16, Arc<substrate_network::chain::Client<B>>>>>,
+	protocol_sender_list: Arc<RwLock<HashMap<u16, Sender<sc_network::protocol::FromNetworkMsg<B>>>>>,
+	chain_list: Arc<RwLock<HashMap<u16, Arc<sc_network::chain::Client<B>>>>>,
 	from_network_chan: FromNetworkChan<B>,
 	import_queue_port_list: Arc<RwLock<HashMap<u16, vnetwork::ImportQueuePort<B>>>>,
 	out_message_sinks: Arc<Mutex<Vec<mpsc::UnboundedSender<OutMessage<B>>>>>,
@@ -632,12 +632,12 @@ impl<B: BlockT + 'static, I: IdentifySpecialization> VNetworkHolder<B, I>{
 	fn run_thread(
 		peerset: ForeignPeersetHandle,
 		network_service: Arc<Mutex<NetworkService<Message<B>, I>>>,
-		network_port_list: Arc<RwLock<HashMap<u16, substrate_network::service::NetworkPort<B>>>>,
+		network_port_list: Arc<RwLock<HashMap<u16, sc_network::service::NetworkPort<B>>>>,
 		from_network_port: Arc<FromNetworkPort<B>>,
-		protocol_sender_list: Arc<RwLock<HashMap<u16, Sender<substrate_network::protocol::FromNetworkMsg<B>>>>>,
+		protocol_sender_list: Arc<RwLock<HashMap<u16, Sender<sc_network::protocol::FromNetworkMsg<B>>>>>,
 		from_network_chan: FromNetworkChan<B>,
 		import_queue_port_list: Arc<RwLock<HashMap<u16, vnetwork::ImportQueuePort<B>>>>,
-		chain_list: Arc<RwLock<HashMap<u16, Arc<substrate_network::chain::Client<B>>>>>,
+		chain_list: Arc<RwLock<HashMap<u16, Arc<sc_network::chain::Client<B>>>>>,
 		out_message_sinks: Arc<Mutex<Vec<mpsc::UnboundedSender<OutMessage<B>>>>>,
 		network_ready: Arc<RwLock<bool>>,
 	) -> impl Future<Item = (), Error = io::Error> {
@@ -668,31 +668,31 @@ impl<B: BlockT + 'static, I: IdentifySpecialization> VNetworkHolder<B, I>{
 		}).for_each(move |(shard_num, msg)| {
 			// Handle message from Protocol.
 			match msg {
-				substrate_network::NetworkMsg::Outgoing(who, outgoing_message) => {
+				sc_network::NetworkMsg::Outgoing(who, outgoing_message) => {
 					network_service
 						.lock()
 						.send_custom_message(&who,  GenericMessage::VMessage(shard_num, outgoing_message));
 				},
-				substrate_network::NetworkMsg::ReportPeer(who, severity) => {
+				sc_network::NetworkMsg::ReportPeer(who, severity) => {
 					match severity {
-						substrate_network::Severity::Bad(message) => {
+						sc_network::Severity::Bad(message) => {
 							debug!(target: "sync-foreign", "Banning {:?} because {:?}", who, message);
 							network_service.lock().drop_node(&who);
 							// temporary: make sure the peer gets dropped from the peerset
 							peerset.report_peer(who, i32::min_value());
 						},
-						substrate_network::Severity::Useless(message) => {
+						sc_network::Severity::Useless(message) => {
 							debug!(target: "sync-foreign", "Dropping {:?} because {:?}", who, message);
 							network_service.lock().drop_node(&who)
 						},
-						substrate_network::Severity::Timeout => {
+						sc_network::Severity::Timeout => {
 							debug!(target: "sync-foreign", "Dropping {:?} because it timed out", who);
 							network_service.lock().drop_node(&who)
 						},
 					}
 				},
 				#[cfg(any(test, feature = "test-helpers"))]
-				substrate_network::NetworkMsg::Synchronized => (),
+				sc_network::NetworkMsg::Synchronized => (),
 			}
 			Ok(())
 		}).then(|res : Result<(), io::Error> | {
@@ -842,15 +842,15 @@ use substrate_service::{Components, FactoryBlock, ComponentExHash};
 impl<F, I, EH> substrate_service::NetworkProvider<F, EH> for Service<FactoryBlock<F>, I, EH> where
 	F: substrate_service::ServiceFactory,
 	I: IdentifySpecialization,
-	EH: substrate_network::ExHashT,
+	EH: sc_network::ExHashT,
 {
 	fn provide_network(
 		&self,
 		network_id: u32,
 		params: substrate_service::NetworkProviderParams<F, EH>,
-		protocol_id: substrate_network::ProtocolId,
+		protocol_id: sc_network::ProtocolId,
 		import_queue: Box<dyn consensus::import_queue::ImportQueue<substrate_service::FactoryBlock<F>>>,
-	) -> Result<substrate_network::NetworkChan<substrate_service::FactoryBlock<F>>, substrate_network::Error>{
+	) -> Result<sc_network::NetworkChan<substrate_service::FactoryBlock<F>>, sc_network::Error>{
 
 		let shard_num = network_id as u16;
 

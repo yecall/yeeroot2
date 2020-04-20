@@ -25,10 +25,10 @@ use grandpa::Message::{Prevote, Precommit};
 use futures::prelude::*;
 use futures::sync::mpsc;
 use log::{debug, trace};
-use parity_codec::{Encode, Decode};
-use substrate_primitives::{ed25519, Pair};
-use substrate_telemetry::{telemetry, CONSENSUS_INFO};
-use runtime_primitives::traits::Block as BlockT;
+use codec::{Encode, Decode};
+use sp_core::{ed25519, Pair};
+use sc_telemetry::{telemetry, CONSENSUS_INFO};
+use sp_runtime::traits::Block as BlockT;
 use tokio::timer::Interval;
 use crate::{Error, Network, Message, SignedMessage, Commit,
 	CompactCommit, GossipMessage, FullCommitMessage, VoteOrPrecommitMessage};

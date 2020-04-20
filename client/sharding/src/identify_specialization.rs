@@ -15,7 +15,8 @@
 // You should have received a copy of the GNU General Public License
 // along with YeeChain.  If not, see <https://www.gnu.org/licenses/>.
 
-use network::{IdentifySpecialization, PeerId, IdentifyInfo};
+use sc_network::{IdentifySpecialization, PeerId};
+use libp2p::identify::IdentifyInfo;
 use regex::Regex;
 use log::debug;
 

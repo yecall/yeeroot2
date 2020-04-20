@@ -55,23 +55,27 @@
 use futures::prelude::*;
 use log::{debug, info, warn, trace};
 use futures::sync::{self, mpsc, oneshot};
-use client::{
-	BlockchainEvents, CallExecutor, Client, backend::Backend,
-	error::Error as ClientError,
-};
-use client::blockchain::HeaderBackend;
-use parity_codec::{Encode, Decode};
-use runtime_primitives::traits::{
+// use client::{
+// 	Client, backend::Backend,
+// 	error::Error as ClientError,
+// };
+use codec::{Encode, Decode};
+use sp_blockchain::HeaderBackend;
+use sc_client_api::{BlockchainEvents, CallExecutor};
+use sp_runtime::{
+	generic::{BlockId, DigestItem},
+	RuntimeString,
+	traits::{
 	NumberFor, Block as BlockT, Header as HeaderT, DigestFor, ProvideRuntimeApi, Hash as HashT,
-	DigestItemFor, DigestItem,
+	DigestItemFor,
+}
 };
 use fg_primitives::CrfgApi;
-use inherents::{
-	InherentDataProviders, RuntimeString,
+use sp_inherents::{
+	InherentDataProviders
 };
-use runtime_primitives::generic::BlockId;
-use substrate_primitives::{ed25519, H256, Blake2Hasher, Pair};
-use substrate_telemetry::{telemetry, CONSENSUS_TRACE, CONSENSUS_DEBUG, CONSENSUS_WARN, CONSENSUS_INFO};
+use sp_core::{ed25519, H256, Blake2Hasher, Pair};
+use sc_telemetry::{telemetry, CONSENSUS_TRACE, CONSENSUS_DEBUG, CONSENSUS_WARN, CONSENSUS_INFO};
 
 use srml_finality_tracker;
 

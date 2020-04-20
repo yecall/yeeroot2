@@ -37,11 +37,11 @@ mod service;
 //pub mod message;
 //pub mod specialization;
 
-pub use chain::Client as ClientHandle;
-pub use service::{Service, FetchFuture, ImportQueueMsg, ImportQueuePort};
+//pub use chain::Client as ClientHandle;
+//pub use service::{Service, FetchFuture, ImportQueueMsg, ImportQueuePort};
 pub use protocol::{ProtocolStatus, PeerInfo, Context, FromNetworkMsg};
 pub use sync::{Status as SyncStatus, SyncState};
-pub use substrate_network::{
+pub use sc_network::{
 	identity, multiaddr,
 	ProtocolId, Severity, Multiaddr,
 	NetworkState, NetworkStatePeer, NetworkStateNotConnectedPeer, NetworkStatePeerEndpoint,
@@ -51,16 +51,16 @@ pub use message::{generic as generic_message, RequestId, Status as StatusMessage
 pub use error::Error;
 pub use on_demand::{OnDemand, OnDemandService, RemoteResponse};
 #[doc(hidden)]
-pub use runtime_primitives::traits::Block as BlockT;
+pub use sp_runtime::traits::Block as BlockT;
 
-pub use substrate_network::sync;
-pub use substrate_network::protocol;
-pub use substrate_network::chain;
-pub use substrate_network::blocks;
-pub use substrate_network::on_demand;
-pub use substrate_network::util;
-pub use substrate_network::config;
-pub use substrate_network::consensus_gossip;
-pub use substrate_network::error;
-pub use substrate_network::message;
-pub use substrate_network::specialization;
+pub use sc_network::sync;
+pub use sc_network::protocol;
+pub use sc_network::chain;
+pub use sc_network::blocks;
+pub use sc_network::on_demand;
+pub use sc_network::util;
+pub use sc_network::config;
+pub use sc_network::consensus_gossip;
+pub use sc_network::error;
+pub use sc_network::message;
+pub use sc_network::specialization;

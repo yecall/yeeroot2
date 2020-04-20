@@ -33,7 +33,7 @@ pub trait CompatibleDigestItem<B: Block, AuthorityId: Decode + Encode + Clone>: 
     fn as_pow_seal(&self) -> Option<PowSeal<B, AuthorityId>>;
 }
 
-impl<B, Hash, AuthorityId, SealSignature> CompatibleDigestItem<B, AuthorityId> for DigestItem<Hash, AuthorityId, SealSignature> where
+impl<B, Hash, AuthorityId, SealSignature> CompatibleDigestItem<B, AuthorityId> for DigestItem<Hash> where
     B: Block,
     AuthorityId: Decode + Encode + Clone,
 {
@@ -43,7 +43,7 @@ impl<B, Hash, AuthorityId, SealSignature> CompatibleDigestItem<B, AuthorityId> f
 
     fn as_pow_seal(&self) -> Option<PowSeal<B, AuthorityId>> {
         match self {
-            DigestItem::Consensus(YEE_POW_ENGINE_ID, seal) => Decode::decode(&mut &seal[..]),
+            DigestItem::Consensus(YEE_POW_ENGINE_ID, seal) => Decode::decode(&mut &seal[..]).unwrap(), // todo
             _ => None
         }
     }

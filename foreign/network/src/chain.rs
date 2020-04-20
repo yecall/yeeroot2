@@ -16,16 +16,16 @@
 
 //! Blockchain access trait
 
-use client::{self, Client as SubstrateClient, ClientInfo, BlockStatus, CallExecutor};
-use client::error::Error;
-use client::light::fetcher::ChangesProof;
-use client::ImportNotifications;
-use consensus::{BlockImport, Error as ConsensusError};
-use runtime_primitives::traits::{Block as BlockT, Header as HeaderT};
-use runtime_primitives::generic::{BlockId};
-use runtime_primitives::{Justification, Proof};
-use primitives::{H256, Blake2Hasher, storage::StorageKey};
-use client::BlockchainEvents;
+//use client::{self, Client as SubstrateClient, ClientInfo, BlockStatus, CallExecutor};
+// use client::error::Error;
+// use client::light::fetcher::ChangesProof;
+// use client::ImportNotifications;
+use sp_consensus::{BlockImport, Error as ConsensusError};
+use sp_runtime::traits::{Block as BlockT, Header as HeaderT};
+use sp_runtime::generic::{BlockId};
+use sp_runtime::{Justification, Proof};
+use sp_core::{H256, Blake2Hasher, storage::StorageKey};
+use sc_client::BlockchainEvents;
 
 /// Local client abstraction for the network.
 pub trait Client<Block: BlockT>: Send + Sync {

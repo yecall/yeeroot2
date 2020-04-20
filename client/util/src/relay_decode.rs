@@ -1,7 +1,7 @@
-use rstd::vec::Vec;
-use primitives::{traits::Zero, generic::Era};
-use parity_codec::{Encode, Decode, Compact, Input};
-use substrate_primitives::{Blake2Hasher, Hasher};
+use sp_std::vec::Vec;
+use sp_runtime::{traits::Zero, generic::Era};
+use codec::{Encode, Decode, Compact, Input};
+use sp_core::{Blake2Hasher, Hasher};
 
 pub struct OriginTransfer<Address, Balance> {
     pub sender: Address,

@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with YeeChain.  If not, see <https://www.gnu.org/licenses/>.
 
-use substrate_network::message::{self, BlockRequest as BlockRequestMessage, Message};
-use substrate_network::message::generic::{Message as GenericMessage, ConsensusMessage};
-use runtime_primitives::traits::{As, Block as BlockT, Header as HeaderT, NumberFor, Zero};
-use substrate_network::config::{ProtocolConfig, Roles};
+use sc_network::message::{self, BlockRequest as BlockRequestMessage, Message};
+use sc_network::message::generic::{Message as GenericMessage, ConsensusMessage};
+use sp_runtime::traits::{As, Block as BlockT, Header as HeaderT, NumberFor, Zero};
+use sc_network::config::{ProtocolConfig, Roles};
 use std::sync::Arc;
 use crate::service::{NetworkChan, ExHashT};
 use crate::NetworkMsg;
@@ -26,11 +26,11 @@ use crate::util::LruHashSet;
 use crate::chain::Client;
 use crate::error;
 use network_libp2p::{PeerId, Severity};
-use runtime_primitives::{generic::BlockId, ConsensusEngineId, Proof, traits::BlakeTwo256};
+use sp_runtime::{generic::BlockId, ConsensusEngineId, Proof, traits::BlakeTwo256};
 use log::{trace, debug, info};
 use std::{cmp, num::NonZeroUsize, thread, time};
 use std::collections::{BTreeMap, HashMap};
-use substrate_network::{SyncStatus, OnDemandService};
+use sc_network::{SyncStatus, OnDemandService};
 use parking_lot::RwLock;
 use merkle_light::merkle::MerkleTree;
 use ansi_term::Colour;

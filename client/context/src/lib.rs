@@ -17,7 +17,7 @@
 
 use pow_primitives::PowTarget;
 use {
-	runtime_primitives::{
+	sp_runtime::{
 		traits::{NumberFor, Block as BlockT},
 	},
 };
