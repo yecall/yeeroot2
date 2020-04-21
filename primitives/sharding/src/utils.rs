@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with YeeChain.  If not, see <https://www.gnu.org/licenses/>.
 
-use parity_codec::Codec;
+use codec::Codec;
 
 pub fn shard_num_for<T: Codec>(t: &T, shard_count: u16) -> Option<u16> {
 

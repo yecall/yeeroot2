@@ -22,11 +22,11 @@
 #[cfg(not(feature = "std"))]
 extern crate alloc;
 
-use parity_codec::{Encode, Decode};
-use substrate_primitives::ed25519;
-use sr_primitives::traits::{DigestFor, NumberFor};
-use client::decl_runtime_apis;
-use rstd::vec::Vec;
+use codec::{Encode, Decode};
+use sp_core::ed25519;
+use sp_runtime::traits::{DigestFor, NumberFor};
+// use sc_client::decl_runtime_apis;
+use sp_std::vec::Vec;
 
 use ed25519::Public as AuthorityId;
 

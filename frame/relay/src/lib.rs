@@ -1,12 +1,12 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use parity_codec::{Compact};
-use rstd::vec::Vec;
-use rstd::prelude::*;
-use srml_support::{decl_module, decl_event, decl_storage, dispatch::Result};
+use codec::{Compact};
+use sp_std::vec::Vec;
+use sp_std::prelude::*;
+use frame_support::{decl_module, decl_event, decl_storage, dispatch::Result};
 use yee_sr_primitives::{RelayTypes};
 
-pub trait Trait: system::Trait {
+pub trait Trait: frame_system::Trait {
     type Runtime: balances::Trait + assets::Trait;
 }
 

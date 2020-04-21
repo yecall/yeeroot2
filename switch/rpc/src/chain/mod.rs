@@ -18,14 +18,14 @@
 mod number;
 
 use jsonrpc_derive::rpc;
-use primitives::{Bytes, sr25519::{Public}};
+use sp_core::{Bytes, sr25519::{Public}};
 use crate::Config;
 use crate::client::RpcClient;
 use crate::errors;
 use serde::{Serialize};
 use serde::de::DeserializeOwned;
 use parity_codec::{Encode, Decode};
-use runtime_primitives::OpaqueExtrinsic;
+use sp_runtime::OpaqueExtrinsic;
 use number::NumberOrHex;
 use serde_json::Value;
 use crate::rpc::{self, futures::future::{self, FutureResult}};

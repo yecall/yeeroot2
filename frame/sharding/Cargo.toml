@@ -7,9 +7,17 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+serde = { version = "1.0", optional = true }
+codec = { package = "parity-scale-codec", version = "1.3.0", features = ["derive"] }
+sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "master", default-features = false }
+frame-support = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "master", default-features = false }
+frame-system = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "master", default-features = false }
+sp-inherents = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "master", default-features = false }
+#sp-std = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "master", default-features = false }
+
 #parity-codec = { version = "3.5", default-features = false, features = ["derive"] }
 #serde = { version = "1.0", optional = true, features = ["derive"] }
-#sharding_primitives = { package = "yee-sharding-primitives", path = "../../primitives/sharding", default_features = false }
+sharding_primitives = { package = "yee-sharding-primitives", path = "../../primitives/sharding", default_features = false }
 #inherents = { package = "substrate-inherents", git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee-v1.0" }
 #runtime-primitives = { package = "sr-primitives", git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee-v1.0" }
 #support = { package = "srml-support", git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee-v1.0" }
@@ -18,10 +26,10 @@ edition = "2018"
 [features]
 default = ["std"]
 std = [
-#    "parity-codec/std",
-#    "serde",
-#    "sharding_primitives/std",
-#    "runtime-primitives/std",
-#    "support/std",
-#    "system/std",
+    "codec/std",
+    "serde",
+    "sharding_primitives/std",
+    "sp-runtime/std",
+    "frame-support/std",
+    "frame-system/std",
 ]

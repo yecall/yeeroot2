@@ -16,8 +16,8 @@
 // along with YeeChain.  If not, see <https://www.gnu.org/licenses/>.
 
 use serde::{Deserialize, Serialize};
-use primitives::U256;
-use runtime_primitives::traits;
+use sp_core::U256;
+use sp_runtime::traits;
 
 #[derive(Deserialize, Serialize)]
 #[serde(untagged)]

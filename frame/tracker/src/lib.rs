@@ -21,19 +21,18 @@
 #[macro_use]
 extern crate srml_support;
 
-use inherents::{
+use sp_inherents::{
 	RuntimeString, InherentIdentifier, ProvideInherent,
 	InherentData, MakeFatalError,
 };
-use srml_support::StorageValue;
-use primitives::traits::{As, One, Zero};
-use rstd::{prelude::*, result, cmp, vec};
-use system::{ensure_inherent, Trait as SystemTrait};
-
-use primitives::{
-	codec::{
-		Codec, Decode, Encode,
-	},
+use frame_support::StorageValue;
+use sp_runtime::traits::{As, One, Zero};
+use sp_std::{prelude::*, result, cmp, vec};
+use frame_system::{ensure_inherent, Trait as SystemTrait};
+use codec::{
+	Codec, Decode, Encode,
+};
+use sp_core::{
 	traits::{
 		Member, SimpleArithmetic,
 		MaybeDisplay, MaybeSerializeDebug,

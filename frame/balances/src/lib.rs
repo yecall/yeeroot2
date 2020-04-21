@@ -172,22 +172,22 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use rstd::prelude::*;
-use rstd::{cmp, result};
-use parity_codec::{Codec, Encode, Decode, Compact};
-use srml_support::{StorageValue, StorageMap, Parameter, decl_event, decl_storage, decl_module};
-use srml_support::traits::{
+use sp_std::prelude::*;
+use sp_std::{cmp, result};
+use codec::{Codec, Encode, Decode, Compact};
+use frame_support::{StorageValue, StorageMap, Parameter, decl_event, decl_storage, decl_module};
+use frame_support::traits::{
     UpdateBalanceOutcome, Currency, OnFreeBalanceZero, MakePayment, OnUnbalanced,
     WithdrawReason, WithdrawReasons, LockIdentifier, LockableCurrency, ExistenceRequirement,
     Imbalance, SignedImbalance, ReservableCurrency,
 };
-use srml_support::dispatch::Result;
-use primitives::{
+use frame_support::dispatch::Result;
+use sp_runtime::{
     traits::{
         Zero, SimpleArithmetic, As, StaticLookup, Member, CheckedAdd, CheckedSub,
         MaybeSerializeDebug, Saturating,
     }};
-use system::{IsDeadAccount, OnNewAccount, ensure_signed};
+use frame_system::{IsDeadAccount, OnNewAccount, ensure_signed};
 use {
     yee_sharding_primitives::ShardingInfo,
 };

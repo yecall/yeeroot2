@@ -42,7 +42,7 @@ use yee_sharding::{GENERATED_MODULE_LOG_PREFIX, GENERATED_SHARDING_PREFIX};
 use yee_consensus_pow_primitives::PowTarget;
 use yee_consensus_pow::{MiningHash, MiningAlgorithm, OriginalMerkleProof, CompactMerkleProof};
 use merkle_light::merkle::MerkleTree;
-use runtime_primitives::traits::Hash as HashT;
+use sp_runtime::traits::Hash as HashT;
 use std::iter::FromIterator;
 use std::ops::Add;
 use crate::error;

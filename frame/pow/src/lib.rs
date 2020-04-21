@@ -22,16 +22,19 @@
 #[cfg(feature = "std")]
 use {
     serde::Serialize,
-    inherents::{
+    sp_inherents::{
         InherentDataProviders, ProvideInherentData,
     },
 };
+use codec::{
+    Codec, Decode, Encode,
+};
 use {
-    inherents::{
+    sp_inherents::{
         InherentData, InherentIdentifier,
         MakeFatalError, ProvideInherent, RuntimeString,
     },
-    srml_support::{
+    frame_support::{
         decl_module, decl_storage, decl_event,
         Parameter,
         storage::StorageValue,
@@ -39,17 +42,14 @@ use {
             Currency, OnUnbalanced,
         }
     },
-    primitives::{
-        codec::{
-            Codec, Decode, Encode,
-        },
+    sp_runtime::{
         traits::{
             As,
         }
     },
-    system::ensure_inherent,
+    frame_system::ensure_inherent,
 };
-use rstd::{result, prelude::*};
+use sp_std::{result, prelude::*};
 use yee_srml_sharding::{self as sharding};
 use yee_sharding_primitives::ShardingInfo;
 use yee_sharding_primitives::utils::shard_num_for;

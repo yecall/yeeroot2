@@ -16,13 +16,13 @@
 // along with YeeChain.  If not, see <https://www.gnu.org/licenses/>.
 
 use jsonrpc_derive::rpc;
-use primitives::{sr25519, storage::{StorageKey, StorageData}};
+use sp_core::{sr25519, storage::{StorageKey, StorageData}};
 use crate::rpc::futures::{Future, Stream};
 use crate::Config;
 use crate::client::RpcClient;
 use serde::{Serialize, Deserialize};
 use serde::de::DeserializeOwned;
-use parity_codec::{KeyedVec, Codec, Decode, Encode, Input, Compact};
+use codec::{KeyedVec, Codec, Decode, Encode, Input, Compact};
 use sr_io::blake2_256;
 use num_bigint::BigUint;
 use yee_runtime::AccountId;

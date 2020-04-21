@@ -1,10 +1,10 @@
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use rstd::vec::Vec;
-use system::ensure_signed;
-use parity_codec::Codec;
-use srml_support::{decl_module, decl_event, dispatch::Result};
+use sp_std::vec::Vec;
+use frame_system::ensure_signed;
+use codec::Codec;
+use frame_support::{decl_module, decl_event, dispatch::Result};
 use yee_sr_primitives::MAX_STORAGE_SIZE;
 
 pub trait Trait: system::Trait {

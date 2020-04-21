@@ -16,14 +16,14 @@
 // along with YeeChain.  If not, see <https://www.gnu.org/licenses/>.
 
 use jsonrpc_derive::rpc;
-use primitives::{Bytes, sr25519::{Public}};
+use sp_core::{Bytes, sr25519::{Public}};
 use crate::Config;
 use crate::client::RpcClient;
 use crate::errors;
 use serde::{Serialize};
 use serde::de::DeserializeOwned;
-use parity_codec::{Encode, Decode};
-use runtime_primitives::OpaqueExtrinsic;
+use codec::{Encode, Decode};
+use sp_runtime::OpaqueExtrinsic;
 use yee_sharding_primitives::utils::shard_num_for_bytes;
 use jsonrpc_core::BoxFuture;
 use crate::rpc::{self, futures::future::{self, FutureResult}};

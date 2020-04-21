@@ -1,9 +1,9 @@
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use parity_codec::{Encode, Decode, Codec, Input, Compact};
-use rstd::prelude::*;
-use substrate_primitives::{Blake2Hasher, Hasher, H256};
-use substrate_sr_primitives::generic::Era;
+use codec::{Encode, Decode, Codec, Input, Compact};
+use sp_std::prelude::*;
+use sp_core::{Blake2Hasher, Hasher, H256};
+use sp_runtime::generic::Era;
 
 pub const SHARD_CODE_SIZE: usize = 2;
 

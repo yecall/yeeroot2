@@ -20,16 +20,16 @@
 #[cfg(feature = "std")]
 use {
     serde::Serialize,
-    inherents::{
+    sp_inherents::{
         InherentDataProviders, ProvideInherentData,
     },
 };
 use {
-    inherents::{
+    sp_inherents::{
         InherentData, InherentIdentifier,
         MakeFatalError, ProvideInherent, RuntimeString,
     },
-    runtime_primitives::{
+    sp_runtime::{
         codec::{
             Codec, Decode, Encode,
         },
@@ -38,11 +38,11 @@ use {
             MaybeDisplay, MaybeSerializeDebug,
         },
     },
-    support::{
+    frame_support::{
         decl_module, decl_storage,
         storage::StorageValue,
     },
-    system::{self, ensure_inherent},
+    frame_system::{self, ensure_inherent},
     sharding_primitives::ShardingInfo,
 };
 

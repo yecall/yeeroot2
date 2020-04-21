@@ -20,10 +20,10 @@
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use srml_support::{StorageValue, StorageMap, Parameter, decl_module, decl_event, decl_storage, ensure, dispatch::Result};
-use primitives::{traits::{Member, SimpleArithmetic, As, Zero, StaticLookup}};
+use frame_support::{StorageValue, StorageMap, Parameter, decl_module, decl_event, decl_storage, ensure, dispatch::Result};
+use sp_runtime::{traits::{Member, SimpleArithmetic, As, Zero, StaticLookup}};
 use sharding_primitives::ShardingInfo;
-use parity_codec::{Decode, Encode, Compact, Input};
+use codec::{Decode, Encode, Compact, Input};
 use system::ensure_signed;
 use rstd::prelude::Vec;
 use yee_sr_primitives::{RelayTypes, RelayParams, OriginExtrinsic, SHARD_CODE_SIZE};

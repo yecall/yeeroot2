@@ -18,7 +18,7 @@
 pub use substrate_peerset::Message;
 pub use substrate_peerset::IncomingIndex;
 use std::collections::{HashMap, VecDeque};
-use substrate_peerset::{Peerset, PeersetHandle, PeersetConfig};
+use sc_peerset::{Peerset, PeersetHandle, PeersetConfig};
 use libp2p::PeerId;
 use std::sync::Arc;
 use futures::{prelude::*, sync::mpsc, try_ready};

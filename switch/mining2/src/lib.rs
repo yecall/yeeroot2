@@ -19,11 +19,11 @@ pub mod error;
 pub mod work_manager;
 mod worker;
 use yee_primitives::{Config, Shard};
-use runtime_primitives::traits::{BlakeTwo256, Hash as HashT};
+use sp_runtime::traits::{BlakeTwo256, Hash as HashT};
 use std::sync::Arc;
 use crate::work_manager::{WorkManager, DefaultWorkManager};
-use yee_runtime::{BlockNumber, AuthorityId};
-use parity_codec::{Decode, Encode};
+//use yee_runtime::{BlockNumber, AuthorityId};
+use codec::{Decode, Encode};
 use parking_lot::RwLock;
 
 pub fn start_work_manager(config: &Config) -> error::Result<Arc<RwLock<DefaultWorkManager<

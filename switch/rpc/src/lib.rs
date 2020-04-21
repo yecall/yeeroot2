@@ -25,5 +25,5 @@ mod errors;
 mod client;
 use yee_primitives::{Config, Shard};
 use jsonrpc_core as rpc;
-use parity_codec::alloc::collections::HashMap;
+use codec::alloc::collections::HashMap;
 use mining::work_manager;
