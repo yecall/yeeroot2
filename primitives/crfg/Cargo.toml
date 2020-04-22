@@ -6,16 +6,16 @@ edition = "2018"
 
 [dependencies]
 codec = { package = "parity-scale-codec", version = "1.3.0", features = ["derive"] }
-#sc-client = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "master", default-features = false }
-sp-std = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "master", default-features = false }
-sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "master" }
-sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "master", default-features = false }
+#sc-client = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
+sp-std = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
+sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
 
-#client = { package = "substrate-client", git = "https://github.com/yeeco/substrate.git", default-features = false , branch = "yee-v1.0"}
-#substrate-primitives = { git = "https://github.com/yeeco/substrate.git", default-features = false , branch = "yee-v1.0" }
+#client = { package = "substrate-client", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false , branch = "yee-v1.0"}
+#substrate-primitives = { git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false , branch = "yee-v1.0" }
 #parity-codec = { version = "3.2", default-features = false, features = ["derive"] }
-#sr-primitives = { package = "sr-primitives", git = "https://github.com/yeeco/substrate.git", default-features = false , branch = "yee-v1.0" }
-#rstd = { package = "sr-std", git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee-v1.0" }
+#sr-primitives = { package = "sr-primitives", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false , branch = "yee-v1.0" }
+#rstd = { package = "sr-std", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default_features = false, branch = "yee-v1.0" }
 
 [features]
 default = ["std"]

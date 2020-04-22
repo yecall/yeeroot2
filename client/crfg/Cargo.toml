@@ -12,18 +12,18 @@ tokio = "0.1.7"
 rand = "0.6"
 codec = { package = "parity-scale-codec", version = "1.3.0", features = ["derive"] }
 
-sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-std = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-version = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-consensus = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-telemetry = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-inherents = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-network = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
-fork-tree = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-client-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-blockchain = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-std = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-version = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-consensus = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-telemetry = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-inherents = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-network = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+fork-tree = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-client-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-blockchain = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 
 yc-client = { path = "../"}
 fg_primitives = { package = "crfg-primitives", path = "../../primitives/crfg" }
@@ -32,20 +32,20 @@ srml-finality-tracker = { package = "srml-finality-tracker", path = "../../frame
 grandpa = { package = "finality-grandpa", version = "0.6", features = ["derive-codec"] }
 
 #parity-codec = { version = "3.2", features = ["derive"] }
-#runtime_primitives = { package = "sr-primitives", git = "https://github.com/yeeco/substrate.git", branch = "yee-v1.0" }
-#consensus_common = { package = "substrate-consensus-common", git = "https://github.com/yeeco/substrate.git", branch = "yee-v1.0" }
-#substrate-primitives = { git = "https://github.com/yeeco/substrate.git", branch = "yee-v1.0" }
-#substrate-telemetry = { git = "https://github.com/yeeco/substrate.git", branch = "yee-v1.0" }
-#client = { package = "substrate-client", git = "https://github.com/yeeco/substrate.git", branch = "yee-v1.0"}
-#inherents = { package = "substrate-inherents", git = "https://github.com/yeeco/substrate.git", branch = "yee-v1.0" }
-#network = { package = "substrate-network", git = "https://github.com/yeeco/substrate.git", branch = "yee-v1.0" }
-#service = {package = "substrate-service", git = "https://github.com/yeeco/substrate.git", optional = true, branch = "yee-v1.0" }
+#runtime_primitives = { package = "sr-primitives", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
+#consensus_common = { package = "substrate-consensus-common", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
+#substrate-primitives = { git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
+#substrate-telemetry = { git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
+#client = { package = "substrate-client", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0"}
+#inherents = { package = "substrate-inherents", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
+#network = { package = "substrate-network", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
+#service = {package = "substrate-service", git = "https://github.com/yeeco/substrate.git",  branch = "yee", optional = true, branch = "yee-v1.0" }
 
 [dev-dependencies]
-#consensus_common = { package = "substrate-consensus-common", git = "https://github.com/yeeco/substrate.git", branch = "yee-v1.0" }
-#sc-network = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", features = ["test-helpers"] }
-sp-keyring = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-#test_client = { package = "substrate-test-client", git = "https://github.com/yeeco/substrate.git", branch = "yee-v1.0" }
+#consensus_common = { package = "substrate-consensus-common", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
+#sc-network = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", features = ["test-helpers"] }
+sp-keyring = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+#test_client = { package = "substrate-test-client", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
 env_logger = "0.6"
 
 [features]

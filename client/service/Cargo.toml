@@ -32,32 +32,32 @@ pin-project = "0.4.8"
 serde = "1.0.101"
 serde_json = "1.0.41"
 sysinfo = "0.13.3"
-sc-keystore = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-io = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-utils = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-blockchain = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-session = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-application-crypto = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-consensus = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-network = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-chain-spec = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-client-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-client = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-client-db = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-keystore = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-io = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-utils = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-blockchain = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-session = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-application-crypto = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-consensus = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-network = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-chain-spec = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-client-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-client = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-client-db = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 codec = { package = "parity-scale-codec", version = "1.3.0" }
-sc-executor = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-transaction-pool = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-transaction-pool = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-rpc-server = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-rpc = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-telemetry = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sc-offchain = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sc-executor = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-transaction-pool = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-transaction-pool = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-rpc-server = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-rpc = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-telemetry = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-offchain = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 parity-multiaddr = { package = "parity-multiaddr", version = "0.7.3" }
-prometheus-endpoint = { package = "substrate-prometheus-endpoint", git = "https://github.com/yeeco/substrate.git", version = "0.8.0-dev"}
-sc-tracing = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+prometheus-endpoint = { package = "substrate-prometheus-endpoint", git = "https://github.com/yeeco/substrate.git",  branch = "yee", version = "0.8.0-dev"}
+sc-tracing = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 tracing = "0.1.10"
 parity-util-mem = { version = "0.6.1", default-features = false, features = ["primitive-types"] }
 
@@ -70,7 +70,7 @@ procfs = '0.7.8'
 
 
 [dev-dependencies]
-substrate-test-runtime-client = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-consensus-babe = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git" }
-grandpa = { version = "0.8.0-dev", package = "sc-finality-grandpa", git = "https://github.com/yeeco/substrate.git" }
-grandpa-primitives = { version = "2.0.0-dev", package = "sp-finality-grandpa", git = "https://github.com/yeeco/substrate.git" }
+substrate-test-runtime-client = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-consensus-babe = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+grandpa = { version = "0.8.0-dev", package = "sc-finality-grandpa", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+grandpa-primitives = { version = "2.0.0-dev", package = "sp-finality-grandpa", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }

@@ -41,9 +41,9 @@ macro_rules! new_full_start {
 			.with_select_chain(|_config, backend| {
 				Ok(sc_client::LongestChain::new(backend.clone()))
 			})?
-			.with_transaction_pool(|config, client, _fetcher| {
+			.with_transaction_pool(|config, client, _fetcher, prometheus_registry| {
 				let pool_api = sc_transaction_pool::FullChainApi::new(client.clone());
-				Ok(sc_transaction_pool::BasicPool::new(config, std::sync::Arc::new(pool_api)))
+				Ok(sc_transaction_pool::BasicPool::new(config, std::sync::Arc::new(pool_api), prometheus_registry))
 			})?
 			.with_import_queue(|_config, client, mut select_chain, _transaction_pool| {
 				let select_chain = select_chain.take()
@@ -131,7 +131,7 @@ macro_rules! new_full {
 
 		($with_startup_data)(&block_import, &babe_link);
 
-		if let sc_service::config::Role::Authority { sentry_nodes } = &role {
+		if let sc_service::config::Role::Authority { .. } = &role {
 			let proposer = sc_basic_authorship::ProposerFactory::new(
 				service.client(),
 				service.transaction_pool()
@@ -159,18 +159,35 @@ macro_rules! new_full {
 
 			let babe = sc_consensus_babe::start_babe(babe_config)?;
 			service.spawn_essential_task("babe-proposer", babe);
+		}
+
+		// Spawn authority discovery module.
+		if matches!(role, sc_service::config::Role::Authority{..} | sc_service::config::Role::Sentry {..}) {
+			let (sentries, authority_discovery_role) = match role {
+				sc_service::config::Role::Authority { ref sentry_nodes } => (
+					sentry_nodes.clone(),
+					sc_authority_discovery::Role::Authority (
+						service.keystore(),
+					),
+				),
+				sc_service::config::Role::Sentry {..} => (
+					vec![],
+					sc_authority_discovery::Role::Sentry,
+				),
+				_ => unreachable!("Due to outer matches! constraint; qed.")
+			};
 
 			let network = service.network();
-			let dht_event_stream = network.event_stream().filter_map(|e| async move { match e {
+			let dht_event_stream = network.event_stream("authority-discovery").filter_map(|e| async move { match e {
 				Event::Dht(e) => Some(e),
 				_ => None,
 			}}).boxed();
 			let authority_discovery = sc_authority_discovery::AuthorityDiscovery::new(
 				service.client(),
 				network,
-				sentry_nodes.clone(),
-				service.keystore(),
+				sentries,
 				dht_event_stream,
+				authority_discovery_role,
 				service.prometheus_registry(),
 			);
 
@@ -236,12 +253,12 @@ macro_rules! new_full {
 
 type ConcreteBlock = node_primitives::Block;
 type ConcreteClient =
-	Client<
-		Backend<ConcreteBlock>,
-		LocalCallExecutor<Backend<ConcreteBlock>, NativeExecutor<node_executor::Executor>>,
-		ConcreteBlock,
-		node_runtime::RuntimeApi
-	>;
+Client<
+	Backend<ConcreteBlock>,
+	LocalCallExecutor<Backend<ConcreteBlock>, NativeExecutor<node_executor::Executor>>,
+	ConcreteBlock,
+	node_runtime::RuntimeApi
+>;
 type ConcreteBackend = Backend<ConcreteBlock>;
 type ConcreteTransactionPool = sc_transaction_pool::BasicPool<
 	sc_transaction_pool::FullChainApi<ConcreteClient, ConcreteBlock>,
@@ -250,29 +267,29 @@ type ConcreteTransactionPool = sc_transaction_pool::BasicPool<
 
 /// Builds a new service for a full client.
 pub fn new_full(config: Configuration)
--> Result<
-	Service<
-		ConcreteBlock,
-		ConcreteClient,
-		LongestChain<ConcreteBackend, ConcreteBlock>,
-		NetworkStatus<ConcreteBlock>,
-		NetworkService<ConcreteBlock, <ConcreteBlock as BlockT>::Hash>,
-		ConcreteTransactionPool,
-		OffchainWorkers<
-			ConcreteClient,
-			<ConcreteBackend as sc_client_api::backend::Backend<Block>>::OffchainStorage,
-			ConcreteBlock,
-		>
-	>,
-	ServiceError,
->
+				-> Result<
+					Service<
+						ConcreteBlock,
+						ConcreteClient,
+						LongestChain<ConcreteBackend, ConcreteBlock>,
+						NetworkStatus<ConcreteBlock>,
+						NetworkService<ConcreteBlock, <ConcreteBlock as BlockT>::Hash>,
+						ConcreteTransactionPool,
+						OffchainWorkers<
+							ConcreteClient,
+							<ConcreteBackend as sc_client_api::backend::Backend<Block>>::OffchainStorage,
+							ConcreteBlock,
+						>
+					>,
+					ServiceError,
+				>
 {
 	new_full!(config).map(|(service, _)| service)
 }
 
 /// Builds a new service for a light client.
 pub fn new_light(config: Configuration)
--> Result<impl AbstractService, ServiceError> {
+				 -> Result<impl AbstractService, ServiceError> {
 	type RpcExtension = jsonrpc_core::IoHandler<sc_rpc::Metadata>;
 	let inherent_data_providers = InherentDataProviders::new();
 
@@ -280,12 +297,12 @@ pub fn new_light(config: Configuration)
 		.with_select_chain(|_config, backend| {
 			Ok(LongestChain::new(backend.clone()))
 		})?
-		.with_transaction_pool(|config, client, fetcher| {
+		.with_transaction_pool(|config, client, fetcher, prometheus_registry| {
 			let fetcher = fetcher
 				.ok_or_else(|| "Trying to start light transaction pool without active fetcher")?;
 			let pool_api = sc_transaction_pool::LightChainApi::new(client.clone(), fetcher.clone());
 			let pool = sc_transaction_pool::BasicPool::with_revalidation_type(
-				config, Arc::new(pool_api), sc_transaction_pool::RevalidationType::Light,
+				config, Arc::new(pool_api), prometheus_registry, sc_transaction_pool::RevalidationType::Light,
 			);
 			Ok(pool)
 		})?
@@ -327,21 +344,21 @@ pub fn new_light(config: Configuration)
 			Ok(Arc::new(GrandpaFinalityProofProvider::new(backend, provider)) as _)
 		})?
 		.with_rpc_extensions(|builder,| ->
-			Result<RpcExtension, _>
-		{
-			let fetcher = builder.fetcher()
-				.ok_or_else(|| "Trying to start node RPC without active fetcher")?;
-			let remote_blockchain = builder.remote_backend()
-				.ok_or_else(|| "Trying to start node RPC without active remote blockchain")?;
+		Result<RpcExtension, _>
+			{
+				let fetcher = builder.fetcher()
+					.ok_or_else(|| "Trying to start node RPC without active fetcher")?;
+				let remote_blockchain = builder.remote_backend()
+					.ok_or_else(|| "Trying to start node RPC without active remote blockchain")?;
 
-			let light_deps = node_rpc::LightDeps {
-				remote_blockchain,
-				fetcher,
-				client: builder.client().clone(),
-				pool: builder.pool(),
-			};
-			Ok(node_rpc::create_light(light_deps))
-		})?
+				let light_deps = node_rpc::LightDeps {
+					remote_blockchain,
+					fetcher,
+					client: builder.client().clone(),
+					pool: builder.pool(),
+				};
+				Ok(node_rpc::create_light(light_deps))
+			})?
 		.build()?;
 
 	Ok(service)
@@ -431,22 +448,22 @@ mod tests {
 		};
 		let extrinsic_factory =
 			|service: &SyncService<<Factory as service::ServiceFactory>::FullService>|
-		{
-			let payload = (
-				0,
-				Call::Balances(BalancesCall::transfer(RawAddress::Id(bob.public().0.into()), 69.into())),
-				Era::immortal(),
-				service.client().genesis_hash()
-			);
-			let signature = alice.sign(&payload.encode()).into();
-			let id = alice.public().0.into();
-			let xt = UncheckedExtrinsic {
-				signature: Some((RawAddress::Id(id), signature, payload.0, Era::immortal())),
-				function: payload.1,
-			}.encode();
-			let v: Vec<u8> = Decode::decode(&mut xt.as_slice()).unwrap();
-			OpaqueExtrinsic(v)
-		};
+				{
+					let payload = (
+						0,
+						Call::Balances(BalancesCall::transfer(RawAddress::Id(bob.public().0.into()), 69.into())),
+						Era::immortal(),
+						service.client().genesis_hash()
+					);
+					let signature = alice.sign(&payload.encode()).into();
+					let id = alice.public().0.into();
+					let xt = UncheckedExtrinsic {
+						signature: Some((RawAddress::Id(id), signature, payload.0, Era::immortal())),
+						function: payload.1,
+					}.encode();
+					let v: Vec<u8> = Decode::decode(&mut xt.as_slice()).unwrap();
+					OpaqueExtrinsic(v)
+				};
 		sc_service_test::sync(
 			sc_chain_spec::integration_test_config(),
 			|config| new_full(config),

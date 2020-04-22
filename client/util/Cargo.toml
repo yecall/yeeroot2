@@ -8,8 +8,8 @@ edition = "2018"
 
 [dependencies]
 codec = { package = "parity-scale-codec", version = "1.3.0", features = ["derive"] }
-sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 merkle-light = { package = "merkle_light", git = "https://github.com/yeeco/merkle_light.git", branch = "yee" }
-sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
-sp-std = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git" }
+sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-std = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 sp-srml = { package = "yee-sr-primitives", default-features = false, path = "../../primitives/srml" }
