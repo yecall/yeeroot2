@@ -24,6 +24,40 @@ use node_executor::NativeExecutor;
 use sc_network::NetworkService;
 use sc_offchain::OffchainWorkers;
 
+// mod foreign;
+// use foreign::{start_foreign_network};
+//
+// mod restarter;
+// use restarter::{start_restarter};
+
+pub struct CustomArgs {
+	/// coinbase
+	pub coinbase: Option<String>,
+
+	/// Specify shard number
+	pub shard_num: u16,
+
+	/// Specify a list of bootnodes-routers
+	pub bootnodes_routers: Vec<String>,
+
+	/// Specify foreign p2p protocol TCP port
+	pub foreign_port: Option<u16>,
+
+	/// Whether use dev params or not
+	pub dev_params: bool,
+
+	/// Specify params number
+	pub dev_params_num: Option<u16>,
+
+	/// Whether mine
+	pub mine: bool,
+}
+
+/// Global Custom Params
+lazy_static! {
+    pub static ref CustomParams: MutStatic<CustomArgs> = MutStatic::new();
+}
+
 /// Starts a `ServiceBuilder` for a full service.
 ///
 /// Use this macro if you don't actually need the full service, but just the builder in order to

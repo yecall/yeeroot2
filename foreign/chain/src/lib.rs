@@ -29,6 +29,13 @@ use {
     //     LightComponents, ServiceFactory,
     // },
 };
+use lazy_static;
+use mut_static::MutStatic;
+use sc_service::ServiceBuilder;
+
+lazy_static! {
+    pub static ref Foreign_Chains: MutStatic<Arc<> = MutStatic::new();
+}
 
 pub trait ForeignChainConfig {
     fn get_shard_num(&self) -> u16;
@@ -37,8 +44,8 @@ pub trait ForeignChainConfig {
     fn get_shard_count(&self) -> u16;
 }
 
-pub struct ForeignChain<F: ServiceFactory> {
-    components: HashMap<u16, LightComponents<F>>,
+pub struct ForeignChain<TBl, TRtApi, TCl, TFchr, TSc, TImpQu, TFprb, TFpp, TExPool, TRpc, Backend> {
+    components: HashMap<u16, ServiceBuilder<TBl, TRtApi, TCl, TFchr, TSc, TImpQu, TFprb, TFpp, TExPool, TRpc, Backend>>,
 }
 
 impl<F> ForeignChain<F> where

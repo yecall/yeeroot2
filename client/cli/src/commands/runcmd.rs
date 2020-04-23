@@ -231,6 +231,34 @@ pub struct RunCmd {
 		conflicts_with_all = &[ "sentry" ]
 	)]
 	pub sentry_nodes: Vec<MultiaddrWithPeerId>,
+
+	/// Specify miner coinbase for block authoring
+	#[structopt(long = "coinbase", value_name = "COINBASE")]
+	pub coinbase: Option<String>,
+
+	/// Specify shard number
+	#[structopt(long = "shard-num", value_name = "SHARD_NUM")]
+	pub shard_num: u16,
+
+	/// Specify a list of bootnodes-routers
+	#[structopt(long = "bootnodes-routers", value_name = "URL")]
+	pub bootnodes_routers: Vec<String>,
+
+	/// Specify foreign p2p protocol TCP port
+	#[structopt(long = "foreign-port", value_name = "PORT")]
+	pub foreign_port: Option<u16>,
+
+	/// Whether use dev params or not
+	#[structopt(long = "dev-params")]
+	pub dev_params: bool,
+
+	/// Specify params number
+	#[structopt(long = "dev-params-num")]
+	pub dev_params_num: Option<u16>,
+
+	/// Whether mine
+	#[structopt(long = "mine")]
+	pub mine: bool,
 }
 
 impl RunCmd {

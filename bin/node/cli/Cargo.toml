@@ -43,6 +43,8 @@ log = "0.4.8"
 rand = "0.7.2"
 structopt = { version = "0.3.8", optional = true }
 tracing = "0.1.10"
+lazy_static = "1.4.0"
+mut_static = "5.0.0"
 
 # primitives
 sp-authority-discovery = { version = "2.0.0-dev",  git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
@@ -108,6 +110,19 @@ browser-utils = { package = "substrate-browser-utils", git = "https://github.com
 # yee subcommand dependencies
 yee-bootnodes-router = { package = "yee-bootnodes-router", optional = true, path = "../../../bootnodes-router" }
 yee-switch = { package = "yee-switch", optional = true, path = "../../../switch" }
+
+#parity-multiaddr = "0.8.0"
+#yee-sharding = { package = "yee-sharding", path = "../../../client/sharding" }
+#yee-foreign-network = { package = "yee-foreign-network", path = "../../../foreign/network" }
+#yee-relay = { package = "yee-foreign-relay", path = "../../../foreign/relay" }
+#yee-dev = { package = "yee-dev", path = "../../../dev" }
+#yp-hrp = { package = "yp-hrp", path = "../../../primitives/hrp" }
+#yee-pow-primitives = { package = "yee-consensus-pow-primitives", path = "../../../primitives/pow" }
+#yp-sharding = { package = "yee-sharding-primitives", path = "../../../primitives/sharding" }
+#srml-sharding = { package = "yee-srml-sharding", path = "../../../frame/sharding" }
+#srml-crfg = { package = "yee-srml-crfg", path = "../../../frame/crfg" }
+#foreign-chain = { package = "yee-foreign-chain", path = "../../../foreign/chain" }
+#yee-context = { package = "yee-context", path = "../../../client/context" }
 
 [target.'cfg(target_arch="x86_64")'.dependencies]
 node-executor = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", features = [ "wasmtime" ] }
