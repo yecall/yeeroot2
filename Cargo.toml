@@ -10,7 +10,6 @@ members = [
 #	"client/crfg",
 #	"client/finality-tracker",
 #	"client/rpc",
-	#"client/service",
 #	"client/sharding",
 #	"client/util",
 #	"client/util/merkle",

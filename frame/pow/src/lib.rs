@@ -32,7 +32,7 @@ use codec::{
 use {
     sp_inherents::{
         InherentData, InherentIdentifier,
-        MakeFatalError, ProvideInherent, RuntimeString,
+        MakeFatalError, ProvideInherent, Error
     },
     frame_support::{
         decl_module, decl_storage, decl_event,
@@ -43,21 +43,23 @@ use {
         }
     },
     sp_runtime::{
-        traits::{
-            As,
-        }
+        // traits::{
+        //     As,
+        // },
+        RuntimeString
     },
-    frame_system::ensure_inherent,
+    frame_system::ensure_none,
 };
 use sp_std::{result, prelude::*};
+use frame_support::weights::{SimpleDispatchInfo, MINIMUM_WEIGHT, Weight};
 use yee_srml_sharding::{self as sharding};
 use yee_sharding_primitives::ShardingInfo;
 use yee_sharding_primitives::utils::shard_num_for;
 
-type BalanceOf<T> = <<T as Trait>::Currency as Currency<<T as system::Trait>::AccountId>>::Balance;
-type PositiveImbalanceOf<T> = <<T as Trait>::Currency as Currency<<T as system::Trait>::AccountId>>::PositiveImbalance;
+type BalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Trait>::AccountId>>::Balance;
+type PositiveImbalanceOf<T> = <<T as Trait>::Currency as Currency<<T as frame_system::Trait>::AccountId>>::PositiveImbalance;
 
-pub trait Trait: system::Trait + sharding::Trait {
+pub trait Trait: frame_system::Trait + sharding::Trait {
     /// Type used for pow target
     type PowTarget: Parameter + Default;
 
@@ -68,7 +70,7 @@ pub trait Trait: system::Trait + sharding::Trait {
     type Reward: OnUnbalanced<PositiveImbalanceOf<Self>>;
 
     /// The overarching event type.
-    type Event: From<Event<Self>> + Into<<Self as system::Trait>::Event>;
+    type Event: From<Event<Self>> + Into<<Self as frame_system::Trait>::Event>;
 
     type Sharding: ShardingInfo<Self::ShardNum>;
 
@@ -92,39 +94,39 @@ pub struct RewardPlan<N, AccountId, Balance> {
 decl_storage! {
     trait Store for Module<T: Trait> as Pow {
         /// Genesis POW target
-        pub GenesisPowTarget get(genesis_pow_target) config(): T::PowTarget;
+        pub GenesisPowTarget get(fn genesis_pow_target) config(): T::PowTarget;
 
         /// POW target adjust period in block number
-        pub PowTargetAdj get(pow_target_adj) config(): T::BlockNumber;
+        pub PowTargetAdj get(fn pow_target_adj) config(): T::BlockNumber;
 
         /// Target block time in seconds
-        pub TargetBlockTime get(target_block_time) config(): u64;
+        pub TargetBlockTime get(fn target_block_time) config(): u64;
 
         /// Block reward
-        pub BlockReward get(block_reward) config(): BalanceOf<T>;
+        pub BlockReward get(fn block_reward) config(): BalanceOf<T>;
 
         /// Block reward latency
-        pub BlockRewardLatency get(block_reward_latency) config(): T::BlockNumber;
+        pub BlockRewardLatency get(fn block_reward_latency) config(): T::BlockNumber;
 
         /// Storage for PowInfo for current block
-        pub RewardPlans get(reward_plans): Vec<RewardPlan<T::BlockNumber, T::AccountId, BalanceOf<T>>>;
+        pub RewardPlans get(fn reward_plans): Vec<RewardPlan<T::BlockNumber, T::AccountId, BalanceOf<T>>>;
 
         /// Storage for total fee for current block
-        pub TotalFee get(total_fee): BalanceOf<T>;
+        pub TotalFee get(fn total_fee): BalanceOf<T>;
 
         /// Storage for total fee for current block
-        pub CurrentPowInfo get(current_pow_info): Option<PowInfo<T::AccountId>>;
+        pub CurrentPowInfo get(fn current_pow_info): Option<PowInfo<T::AccountId>>;
 
     }
 }
 
 decl_module! {
     pub struct Module<T: Trait> for enum Call where origin: T::Origin {
+        fn deposit_event() = default;
 
-        fn deposit_event<T>() = default;
-
+        #[weight = SimpleDispatchInfo::FixedNormal(MINIMUM_WEIGHT)]
         fn set_pow_info(origin, info: PowInfo<T::AccountId>) {
-            ensure_inherent(origin)?;
+            ensure_none(origin)?;
 
             <Self as Store>::CurrentPowInfo::mutate(|orig| {
                 *orig = Some(info);
@@ -132,11 +134,12 @@ decl_module! {
 
         }
 
-        fn on_initialize(_block_number: T::BlockNumber) {
+        fn on_initialize(_block_number: T::BlockNumber) -> Weight {
 
             <Self as Store>::TotalFee::mutate(|orig| {
                 *orig = Default::default();
             });
+            MINIMUM_WEIGHT
         }
 
         fn on_finalize(block_number: T::BlockNumber) {
@@ -186,7 +189,7 @@ decl_module! {
 }
 
 decl_event!(
-	pub enum Event<T> where Balance = BalanceOf<T>, N = <T as system::Trait>::BlockNumber, <T as system::Trait>::AccountId {
+	pub enum Event<T> where Balance = BalanceOf<T>, N = <T as frame_system::Trait>::BlockNumber, <T as frame_system::Trait>::AccountId {
 		Reward(RewardPlan<N, AccountId, Balance>),
 	}
 );
@@ -240,12 +243,12 @@ pub enum RewardCondition {
 }
 
 pub trait PowInherentData<AccountId> {
-    fn pow_inherent_data(&self) -> Result<InherentType<AccountId>, RuntimeString>;
+    fn pow_inherent_data(&self) -> Result<InherentType<AccountId>, Error>;
     fn pow_replace_inherent_data(&mut self, new: InherentType<AccountId>);
 }
 
 impl<AccountId: Codec> PowInherentData<AccountId> for InherentData {
-    fn pow_inherent_data(&self) -> Result<InherentType<AccountId>, RuntimeString> {
+    fn pow_inherent_data(&self) -> Result<InherentType<AccountId>, Error> {
         self.get_data(&INHERENT_IDENTIFIER)
             .and_then(|r| r.ok_or_else(|| "YeePow inherent data not found".into()))
     }
@@ -275,7 +278,7 @@ impl<AccountId: Codec> ProvideInherentData for InherentDataProvider<AccountId> {
     fn on_register(
         &self,
         providers: &InherentDataProviders,
-    ) -> result::Result<(), RuntimeString> {
+    ) -> result::Result<(), Error> {
         if !providers.has_provider(&srml_timestamp::INHERENT_IDENTIFIER) {
             // Add the timestamp inherent data provider, as we require it.
             providers.register_provider(srml_timestamp::InherentDataProvider)
@@ -288,12 +291,13 @@ impl<AccountId: Codec> ProvideInherentData for InherentDataProvider<AccountId> {
         &INHERENT_IDENTIFIER
     }
 
-    fn provide_inherent_data(&self, inherent_data: &mut InherentData) -> Result<(), RuntimeString> {
+    fn provide_inherent_data(&self, inherent_data: &mut InherentData) -> Result<(), Error> {
         inherent_data.put_data(INHERENT_IDENTIFIER, &self.pow_info)
     }
 
     fn error_to_string(&self, error: &[u8]) -> Option<String> {
-        RuntimeString::decode(&mut &error[..]).map(Into::into)
+        // RuntimeString::decode(&mut &error[..]).map(Into::into)
+        None
     }
 }
 

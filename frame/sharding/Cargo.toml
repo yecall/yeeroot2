@@ -13,6 +13,7 @@ sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.
 frame-support = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
 frame-system = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
 sp-inherents = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
+sp-arithmetic = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
 #sp-std = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
 
 #parity-codec = { version = "3.5", default-features = false, features = ["derive"] }

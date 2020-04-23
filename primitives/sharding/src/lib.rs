@@ -22,7 +22,7 @@
 pub mod utils;
 
 use {
-    s_client::decl_runtime_apis,
+    sp_api::decl_runtime_apis,
     sp_runtime::traits::{NumberFor, Block},
 };
 

@@ -30,7 +30,7 @@ use {
 /// `ConsensusEngineId` of Yee POW consensus.
 pub const YEE_POW_ENGINE_ID: ConsensusEngineId = [b'Y', b'e', b'e', b'!'];
 
-pub type PowTarget = primitives::U256;
+pub type PowTarget = sp_core::U256;
 
 decl_runtime_apis! {
     pub trait YeePOWApi {

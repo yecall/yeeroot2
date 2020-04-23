@@ -97,6 +97,7 @@ node-primitives = { version = "2.0.0-dev", git = "https://github.com/yeeco/subst
 node-executor = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 
 # CLI-specific dependencies
+sc-cli = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 yc-cli = { optional = true, path = "../../../client/cli"}
 frame-benchmarking-cli = { version = "2.0.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 node-transaction-factory = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
@@ -150,11 +151,12 @@ frame-benchmarking-cli = { version = "2.0.0-dev", optional = true, git = "https:
 #yeeroot-build-script-utils = { path = "../../../utils/build-script-utils", optional = true }
 substrate-build-script-utils = { version = "2.0.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 
-#[build-dependencies.sc-cli]
-#version = "0.8.0-dev"
-#package = "sc-cli"
-#git = "https://github.com/yeeco/substrate.git",  branch = "yee"
-#optional = true
+[build-dependencies.sc-cli]
+version = "0.8.0-dev"
+package = "sc-cli"
+git = "https://github.com/yeeco/substrate.git"
+branch = "yee"
+optional = true
 
 [features]
 default = [ "cli" ]
@@ -167,6 +169,7 @@ cli = [
 	"node-executor/wasmi-errno",
 	"node-inspect",
 	"node-transaction-factory",
+	"sc-cli",
 	"yc-cli",
 	"frame-benchmarking-cli",
 	"sc-service/db",

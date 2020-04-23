@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with YeeChain.  If not, see <https://www.gnu.org/licenses/>.
 
-pub mod identify_specialization;
+//pub mod identify_specialization;
 use codec::{Encode, Decode};
 use sp_runtime::generic::DigestItem;
 
@@ -33,7 +33,7 @@ pub trait ShardingDigestItem<ShardNum>: Sized {
 	fn as_sharding_info(&self) -> Option<(ShardNum, ShardNum)>;
 }
 
-impl<ShardNum, Hash, AuthorityId, SealSignature> ShardingDigestItem<ShardNum> for DigestItem<Hash, AuthorityId, SealSignature> where
+impl<ShardNum, Hash> ShardingDigestItem<ShardNum> for DigestItem<Hash> where
 	ShardNum: Decode + Encode,
 {
 	fn sharding_info(num: ShardNum, cnt: ShardNum) -> Self {
@@ -62,7 +62,7 @@ pub trait ScaleOutPhaseDigestItem<BlockNumber, ShardNum>: Sized {
 	fn as_scale_out_phase(&self) -> Option<ScaleOutPhase<BlockNumber, ShardNum>>;
 }
 
-impl<BlockNumber, ShardNum, Hash, AuthorityId, SealSignature> ScaleOutPhaseDigestItem<BlockNumber, ShardNum> for DigestItem<Hash, AuthorityId, SealSignature> where
+impl<BlockNumber, ShardNum, Hash> ScaleOutPhaseDigestItem<BlockNumber, ShardNum> for DigestItem<Hash> where
 	ShardNum: Decode + Encode,
 	BlockNumber: Decode + Encode,
 {

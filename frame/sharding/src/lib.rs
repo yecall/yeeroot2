@@ -27,26 +27,29 @@ use {
 use {
     sp_inherents::{
         InherentData, InherentIdentifier,
-        MakeFatalError, ProvideInherent, RuntimeString,
+        MakeFatalError, ProvideInherent, Error
     },
     sp_runtime::{
-        codec::{
-            Codec, Decode, Encode,
-        },
         traits::{
-            Member, SimpleArithmetic,
-            MaybeDisplay, MaybeSerializeDebug,
+            Member,
+            MaybeDisplay
         },
+        RuntimeString
     },
     frame_support::{
         decl_module, decl_storage,
         storage::StorageValue,
     },
-    frame_system::{self, ensure_inherent},
+    frame_system::{self, ensure_none},
     sharding_primitives::ShardingInfo,
 };
+use sp_arithmetic::traits::BaseArithmetic;
+use codec::{
+    Codec, Decode, Encode,EncodeLike
+};
+use frame_support::weights::{SimpleDispatchInfo, MINIMUM_WEIGHT};
 
-pub type Log<T> = RawLog<<T as Trait>::ShardNum, <T as system::Trait>::BlockNumber>;
+pub type Log<T> = RawLog<<T as Trait>::ShardNum, <T as frame_system::Trait>::BlockNumber>;
 
 pub const INHERENT_IDENTIFIER: InherentIdentifier = *b"YeeShard";
 
@@ -69,14 +72,14 @@ pub struct ScaleOut<N> {
 }
 
 pub trait YeeShardInherentData {
-    fn yee_shard_inherent_data(&self) -> Result<InherentType, RuntimeString>;
+    fn yee_shard_inherent_data(&self) -> Result<InherentType, Error>;
     fn yee_shard_replace_inherent_data(&mut self, new: InherentType);
 }
 
 impl YeeShardInherentData for InherentData {
-    fn yee_shard_inherent_data(&self) -> Result<InherentType, RuntimeString> {
+    fn yee_shard_inherent_data(&self) -> Result<InherentType, Error> {
         self.get_data(&INHERENT_IDENTIFIER)
-            .and_then(|r| r.ok_or_else(|| "YeeShard inherent data not found".into()))
+            .and_then(|r| r.ok_or_else(|| RuntimeString::from("YeeShard inherent data not found").into()))
     }
 
     fn yee_shard_replace_inherent_data(&mut self, new: InherentType) {
@@ -104,12 +107,13 @@ impl ProvideInherentData for InherentDataProvider {
         &INHERENT_IDENTIFIER
     }
 
-    fn provide_inherent_data(&self, inherent_data: &mut InherentData) -> Result<(), RuntimeString> {
+    fn provide_inherent_data(&self, inherent_data: &mut InherentData) -> Result<(), Error> {
         inherent_data.put_data(INHERENT_IDENTIFIER, &self.shard_info)
     }
 
     fn error_to_string(&self, error: &[u8]) -> Option<String> {
-        RuntimeString::decode(&mut &error[..]).map(Into::into)
+        // RuntimeString::decode(&mut &error[..]).map(Into::into)
+        None
     }
 }
 
@@ -122,11 +126,11 @@ pub enum RawLog<ShardNum, BlockNumber> {
     ScaleOutPhase(ScaleOutPhase<BlockNumber, ShardNum>),
 }
 
-pub trait Trait: system::Trait {
+pub trait Trait: frame_system::Trait {
     /// Type for shard number
-    type ShardNum: Member + MaybeSerializeDebug + Default + Copy + MaybeDisplay + SimpleArithmetic + Codec;
+    type ShardNum: Member + Default + Copy + BaseArithmetic + MaybeDisplay + Codec + EncodeLike;
     /// Type for all log entries of this module.
-    type Log: From<Log<Self>> + Into<system::DigestItemOf<Self>>;
+    type Log: From<Log<Self>> + Into<frame_system::DigestItemOf<Self>>;
 }
 
 /*
@@ -170,31 +174,32 @@ pub enum ScaleOutPhase<BlockNumber, ShardNum>{
 decl_storage! {
     trait Store for Module<T: Trait> as Sharding {
         /// Total sharding count used in genesis block
-        pub GenesisShardingCount get(genesis_sharding_count) config(): T::ShardNum;
+        pub GenesisShardingCount get(fn genesis_sharding_count) config(): T::ShardNum;
 
         /// Total sharding count used in genesis block
-        pub ScaleOutObserveBlocks get(scale_out_observe_blocks) config(): T::BlockNumber;
+        pub ScaleOutObserveBlocks get(fn scale_out_observe_blocks) config(): T::BlockNumber;
 
         /// Storage for ShardInfo used for current block
-        pub CurrentShardInfo get(current_shard_info): Option<ShardInfo<T::ShardNum>>;
+        pub CurrentShardInfo get(fn current_shard_info): Option<ShardInfo<T::ShardNum>>;
 
         /// Storage for ScaleOutPhase used for current block
-        pub CurrentScaleOutPhase get(current_scale_out_phase): Option<ScaleOutPhase<T::BlockNumber, T::ShardNum>>;
+        pub CurrentScaleOutPhase get(fn current_scale_out_phase): Option<ScaleOutPhase<T::BlockNumber, T::ShardNum>>;
 
     }
 }
 
 decl_module! {
     pub struct Module<T: Trait> for enum Call where origin: T::Origin {
+        #[weight = SimpleDispatchInfo::FixedNormal(MINIMUM_WEIGHT)]
         fn set_shard_info(origin, info: ShardInfo<T::ShardNum>) {
-            ensure_inherent(origin)?;
+            ensure_none(origin)?;
 
             let info_clone = info.clone();
             <Self as Store>::CurrentShardInfo::mutate(|orig| {
                 *orig = Some(info_clone);
             });
 
-            let block_number = <system::Module<T>>::block_number();
+            let block_number = <frame_system::Module<T>>::block_number();
             let scale_out_observe_blocks = Self::scale_out_observe_blocks();
 
             let current_scale_out_phase = Self::current_scale_out_phase();
@@ -290,7 +295,7 @@ decl_module! {
 impl<T: Trait> Module<T> {
     /// Deposit one of this module's logs.
     fn deposit_log(log: Log<T>) {
-        <system::Module<T>>::deposit_log(<T as Trait>::Log::from(log).into());
+        <frame_system::Module<T>>::deposit_log(<T as Trait>::Log::from(log).into());
     }
 }
 
