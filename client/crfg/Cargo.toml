@@ -33,7 +33,7 @@ grandpa = { package = "finality-grandpa", version = "0.6", features = ["derive-c
 
 #parity-codec = { version = "3.2", features = ["derive"] }
 #runtime_primitives = { package = "sr-primitives", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
-#consensus_common = { package = "substrate-consensus-common", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
+#sp_consensus = { package = "substrate-consensus-common", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
 #substrate-primitives = { git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
 #substrate-telemetry = { git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
 #client = { package = "substrate-client", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0"}
@@ -42,7 +42,7 @@ grandpa = { package = "finality-grandpa", version = "0.6", features = ["derive-c
 #service = {package = "substrate-service", git = "https://github.com/yeeco/substrate.git",  branch = "yee", optional = true, branch = "yee-v1.0" }
 
 [dev-dependencies]
-#consensus_common = { package = "substrate-consensus-common", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
+#sp_consensus = { package = "substrate-consensus-common", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
 #sc-network = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", features = ["test-helpers"] }
 sp-keyring = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 #test_client = { package = "substrate-test-client", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }

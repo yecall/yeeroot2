@@ -97,8 +97,8 @@ impl<B, I, JM, AccountId, AuthorityId> DefaultWorker<B, I, JM, AccountId, Author
 
 impl<B, I, JM, AccountId, AuthorityId> PowWorker<JM> for DefaultWorker<B, I, JM, AccountId, AuthorityId> where
     B: Block,
-    DigestFor<B>: Digest,
-    I: BlockImport<B, Error=consensus_common::Error> + Send + Sync + 'static,
+    //DigestFor<B>: Digest,
+    I: BlockImport<B, Error=sp_consensus::Error> + Send + Sync + 'static,
     DigestItemFor<B>: CompatibleDigestItem<B, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<B>, u16>,
     JM: JobManager<Job=DefaultJob<B, AuthorityId>>,
     AccountId: Codec + Send + Sync + Clone + 'static,
@@ -106,7 +106,7 @@ impl<B, I, JM, AccountId, AuthorityId> PowWorker<JM> for DefaultWorker<B, I, JM,
     AuthorityId: Decode + Encode + Clone + 'static,
     B::Hash: From<H256> + Ord,
 {
-    type Error = consensus_common::Error;
+    type Error = sp_consensus::Error;
     type OnJob = Box<dyn Future<Item=DefaultJob<B, AuthorityId>, Error=Self::Error> + Send>;
     type OnWork = Box<dyn Future<Item=(), Error=Self::Error> + Send>;
 
@@ -114,7 +114,7 @@ impl<B, I, JM, AccountId, AuthorityId> PowWorker<JM> for DefaultWorker<B, I, JM,
         self.stop_sign.clone()
     }
 
-    fn on_start(&self) -> Result<(), consensus_common::Error> {
+    fn on_start(&self) -> Result<(), sp_consensus::Error> {
         super::register_inherent_data_provider(&self.inherent_data_providers, self.shard_extra.coinbase.clone())
     }
 
@@ -131,7 +131,7 @@ impl<B, I, JM, AccountId, AuthorityId> PowWorker<JM> for DefaultWorker<B, I, JM,
 
         let shard_extra = self.shard_extra.clone();
 
-        let on_proposal_block = move |job: DefaultJob<B, AuthorityId>| -> Result<(), consensus_common::Error> {
+        let on_proposal_block = move |job: DefaultJob<B, AuthorityId>| -> Result<(), sp_consensus::Error> {
             let header = job.header;
             let body = job.body;
             let header_num = header.number().clone();
@@ -190,8 +190,8 @@ impl<B, I, JM, AccountId, AuthorityId> PowWorker<JM> for DefaultWorker<B, I, JM,
     }
 }
 
-pub fn to_common_error<E: Debug>(e: E) -> consensus_common::Error {
-    consensus_common::ErrorKind::ClientImport(format!("{:?}", e)).into()
+pub fn to_common_error<E: Debug>(e: E) -> sp_consensus::Error {
+    sp_consensus::Error::ClientImport(format!("{:?}", e)).into()
 }
 
 pub fn start_worker<W, SO, OnExit, JM>(
@@ -199,7 +199,7 @@ pub fn start_worker<W, SO, OnExit, JM>(
     sync_oracle: SO,
     on_exit: OnExit,
     mine: bool,
-) -> Result<impl Future<Item=(), Error=()>, consensus_common::Error> where
+) -> Result<impl Future<Item=(), Error=()>, sp_consensus::Error> where
     W: PowWorker<JM>,
     SO: SyncOracle,
     OnExit: Future<Item=(), Error=()>,

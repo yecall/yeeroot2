@@ -74,13 +74,13 @@ pub fn start_pow<B, P, C, I, E, AccountId, SO, OnExit>(
     inherent_data_providers: InherentDataProviders,
     job_manager: Arc<RwLock<Option<Arc<dyn JobManager<Job=DefaultJob<B, P::Public>>>>>>,
     params: Params<AccountId, B>,
-) -> Result<impl Future<Item=(), Error=()>, consensus_common::Error> where
+) -> Result<impl Future<Item=(), Error=()>, sp_consensus::Error> where
     B: Block,
     P: Pair + 'static,
     <P as Pair>::Public: Clone + Debug + Decode + Encode + Send + Sync,
     C: ChainHead<B> + HeaderBackend<B> + ProvideRuntimeApi + 'static,
     <C as ProvideRuntimeApi>::Api: YeePOWApi<B>,
-    I: BlockImport<B, Error=consensus_common::Error> + Send + Sync + 'static,
+    I: BlockImport<B, Error=sp_consensus::Error> + Send + Sync + 'static,
     E: Environment<B> + Send + Sync + 'static,
     <E as Environment<B>>::Error: Debug + Send,
     <<<E as Environment<B>>::Proposer as Proposer<B>>::Create as IntoFuture>::Future: Send + 'static,
@@ -151,7 +151,7 @@ pub fn import_queue<F, C, AccountId, AuthorityId>(
     foreign_chains: Arc<RwLock<Option<ForeignChain<F>>>>,
     shard_extra: ShardExtra<AccountId>,
     context: Context<F::Block>,
-) -> Result<PowImportQueue<F::Block>, consensus_common::Error> where
+) -> Result<PowImportQueue<F::Block>, sp_consensus::Error> where
     H256: From<<F::Block as Block>::Hash>,
     F: ServiceFactory + Send + Sync,
     <F as ServiceFactory>::Configuration: ForeignChainConfig + Clone + Send + Sync,
@@ -184,7 +184,7 @@ pub fn import_queue<F, C, AccountId, AuthorityId>(
 pub fn register_inherent_data_provider<AccountId: 'static + Codec + Send + Sync>(
     inherent_data_providers: &InherentDataProviders,
     coinbase: AccountId,
-) -> Result<(), consensus_common::Error> where
+) -> Result<(), sp_consensus::Error> where
     AccountId : Codec + Send + Sync + 'static, {
 
     if !inherent_data_providers.has_provider(&yee_srml_pow::INHERENT_IDENTIFIER) {
@@ -195,6 +195,6 @@ pub fn register_inherent_data_provider<AccountId: 'static + Codec + Send + Sync>
     }
 }
 
-fn inherent_to_common_error(err: RuntimeString) -> consensus_common::Error {
-    consensus_common::ErrorKind::InherentData(err.into()).into()
+fn inherent_to_common_error(err: RuntimeString) -> sp_consensus::Error {
+    sp_consensus::Error::InherentData(err.into()).into()
 }

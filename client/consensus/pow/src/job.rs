@@ -87,10 +87,10 @@ pub trait JobManager: Send + Sync
 	type Job : Job;
 
 	/// get job with unknown proof
-	fn get_job(&self) -> Box<dyn Future<Item=Self::Job, Error=consensus_common::Error> + Send>;
+	fn get_job(&self) -> Box<dyn Future<Item=Self::Job, Error=sp_consensus::Error> + Send>;
 
 	/// submit job
-	fn submit_job(&self, job: Self::Job) -> Box<dyn Future<Item=<Self::Job as Job>::Hash, Error=consensus_common::Error> + Send>;
+	fn submit_job(&self, job: Self::Job) -> Box<dyn Future<Item=<Self::Job as Job>::Hash, Error=sp_consensus::Error> + Send>;
 
 }
 
@@ -115,7 +115,7 @@ impl<B, C, E, AccountId, AuthorityId, I> DefaultJobManager<B, C, E, AccountId, A
 	<<E as Environment<B>>::Proposer as Proposer<B>>::Create: IntoFuture<Item=B>,
 	<<<E as Environment<B>>::Proposer as Proposer<B>>::Create as IntoFuture>::Future: Send + 'static,
 	AuthorityId: Decode + Encode + Clone,
-	I: BlockImport<B, Error=consensus_common::Error> + Send + Sync + 'static,
+	I: BlockImport<B, Error=sp_consensus::Error> + Send + Sync + 'static,
 {
 	pub fn new(
 		client: Arc<C>,
@@ -152,12 +152,12 @@ impl<B, C, E, AccountId, AuthorityId, I> JobManager for DefaultJobManager<B, C, 
 	      <<<E as Environment<B>>::Proposer as Proposer<B>>::Create as IntoFuture>::Future: Send + 'static,
 	      AuthorityId: Decode + Encode + Clone + Send + Sync + 'static,
 	      AccountId: Decode + Encode + Clone + Send + Sync + 'static,
-	      I: BlockImport<B, Error=consensus_common::Error> + Send + Sync + 'static,
+	      I: BlockImport<B, Error=sp_consensus::Error> + Send + Sync + 'static,
           <B as Block>::Hash: From<H256> + Ord,
 {
 	type Job = DefaultJob<B, AuthorityId>;
 
-	fn get_job(&self) -> Box<dyn Future<Item=Self::Job, Error=consensus_common::Error> + Send> {
+	fn get_job(&self) -> Box<dyn Future<Item=Self::Job, Error=sp_consensus::Error> + Send> {
 		let get_data = || {
 			let chain_head = self.client.best_block_header()
 				.map_err(to_common_error)?;
@@ -218,11 +218,11 @@ impl<B, C, E, AccountId, AuthorityId, I> JobManager for DefaultJobManager<B, C, 
 			.map_err(to_common_error).and_then(build_job))
 	}
 
-	fn submit_job(&self, job: Self::Job) -> Box<dyn Future<Item=<Self::Job as Job>::Hash, Error=consensus_common::Error> + Send>{
+	fn submit_job(&self, job: Self::Job) -> Box<dyn Future<Item=<Self::Job as Job>::Hash, Error=sp_consensus::Error> + Send>{
 
 		let block_import = self.block_import.clone();
 
-		let check_job = move |job: Self::Job| -> Result<<Self::Job as Job>::Hash, consensus_common::Error>{
+		let check_job = move |job: Self::Job| -> Result<<Self::Job as Job>::Hash, sp_consensus::Error>{
 			let number = &job.header.number().clone();
 			let (post_digest, hash) = check_work_proof(&job.header, &job.digest_item)?;
 
@@ -249,7 +249,7 @@ impl<B, C, E, AccountId, AuthorityId, I> JobManager for DefaultJobManager<B, C, 
 	}
 }
 
-fn timestamp_now() -> Result<u64, consensus_common::Error> {
+fn timestamp_now() -> Result<u64, sp_consensus::Error> {
 	Ok(SystemTime::now().duration_since(UNIX_EPOCH)
 		.map_err(to_common_error)?.as_millis() as u64)
 }

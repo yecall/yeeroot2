@@ -85,7 +85,7 @@ for CrfgBlockImport<B, E, Block, RA, PRA> where
 {
     type Error = ConsensusError;
 
-    fn on_start(&self, link: &::consensus_common::import_queue::Link<Block>) {
+    fn on_start(&self, link: &::sp_consensus::import_queue::Link<Block>) {
         let chain_info = match self.inner.info() {
             Ok(info) => info.chain,
             _ => return,

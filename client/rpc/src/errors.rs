@@ -22,7 +22,7 @@ use sp_consensus;
 
 error_chain! {
 	links {
-		Consensus(consensus_common::error::Error, consensus_common::error::ErrorKind) #[doc = "Consensus error"];
+		Consensus(sp_consensus::error::Error, sp_consensus::error::ErrorKind) #[doc = "Consensus error"];
 	}
 	errors {
 		/// Not implemented yet

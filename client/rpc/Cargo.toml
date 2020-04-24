@@ -19,7 +19,7 @@ sp-consensus = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrat
 #client = { package = "substrate-client", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
 #network = { package = "substrate-network", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
 #transaction_pool = { package = "substrate-transaction-pool", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
-#consensus_common = { package = "substrate-consensus-common", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
+#sp_consensus = { package = "substrate-consensus-common", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
 tokio = "0.1"
 pubsub = { package = "jsonrpc-pubsub", version = "10.0.1" }
 jsonrpc-derive = "10.0.2"

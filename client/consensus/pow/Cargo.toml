@@ -8,7 +8,7 @@ edition = "2018"
 futures = "0.1"
 log = "0.4"
 parking_lot = "0.10.0"
-#tokio = "0.1"
+tokio = "0.1"
 serde = { version = "1.0", optional = true, features = ["derive"] }
 pow_primitives = { package = "yee-consensus-pow-primitives", path = "../../../primitives/pow" }
 sc-client-api = { package = "sc-client-api", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }

@@ -1,9 +1,10 @@
+
 #![warn(unused_extern_crates)]
 
 //! Service implementation. Specialized wrapper over substrate service.
 
 use std::sync::Arc;
-
+use log::info;
 use sc_consensus_babe;
 use sc_client::{self, LongestChain};
 use grandpa::{self, FinalityProofProvider as GrandpaFinalityProofProvider, StorageAndProofProvider};
@@ -28,9 +29,6 @@ use sc_offchain::OffchainWorkers;
 //
 // mod restarter;
 // use restarter::{start_restarter};
-
-#[macro_use]
-extern crate lazy_static;
 
 use mut_static::MutStatic;
 

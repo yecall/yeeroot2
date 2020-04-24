@@ -761,7 +761,7 @@ fn committer_communication<Block: BlockT<Hash=H256>, B, E, N, RA>(
 fn register_finality_tracker_inherent_data_provider<B, E, Block: BlockT<Hash=H256>, RA>(
 	client: Arc<Client<B, E, Block, RA>>,
 	inherent_data_providers: &InherentDataProviders,
-) -> Result<(), consensus_common::Error> where
+) -> Result<(), sp_consensus::Error> where
 	B: Backend<Block, Blake2Hasher> + 'static,
 	E: CallExecutor<Block, Blake2Hasher> + Send + Sync + 'static,
 	RA: Send + Sync + 'static,
@@ -780,7 +780,7 @@ fn register_finality_tracker_inherent_data_provider<B, E, Block: BlockT<Hash=H25
 					},
 				}
 			}))
-			.map_err(|err| consensus_common::ErrorKind::InherentData(err.into()).into())
+			.map_err(|err| sp_consensus::Error::InherentData(err.into()).into())
 	} else {
 		Ok(())
 	}
@@ -981,7 +981,7 @@ pub fn run_crfg<B, E, Block: BlockT<Hash=H256>, N, RA>(
 pub fn register_crfg_inherent_data_provider(
 	inherent_data_providers: &InherentDataProviders,
 	key: AuthorityId,
-) -> Result<(), consensus_common::Error> {
+) -> Result<(), sp_consensus::Error> {
 	//consensus::register_inherent_data_provider(inherent_data_providers)?;
 	if !inherent_data_providers.has_provider(&srml_crfg::INHERENT_IDENTIFIER) {
 		inherent_data_providers.register_provider(srml_crfg::InherentDataProvider::new(key))
@@ -991,6 +991,6 @@ pub fn register_crfg_inherent_data_provider(
 	}
 }
 
-pub fn inherent_to_common_error(err: RuntimeString) -> consensus_common::Error {
-	consensus_common::ErrorKind::InherentData(err.into()).into()
+pub fn inherent_to_common_error(err: RuntimeString) -> sp_consensus::Error {
+	sp_consensus::Error::InherentData(err.into()).into()
 }

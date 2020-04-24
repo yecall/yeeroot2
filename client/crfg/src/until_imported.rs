@@ -413,7 +413,7 @@ mod tests {
 	use tokio::runtime::current_thread::Runtime;
 	use tokio::timer::Delay;
 	use test_client::runtime::{Block, Hash, Header};
-	use consensus_common::BlockOrigin;
+	use sp_consensus::BlockOrigin;
 	use client::BlockImportNotification;
 	use futures::future::Either;
 	use futures::sync::mpsc;

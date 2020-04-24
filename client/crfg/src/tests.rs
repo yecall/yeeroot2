@@ -40,7 +40,7 @@ use sp_runtime::{
 // 	runtime_api::{},
 // };
 // use test_client::{self, runtime::BlockNumber};
-// use consensus_common::import_queue::{SharedBlockImport, SharedJustificationImport};
+// use sp_consensus::import_queue::{SharedBlockImport, SharedJustificationImport};
 
 use sp_core::{NativeOrEncoded, ExecutionContext};
 

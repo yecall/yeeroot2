@@ -30,7 +30,7 @@ use basic_authorship::ProposerFactory;
 use jsonrpc_core::BoxFuture;
 use jsonrpc_core::futures::future::{self, Future, IntoFuture};
 use sp_runtime::traits::{Block as BlockT, ProvideRuntimeApi, BlakeTwo256, Header};
-use consensus_common::{Environment, Proposer};
+use sp_consensus::{Environment, Proposer};
 use crate::errors;
 use client::{ChainHead, blockchain::HeaderBackend};
 use tokio::timer::Interval;

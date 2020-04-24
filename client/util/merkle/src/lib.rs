@@ -42,7 +42,7 @@ pub type ProofHash<H> = <H as HashT>::Output;
 impl<H: HashT> Algorithm<ProofHash<H>> for ProofAlgorithm<H> {
     #[inline]
     fn hash(&mut self) -> ProofHash<H> {
-        H::hash(&self.0)
+        <H as HashT>::hash(&self.0)
     }
 
     #[inline]

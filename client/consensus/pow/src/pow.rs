@@ -217,16 +217,16 @@ pub fn check_work_proof<B, AuthorityId>(header: &B::Header, seal: &PowSeal<B, Au
     }
 }
 
-fn to_common_error<E: Debug>(e: E) -> consensus_common::Error {
-    consensus_common::ErrorKind::ClientImport(format!("{:?}", e)).into()
+fn to_common_error<E: Debug>(e: E) -> sp_consensus::Error {
+    sp_consensus::Error::ClientImport(format!("{:?}", e)).into()
 }
 
 /// calculate pow target
 pub fn calc_pow_target<B, C, AuthorityId>(client: Arc<C>, header: &<B as Block>::Header, timestamp: u64, context: &Context<B>)
-    -> Result<PowTarget, consensus_common::Error> where
+    -> Result<PowTarget, sp_consensus::Error> where
     B: Block,
     NumberFor<B>: SimpleArithmetic,
-    DigestFor<B>: Digest,
+    //DigestFor<B>: Digest,
     DigestItemFor<B>: super::CompatibleDigestItem<B, AuthorityId>,
     C: HeaderBackend<B>,
     AuthorityId: Encode + Decode + Clone,
@@ -238,7 +238,7 @@ pub fn calc_pow_target<B, C, AuthorityId>(client: Arc<C>, header: &<B as Block>:
     let curr_header = client.header(curr_block_id)
         .expect("parent block must exist for sealer; qed")
         .expect("parent block must exist for sealer; qed");
-    let one = <NumberFor<B> as As<u64>>::sa(1u64);
+    let one: NumberFor<B> = 1u64.into();
     // not on adjustment, reuse parent pow target
     if next_num == one {
         return Ok(genesis_pow_target)
@@ -300,21 +300,21 @@ pub fn gen_extrinsic_proof<B>(header: &B::Header, body: &[B::Extrinsic]) -> (H25
         let bytes = extrinsic.encode();
         let mut bytes = bytes.as_slice();
         if let Some(ex) = Decode::decode(&mut bytes) {
-            let ex: UncheckedExtrinsic = ex;
-            if ex.signature.is_some() {
-                let hash = Blake2Hasher::hash(&mut bytes);
-                if let Call::Balances(BalancesCall::transfer(to, _)) = ex.function {
-                    if let Some(num) = shard_num_for(&to, shard_count) {
-                        if num != shard_num {
-                            if let Some(list) = extrinsic_shard.get_mut(&num) {
-                                list.push(hash);
-                            } else {
-                                extrinsic_shard.insert(num, vec![hash]);
-                            }
-                        }
-                    }
-                }
-            }
+            // let ex: UncheckedExtrinsic = ex;
+            // if ex.signature.is_some() {
+            //     let hash = Blake2Hasher::hash(&mut bytes);
+            //     if let Call::Balances(BalancesCall::transfer(to, _)) = ex.function {
+            //         if let Some(num) = shard_num_for(&to, shard_count) {
+            //             if num != shard_num {
+            //                 if let Some(list) = extrinsic_shard.get_mut(&num) {
+            //                     list.push(hash);
+            //                 } else {
+            //                     extrinsic_shard.insert(num, vec![hash]);
+            //                 }
+            //             }
+            //         }
+            //     }
+            // }
         }
     }
 
