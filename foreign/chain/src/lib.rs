@@ -29,7 +29,10 @@ use {
     //     LightComponents, ServiceFactory,
     // },
 };
-use lazy_static;
+
+#[macro_use]
+extern crate lazy_static;
+
 use mut_static::MutStatic;
 use sc_service::ServiceBuilder;
 

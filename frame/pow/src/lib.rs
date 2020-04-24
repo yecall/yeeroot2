@@ -279,9 +279,9 @@ impl<AccountId: Codec> ProvideInherentData for InherentDataProvider<AccountId> {
         &self,
         providers: &InherentDataProviders,
     ) -> result::Result<(), Error> {
-        if !providers.has_provider(&srml_timestamp::INHERENT_IDENTIFIER) {
+        if !providers.has_provider(&sp_timestamp::INHERENT_IDENTIFIER) {
             // Add the timestamp inherent data provider, as we require it.
-            providers.register_provider(srml_timestamp::InherentDataProvider)
+            providers.register_provider(sp_timestamp::InherentDataProvider)
         } else {
             Ok(())
         }

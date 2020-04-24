@@ -10,6 +10,8 @@ codec = { package = "parity-scale-codec", version = "1.3.0", features = ["derive
 sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
 frame-support = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
 frame-system = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
+pallet-timestamp = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
+sp-timestamp = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
 sp-inherents = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
 sp-std = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default-features = false }
 

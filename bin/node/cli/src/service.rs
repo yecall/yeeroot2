@@ -30,6 +30,11 @@ use sc_offchain::OffchainWorkers;
 // mod restarter;
 // use restarter::{start_restarter};
 
+#[macro_use]
+extern crate lazy_static;
+
+use mut_static::MutStatic;
+
 pub struct CustomArgs {
 	/// coinbase
 	pub coinbase: Option<String>,
