@@ -50,7 +50,7 @@ use {
     },
     frame_system::ensure_none,
 };
-use sp_std::{result, prelude::*};
+use sp_std::{result, prelude::*, convert::TryInto};
 use frame_support::weights::{SimpleDispatchInfo, MINIMUM_WEIGHT, Weight};
 use yee_srml_sharding::{self as sharding};
 use yee_sharding_primitives::ShardingInfo;
@@ -149,7 +149,7 @@ decl_module! {
                 // let shard_count = <BalanceOf<T> as As<u64>>::sa(
                 //     T::Sharding::get_shard_count().as_() as u64
                 // );
-                let shard_count = T::Sharding::get_shard_count().try_into().expect("qed");
+                let shard_count = T::Sharding::get_shard_count().try_into().unwrap();
 
                 let reward_condition = info.reward_condition;
 
@@ -199,8 +199,8 @@ impl<T: Trait> Module<T> {
 
     fn reward(reward_plan: &RewardPlan<T::BlockNumber, T::AccountId, BalanceOf<T>>, current_coinbase: T::AccountId, reward_condition: RewardCondition){
 
-        let shard_num: u16 = T::Sharding::get_curr_shard().expect("qed").try_into().expect("qed");
-        let shard_count: u16 = T::Sharding::get_shard_count().try_into().expect("qed");
+        let shard_num: u16 = T::Sharding::get_curr_shard().expect("qed").try_into().unwrap();
+        let shard_count: u16 = T::Sharding::get_shard_count().try_into().unwrap();
         let coinbase_shard_num = shard_num_for(&reward_plan.coinbase, shard_count).expect("qed");
 
         //when scaling out, only one splitted shard will perform rewarding
