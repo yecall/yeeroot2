@@ -37,8 +37,10 @@ use {
 	},
 	sp_inherents::InherentDataProviders,
 	sp_runtime::{
-		traits::{Block, ProvideRuntimeApi, DigestItemFor, NumberFor, Digest, Header},
+		traits::{Block, DigestItemFor, NumberFor},
+		generic::Digest
 	},
+	sp_api::ProvideRuntimeApi,
 	sc_client_api::backend::TransactionFor,
 };
 use super::worker::to_common_error;
@@ -230,7 +232,7 @@ impl<B, C, E, AccountId, AuthorityId, I> JobManager for DefaultJobManager<B, C, 
 				origin: BlockOrigin::Own,
 				header: job.header,
 				justification: None,
-				proof: Some(job.xts_proof),
+				//proof: Some(job.xts_proof),
 				post_digests: vec![post_digest],
 				body: Some(job.body),
 				finalized: false,

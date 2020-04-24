@@ -29,13 +29,12 @@ use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
 use sp_consensus::{BlockImport, Environment, Proposer, SyncOracle};
 use sp_consensus::import_queue::{
-    BasicQueue,
-    SharedBlockImport, SharedJustificationImport,
+    BasicQueue
 };
 use sp_inherents::InherentDataProviders;
 use sp_core::crypto::Pair;
 use codec::{Decode, Encode, Codec};
-use foreign_chain::{ForeignChain, ForeignChainConfig};
+//use foreign_chain::{ForeignChain, ForeignChainConfig};
 use yee_sharding_primitives::ShardingAPI;
 use  pow_primitives::YeePOWApi;
 

@@ -36,7 +36,7 @@ use std::hash::Hasher;
 use merkle_light::hash::Algorithm;
 use merkle_light::proof::Proof;
 use merkle_light::merkle::MerkleTree;
-use yee_runtime::{Call, BalancesCall, UncheckedExtrinsic};
+//use yee_runtime::{Call, BalancesCall, UncheckedExtrinsic};
 use yee_sharding_primitives::utils::shard_num_for;
 use sp_core::{Blake2Hasher, H256};
 use hash_db::Hasher as BlakeHasher;
@@ -114,7 +114,7 @@ pub struct ProofMulti<B: Block> {
 pub fn check_work_proof<B, AuthorityId>(header: &B::Header, seal: &PowSeal<B, AuthorityId>) -> Result<(DigestItemFor<B>, B::Hash), String> where
     B: Block,
     AuthorityId: Decode + Encode + Clone,
-    DigestFor<B>: Digest,
+    //DigestFor<B>: Digest,
     DigestItemFor<B>: CompatibleDigestItem<B, AuthorityId> + ShardingDigestItem<u16>,
 {
     match seal.work_proof{
@@ -286,7 +286,7 @@ pub fn calc_pow_target<B, C, AuthorityId>(client: Arc<C>, header: &<B as Block>:
 pub fn gen_extrinsic_proof<B>(header: &B::Header, body: &[B::Extrinsic]) -> (H256, ExtrinsicProof)
     where
         B: Block,
-        <<<B as Block>::Header as Header>::Digest as Digest>::Item: yee_sharding::ShardingDigestItem<u16>,
+        //<<<B as Block>::Header as Header>::Digest as Digest>::Item: yee_sharding::ShardingDigestItem<u16>,
         <B as Block>::Hash: From<H256> + Ord,
 {
     let shard_info = header.digest().logs().iter().rev()

@@ -9,6 +9,6 @@ edition = "2018"
 [dependencies]
 codec = { package = "parity-scale-codec", version = "1.3.0", features = ["derive"] }
 sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
-merkle-light = { package = "merkle_light", git = "https://github.com/yeeco/merkle_light.git", branch = "yee" }
+merkle-light = { package = "merkle_light", git = "https://github.com/yeeco/merkle_light.git", branch = "yee-2.0" }
 sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 log = "0.4"

@@ -116,7 +116,7 @@ impl MultiLayerProof {
 
     /// Tries to parse `bytes` into MultiLayerProof.
     pub fn from_bytes(bytes: &[u8]) -> Result<Self, ()> {
-        Decode::decode(&mut &bytes[..]).ok_or(())
+        Decode::decode(&mut &bytes[..]).ok().ok_or(())
     }
 
     /// Layer two merkle root.

@@ -32,20 +32,20 @@ use sp_runtime::{
     generic::Digest,
     traits::{
         Block, Header,
-        AuthorityIdFor, DigestItemFor,
+        DigestItemFor,
         NumberFor,
         BlakeTwo256,
-        ProvideRuntimeApi,
     },
 };
+use sp_api::ProvideRuntimeApi;
 use sp_inherents::InherentDataProviders;
 use codec::{Encode, Decode};
 use sp_blockchain::HeaderBackend;
 use sc_client_api::BlockchainEvents;
 use {
     yee_sharding_primitives::ShardingAPI,
-    util::relay_decode::RelayTransfer,
-    foreign_chain::{ForeignChain, ForeignChainConfig},
+    //util::relay_decode::RelayTransfer,
+    //foreign_chain::{ForeignChain, ForeignChainConfig},
     pow_primitives::YeePOWApi,
 };
 use super::CompatibleDigestItem;

@@ -75,6 +75,9 @@ pallet-transaction-payment = { version = "2.0.0-dev", default-features = false, 
 pallet-transaction-payment-rpc-runtime-api = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 pallet-vesting = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 
+yee-pow = { package = "yee-srml-pow", path = "../../../frame/pow", default-features = false }
+yee-sharding = { package = "yee-srml-sharding", path = "../../../frame/sharding", default-features = false }
+
 [build-dependencies]
 wasm-builder-runner = { version = "1.0.5", package = "substrate-wasm-builder-runner", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 

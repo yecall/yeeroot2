@@ -48,8 +48,8 @@ impl<ShardNum, Hash> ShardingDigestItem<ShardNum> for DigestItem<Hash> where
 				&& data[0] == GENERATED_MODULE_LOG_PREFIX
 				&& data[1] == GENERATED_SHARDING_PREFIX => {
 				let input = &mut &data[2..];
-				let num = Decode::decode(input)?;
-				let cnt = Decode::decode(input)?;
+				let num = Decode::decode(input).ok()?;
+				let cnt = Decode::decode(input).ok()?;
 				Some((num, cnt))
 			}
 			_ => None
@@ -77,7 +77,7 @@ impl<BlockNumber, ShardNum, Hash> ScaleOutPhaseDigestItem<BlockNumber, ShardNum>
 				&& data[0] == GENERATED_MODULE_LOG_PREFIX
 				&& data[1] == GENERATED_SCALE_OUT_PHASE_PREFIX => {
 				let input = &mut &data[2..];
-				let data = Decode::decode(input)?;
+				let data = Decode::decode(input).ok()?;
 				Some(data)
 			}
 			_ => None
