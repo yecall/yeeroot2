@@ -33,12 +33,12 @@ use {
 #[macro_use]
 extern crate lazy_static;
 
-use mut_static::MutStatic;
-use sc_service::ServiceBuilder;
-
-lazy_static! {
-    pub static ref Foreign_Chains: MutStatic<Arc<> = MutStatic::new();
-}
+// use mut_static::MutStatic;
+// use sc_service::ServiceBuilder;
+//
+// lazy_static! {
+//     pub static ref Foreign_Chains: MutStatic<Arc<> = MutStatic::new();
+// }
 
 pub trait ForeignChainConfig {
     fn get_shard_num(&self) -> u16;

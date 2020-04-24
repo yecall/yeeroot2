@@ -146,9 +146,10 @@ decl_module! {
 
             if let Some(info) = Self::current_pow_info(){
 
-                let shard_count = <BalanceOf<T> as As<u64>>::sa(
-                    T::Sharding::get_shard_count().as_() as u64
-                );
+                // let shard_count = <BalanceOf<T> as As<u64>>::sa(
+                //     T::Sharding::get_shard_count().as_() as u64
+                // );
+                let shard_count = T::Sharding::get_shard_count().into();
 
                 let reward_condition = info.reward_condition;
 
