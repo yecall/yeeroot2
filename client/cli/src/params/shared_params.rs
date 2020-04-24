@@ -17,9 +17,7 @@
 use sc_service::config::DatabaseConfig;
 use std::path::PathBuf;
 use structopt::StructOpt;
-
-/// default sub directory to store database
-const DEFAULT_DB_CONFIG_PATH: &'static str = "db";
+use crate::arg_enums::Database;
 
 /// Shared parameters used by all `CoreParams`.
 #[derive(Debug, StructOpt, Clone)]
@@ -34,10 +32,10 @@ pub struct SharedParams {
 
 	/// Specify custom base path.
 	#[structopt(
-		long = "base-path",
-		short = "d",
-		value_name = "PATH",
-		parse(from_os_str)
+	long = "base-path",
+	short = "d",
+	value_name = "PATH",
+	parse(from_os_str)
 	)]
 	pub base_path: Option<PathBuf>,
 
@@ -79,10 +77,19 @@ impl SharedParams {
 		&self,
 		base_path: &PathBuf,
 		cache_size: usize,
+		database: Database,
 	) -> DatabaseConfig {
-		DatabaseConfig::Path {
-			path: base_path.join(DEFAULT_DB_CONFIG_PATH),
-			cache_size,
+		match database {
+			Database::RocksDb => DatabaseConfig::RocksDb {
+				path: base_path.join("db"),
+				cache_size,
+			},
+			Database::SubDb => DatabaseConfig::SubDb {
+				path: base_path.join("subdb"),
+			},
+			Database::ParityDb => DatabaseConfig::ParityDb {
+				path: base_path.join("paritydb"),
+			},
 		}
 	}
 

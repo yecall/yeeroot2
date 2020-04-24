@@ -2,9 +2,10 @@ use crate::{chain_spec, factory_impl::FactoryState, service, Cli, FactoryCmd, Su
 use node_executor::Executor;
 use node_runtime::{Block, RuntimeApi};
 use node_transaction_factory::RuntimeAdapter;
-use yc_cli::{YeerootCli, CliConfiguration, ImportParams, Result, SharedParams};
+//use yc_cli::{YeerootCli, CliConfiguration, ImportParams, Result, SharedParams};
+use sc_cli::{SubstrateCli, CliConfiguration, ImportParams, Result, SharedParams};
 use sc_service::Configuration;
-use yc_cli::{BootnodesRouterCmd, SwitchCmd};
+//use yc_cli::{BootnodesRouterCmd, SwitchCmd};
 
 impl YeerootCli for Cli {
     fn impl_name() -> &'static str {
@@ -49,7 +50,7 @@ impl YeerootCli for Cli {
 
 /// Parse command line arguments into service configuration.
 pub fn run() -> Result<()> {
-    yc_cli::reset_signal_pipe_handler()?;
+    sc_cli::reset_signal_pipe_handler()?;
 
     let cli = Cli::from_args();
 

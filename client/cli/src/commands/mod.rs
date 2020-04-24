@@ -1,3 +1,18 @@
+// Copyright 2018-2020 Parity Technologies (UK) Ltd.
+// This file is part of Substrate.
+
+// Substrate is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// Substrate is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
 
 mod build_spec_cmd;
 mod check_block_cmd;
@@ -15,10 +30,7 @@ pub use crate::commands::purge_chain_cmd::PurgeChainCmd;
 pub use crate::commands::revert_cmd::RevertCmd;
 pub use crate::commands::runcmd::RunCmd;
 use std::fmt::Debug;
-use std::path::PathBuf;
 use structopt::StructOpt;
-use crate::CliConfiguration;
-use crate::{SharedParams, ImportParams};
 
 /// All core commands that are provided by default.
 ///
@@ -52,13 +64,13 @@ pub enum Subcommand {
 /// # Example
 ///
 /// ```
-/// # #[macro_use] extern crate yc_cli;
+/// # #[macro_use] extern crate sc_cli;
 ///
 /// # struct EmptyVariant {}
 ///
-///	# impl yc_cli::CliConfiguration for EmptyVariant {
-///	#     fn shared_params(&self) -> &yc_cli::SharedParams { unimplemented!() }
-///	#     fn chain_id(&self, _: bool) -> yc_cli::Result<String> { Ok("test-chain-id".to_string()) }
+///	# impl sc_cli::CliConfiguration for EmptyVariant {
+///	#     fn shared_params(&self) -> &sc_cli::SharedParams { unimplemented!() }
+///	#     fn chain_id(&self, _: bool) -> sc_cli::Result<String> { Ok("test-chain-id".to_string()) }
 ///	# }
 ///
 /// # fn main() {
@@ -71,7 +83,7 @@ pub enum Subcommand {
 ///     Subcommand => Variant1, Variant2
 /// );
 ///
-/// # use yc_cli::CliConfiguration;
+/// # use sc_cli::CliConfiguration;
 /// # assert_eq!(Subcommand::Variant1(EmptyVariant {}).chain_id(false).unwrap(), "test-chain-id");
 ///
 /// # }
@@ -161,7 +173,7 @@ macro_rules! substrate_cli_subcommands {
 				&self,
 				chain_spec: &::std::boxed::Box<dyn ::sc_service::ChainSpec>,
 				is_dev: bool,
-				net_config_dir: &::std::path::PathBuf,
+				net_config_dir: ::std::path::PathBuf,
 				client_id: &str,
 				node_name: &str,
 				node_key: ::sc_service::config::NodeKeyConfig,
@@ -192,9 +204,16 @@ macro_rules! substrate_cli_subcommands {
 				&self,
 				base_path: &::std::path::PathBuf,
 				cache_size: usize,
+				database: $crate::Database,
 			) -> $crate::Result<::sc_service::config::DatabaseConfig> {
 				match self {
-					$($enum::$variant(cmd) => cmd.database_config(base_path, cache_size)),*
+					$($enum::$variant(cmd) => cmd.database_config(base_path, cache_size, database)),*
+				}
+			}
+
+			fn database(&self) -> $crate::Result<::std::option::Option<$crate::Database>> {
+				match self {
+					$($enum::$variant(cmd) => cmd.database()),*
 				}
 			}
 
@@ -223,7 +242,7 @@ macro_rules! substrate_cli_subcommands {
 				}
 			}
 
-			fn init<C: $crate::YeerootCli>(&self) -> $crate::Result<()> {
+			fn init<C: $crate::SubstrateCli>(&self) -> $crate::Result<()> {
 				match self {
 					$($enum::$variant(cmd) => cmd.init::<C>()),*
 				}
@@ -257,6 +276,12 @@ macro_rules! substrate_cli_subcommands {
 			fn rpc_ws(&self) -> $crate::Result<::std::option::Option<::std::net::SocketAddr>> {
 				match self {
 					$($enum::$variant(cmd) => cmd.rpc_ws()),*
+				}
+			}
+
+			fn unsafe_rpc_expose(&self) -> $crate::Result<bool> {
+				match self {
+					$($enum::$variant(cmd) => cmd.unsafe_rpc_expose()),*
 				}
 			}
 

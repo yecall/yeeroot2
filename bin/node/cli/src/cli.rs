@@ -1,5 +1,5 @@
 
-use yc_cli::{ImportParams, RunCmd, SharedParams};
+use sc_cli::{ImportParams, RunCmd, SharedParams};
 use structopt::StructOpt;
 
 /// An overarching CLI command definition.
@@ -18,7 +18,7 @@ pub struct Cli {
 pub enum Subcommand {
 	/// A set of base subcommands handled by `sc_cli`.
 	#[structopt(flatten)]
-	Base(yc_cli::Subcommand),
+	Base(sc_cli::Subcommand),
 
 	/// The custom inspect subcommmand for decoding blocks and extrinsics.
 	#[structopt(
@@ -31,13 +31,13 @@ pub enum Subcommand {
 	#[structopt(name = "benchmark", about = "Benchmark runtime pallets.")]
 	Benchmark(frame_benchmarking_cli::BenchmarkCmd),
 
-	/// The custom bootnodes-router sub-command
-	#[structopt(name = "bootnodes-router", about = "Run yee in `bootnodes-router` mode.")]
-	BootnodesRouter(yc_cli::BootnodesRouterCmd),
+	// /// The custom bootnodes-router sub-command
+	// #[structopt(name = "bootnodes-router", about = "Run yee in `bootnodes-router` mode.")]
+	// BootnodesRouter(yc_cli::BootnodesRouterCmd),
 
-	/// The custom switch sub-command
-	#[structopt(name = "switch", about = "Run yee in `switch` mode.")]
-	Switch(yc_cli::SwitchCmd),
+	// /// The custom switch sub-command
+	// #[structopt(name = "switch", about = "Run yee in `switch` mode.")]
+	// Switch(yc_cli::SwitchCmd),
 }
 
 /// The `factory` command used to generate transactions.

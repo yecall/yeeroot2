@@ -98,7 +98,7 @@ node-executor = { version = "2.0.0-dev", git = "https://github.com/yeeco/substra
 
 # CLI-specific dependencies
 sc-cli = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
-yc-cli = { optional = true, path = "../../../client/cli"}
+#yc-cli = { optional = true, path = "../../../client/cli"}
 frame-benchmarking-cli = { version = "2.0.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 node-transaction-factory = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 node-inspect = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
@@ -128,6 +128,7 @@ browser-utils = { package = "substrate-browser-utils", git = "https://github.com
 [target.'cfg(target_arch="x86_64")'.dependencies]
 node-executor = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee", features = [ "wasmtime" ] }
 sc-cli = { version = "0.8.0-dev", optional = true, git = "https://github.com/yeeco/substrate.git",  branch = "yee", features = [ "wasmtime" ] }
+#yc-cli = { path = "../../../client/cli", optional = true, features = [ "wasmtime" ] }
 sc-service = { version = "0.8.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git",  branch = "yee", features = [ "wasmtime" ] }
 
 [dev-dependencies]
@@ -170,7 +171,7 @@ cli = [
 	"node-inspect",
 	"node-transaction-factory",
 	"sc-cli",
-	"yc-cli",
+	#"yc-cli",
 	"frame-benchmarking-cli",
 	"sc-service/db",
 	"structopt",

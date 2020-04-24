@@ -67,14 +67,14 @@ impl ExportBlocksCmd {
 		config: Configuration,
 		builder: B,
 	) -> error::Result<()>
-	where
-		B: FnOnce(Configuration) -> Result<BC, sc_service::error::Error>,
-		BC: ServiceBuilderCommand<Block = BB> + Unpin,
-		BB: sp_runtime::traits::Block + Debug,
-		<<<BB as BlockT>::Header as HeaderT>::Number as std::str::FromStr>::Err: std::fmt::Debug,
-		<BB as BlockT>::Hash: std::str::FromStr,
+		where
+			B: FnOnce(Configuration) -> Result<BC, sc_service::error::Error>,
+			BC: ServiceBuilderCommand<Block = BB> + Unpin,
+			BB: sp_runtime::traits::Block + Debug,
+			<<<BB as BlockT>::Header as HeaderT>::Number as std::str::FromStr>::Err: std::fmt::Debug,
+			<BB as BlockT>::Hash: std::str::FromStr,
 	{
-		if let DatabaseConfig::Path { ref path, .. } = &config.database {
+		if let DatabaseConfig::RocksDb { ref path, .. } = &config.database {
 			info!("DB path: {}", path.display());
 		}
 

@@ -1,6 +1,6 @@
 
 #![warn(missing_docs)]
 
-fn main() -> yc_cli::Result<()> {
+fn main() -> sc_cli::Result<()> {
     node_cli::run()
 }

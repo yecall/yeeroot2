@@ -4,7 +4,7 @@ members = [
 	"bin/node/runtime",
 #	"bootnodes-router",
 	"client",
-	"client/cli",
+	#"client/cli",
 	"client/consensus/pow",
 #	"client/context",
 #	"client/crfg",
