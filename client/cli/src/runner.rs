@@ -15,8 +15,8 @@ use sp_utils::metrics::{TOKIO_THREADS_ALIVE, TOKIO_THREADS_TOTAL};
 use std::fmt::Debug;
 use std::marker::PhantomData;
 use std::sync::Arc;
-use yee_bootnodes_router::Cmd as BRExeCmd;
-use yee_switch::Cmd as SExeCmd;
+// use yee_bootnodes_router::Cmd as BRExeCmd;
+// use yee_switch::Cmd as SExeCmd;
 
 #[cfg(target_family = "unix")]
 async fn main<F, E>(func: F) -> std::result::Result<(), Box<dyn std::error::Error>>
@@ -174,20 +174,22 @@ impl<C: YeerootCli> Runner<C> {
 	}
 
 	pub fn run_bootnodes_router(self, subcommand: &BootnodesRouterCmd) -> Result<()> {
-		let cmd = &BRExeCmd{
-			port: subcommand.port,
-			base_path: subcommand.shared_params.base_path.clone(),
-			log: subcommand.shared_params.log.clone(),
-			dev_params: subcommand.dev_params,
-			dev_shard_count: subcommand.dev_shard_count
-		};
-		match cmd.run(){
-			Err(e) => {
-				info!("{}", e);
-				Err(crate::Error::Other("unknown error".to_string()))
-			},
-			Ok(_) => Ok(())
-		}
+		// let cmd = &BRExeCmd{
+		// 	port: subcommand.port,
+		// 	base_path: subcommand.shared_params.base_path.clone(),
+		// 	log: subcommand.shared_params.log.clone(),
+		// 	dev_params: subcommand.dev_params,
+		// 	dev_shard_count: subcommand.dev_shard_count
+		// };
+		// match cmd.run(){
+		// 	Err(e) => {
+		// 		info!("{}", e);
+		// 		Err(crate::Error::Other("unknown error".to_string()))
+		// 	},
+		// 	Ok(_) => Ok(())
+		// }
+
+		Ok(())
 	}
 
 	pub fn run_switch(self, subcommand: &SwitchCmd) -> Result<()> {
