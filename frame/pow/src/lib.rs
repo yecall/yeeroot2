@@ -149,7 +149,7 @@ decl_module! {
                 // let shard_count = <BalanceOf<T> as As<u64>>::sa(
                 //     T::Sharding::get_shard_count().as_() as u64
                 // );
-                let shard_count = T::Sharding::get_shard_count().into();
+                let shard_count = (T::Sharding::get_shard_count() as u16).into();
 
                 let reward_condition = info.reward_condition;
 
@@ -199,8 +199,8 @@ impl<T: Trait> Module<T> {
 
     fn reward(reward_plan: &RewardPlan<T::BlockNumber, T::AccountId, BalanceOf<T>>, current_coinbase: T::AccountId, reward_condition: RewardCondition){
 
-        let shard_num = T::Sharding::get_curr_shard().expect("qed").as_() as u16;
-        let shard_count = T::Sharding::get_shard_count().as_() as u16;
+        let shard_num = T::Sharding::get_curr_shard().expect("qed") as u16;
+        let shard_count = T::Sharding::get_shard_count() as u16;
         let coinbase_shard_num = shard_num_for(&reward_plan.coinbase, shard_count).expect("qed");
 
         //when scaling out, only one splitted shard will perform rewarding

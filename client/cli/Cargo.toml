@@ -40,8 +40,8 @@ sc-tracing = { package = "sc-tracing", git = "https://github.com/yeeco/substrate
 chrono = "0.4.10"
 parity-util-mem = { version = "0.6.0", default-features = false, features = ["primitive-types"] }
 # custom command dependencies
-yee-bootnodes-router = { package = "yee-bootnodes-router", path = "../../bootnodes-router"}
-yee-switch = { package = "yee-switch", path = "../../switch" }
+#yee-bootnodes-router = { package = "yee-bootnodes-router", path = "../../bootnodes-router"}
+#yee-switch = { package = "yee-switch", path = "../../switch" }
 
 [target.'cfg(not(target_os = "unknown"))'.dependencies]
 rpassword = "4.0.1"

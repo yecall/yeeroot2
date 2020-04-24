@@ -28,7 +28,7 @@ members = [
 #	"frame/sharding",
 #	"frame/storage",
 #	"frame/tracker",
-	"primitives/core",
+	#"primitives/core",
 	"primitives/hrp",
 #	"primitives/sharding",
 	"primitives/srml",

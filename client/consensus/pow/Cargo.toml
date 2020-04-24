@@ -24,7 +24,7 @@ codec = { package = "parity-scale-codec", version = "1.3.0", features = ["derive
 merkle_light = { git = "https://github.com/yeeco/merkle_light.git", branch = "yee" }
 yee-sharding = { package = "yee-sharding", path = "../../sharding" }
 yee-sharding-primitives = { package = "yee-sharding-primitives", path = "../../../primitives/sharding" }
-foreign_chain = { package = "yee-foreign-chain", path = "../../../foreign/chain" }
+#foreign_chain = { package = "yee-foreign-chain", path = "../../../foreign/chain" }
 #yc-client = { path = "../../" }
 
 yee-srml-pow = { path = "../../../frame/pow" }

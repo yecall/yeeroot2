@@ -109,8 +109,8 @@ wasm-bindgen-futures = { version = "0.4.7", optional = true }
 browser-utils = { package = "substrate-browser-utils", git = "https://github.com/yeeco/substrate.git",  branch = "yee", optional = true, version = "0.8.0-dev"}
 
 # yee subcommand dependencies
-yee-bootnodes-router = { package = "yee-bootnodes-router", optional = true, path = "../../../bootnodes-router" }
-yee-switch = { package = "yee-switch", optional = true, path = "../../../switch" }
+#yee-bootnodes-router = { package = "yee-bootnodes-router", optional = true, path = "../../../bootnodes-router" }
+#yee-switch = { package = "yee-switch", optional = true, path = "../../../switch" }
 
 #parity-multiaddr = "0.8.0"
 #yee-sharding = { package = "yee-sharding", path = "../../../client/sharding" }
@@ -175,8 +175,8 @@ cli = [
 	"sc-service/db",
 	"structopt",
 	"substrate-build-script-utils",
-    "yee-bootnodes-router",
-    "yee-switch",
+    #"yee-bootnodes-router",
+    #"yee-switch",
 ]
 runtime-benchmarks = [
 	"node-runtime/runtime-benchmarks",
