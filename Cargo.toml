@@ -36,7 +36,7 @@ members = [
 #	"switch/mining2",
 #	"switch/rpc",
 #	"switch/rpc-servers",
-	"utils/build-script-utils",
+	#"utils/build-script-utils",
 	"utils/serde-hex",
 	"utils/wasm-builder"
 ]
