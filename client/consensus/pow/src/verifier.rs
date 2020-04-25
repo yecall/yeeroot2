@@ -19,11 +19,13 @@
 
 use {
     std::{marker::PhantomData, sync::Arc},
+    std::borrow::Cow,
+    std::any::Any,
 };
 use sp_consensus::{
     BlockOrigin, BlockImportParams,
     ForkChoiceStrategy,
-    import_queue::Verifier,
+    import_queue::{Verifier, CacheKeyId},
 };
 use sp_runtime::{
     Justification,
@@ -71,6 +73,10 @@ pub struct PowVerifier<B, C, AccountId, AuthorityId> {
     pub context: Context<B>,
 }
 
+
+/// Intermediate key for POW engine.
+pub static INTERMEDIATE_KEY: &[u8] = b"yee-pow";
+
 #[forbid(deprecated)]
 impl<B, C, AccountId, AuthorityId> Verifier<B> for PowVerifier<B, C, AccountId, AuthorityId> where
     DigestItemFor<B>: CompatibleDigestItem<B, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<B>, u16>,
@@ -94,7 +100,7 @@ impl<B, C, AccountId, AuthorityId> Verifier<B> for PowVerifier<B, C, AccountId, 
         justification: Option<Justification>,
         // proof: Option<Proof>,
         body: Option<Vec<<B as Block>::Extrinsic>>,
-    ) -> Result<(ImportBlock<B>, Option<Vec<AuthorityIdFor<B>>>), String> {
+    ) -> Result<(BlockImportParams<B, ()>, Option<Vec<(CacheKeyId, Vec<u8>)>>), String> {
         let number = header.number().clone();
         let hash = header.hash();
 
@@ -104,40 +110,52 @@ impl<B, C, AccountId, AuthorityId> Verifier<B> for PowVerifier<B, C, AccountId, 
                 error!("{}: {}", Colour::Red.paint("check header failed"), e);
                 e
             })?;
-        let proof_root = seal.as_pow_seal().ok_or_else(|| {
-            let e = format!("Header {:?} not sealed", hash);
-            error!("{}: {}", Colour::Red.paint("get proof root failed"), e);
-            e
-        })?.relay_proof;
-        // check proof.
-        self.check_relay_merkle_proof(proof.clone(), proof_root)
-            .map_err(|e| {
-                error!("{}, number:{}, hash:{}", Colour::Red.paint("Proof validate failed"), number, hash.clone());
-                e
-            })?;
-
-        // let mut res_proof = proof;
-        // // check body if not none
-        // match self.check_body(&body, &pre_header, proof_root).map_err(|e| {
-        //     error!("{}: {}", Colour::Red.paint("check body failed"), e);
+        // let proof_root = seal.as_pow_seal().ok_or_else(|| {
+        //     let e = format!("Header {:?} not sealed", hash);
+        //     error!("{}: {}", Colour::Red.paint("get proof root failed"), e);
         //     e
-        // })? {
-        //     Some(p) => res_proof = Some(p),
-        //     None => {}
-        // }
+        // })?.relay_proof;
+        // // check proof.
+        // self.check_relay_merkle_proof(proof.clone(), proof_root)
+        //     .map_err(|e| {
+        //         error!("{}, number:{}, hash:{}", Colour::Red.paint("Proof validate failed"), number, hash.clone());
+        //         e
+        //     })?;
+        //
+        // // let mut res_proof = proof;
+        // // // check body if not none
+        // // match self.check_body(&body, &pre_header, proof_root).map_err(|e| {
+        // //     error!("{}: {}", Colour::Red.paint("check body failed"), e);
+        // //     e
+        // // })? {
+        // //     Some(p) => res_proof = Some(p),
+        // //     None => {}
+        // // }
+        //
+        // let import_block = ImportBlock {
+        //     origin,
+        //     header: pre_header,
+        //     justification,
+        //     //proof: res_proof,
+        //     post_digests: vec![seal],
+        //     body,
+        //     finalized: false,
+        //     auxiliary: Vec::new(),
+        //     fork_choice: ForkChoiceStrategy::LongestChain,
+        // };
+        // Ok((import_block, None))
 
-        let import_block = ImportBlock {
-            origin,
-            header: pre_header,
-            justification,
-            //proof: res_proof,
-            post_digests: vec![seal],
-            body,
-            finalized: false,
-            auxiliary: Vec::new(),
-            fork_choice: ForkChoiceStrategy::LongestChain,
-        };
-        Ok((import_block, None))
+        let mut import_block = BlockImportParams::new(origin, pre_header);
+        //import_block.post_digests.push(verified_info.seal);
+        import_block.body = body;
+        import_block.justification = justification;
+        import_block.intermediates.insert(
+            Cow::from(INTERMEDIATE_KEY),
+            Box::new(BabeIntermediate::<Block> { epoch_descriptor }) as Box<dyn Any>,
+        );
+        import_block.post_hash = Some(hash);
+
+        Ok((import_block, Default::default()))
     }
 }
 
