@@ -143,19 +143,17 @@ pub struct ShardExtra<AccountId> {
 }
 
 /// Start import queue for POW consensus
-pub fn import_queue<F, C, AccountId, AuthorityId>(
-    block_import: SharedBlockImport<F::Block>,
-    justification_import: Option<SharedJustificationImport<F::Block>>,
+pub fn import_queue<B, C, AccountId, AuthorityId>(
+    block_import: SharedBlockImport<B>,
+    justification_import: Option<SharedJustificationImport<B>>,
     client: Arc<C>,
     inherent_data_providers: InherentDataProviders,
     foreign_chains: Arc<RwLock<Option<ForeignChain<F>>>>,
     shard_extra: ShardExtra<AccountId>,
-    context: Context<F::Block>,
-) -> Result<PowImportQueue<F::Block>, sp_consensus::Error> where
-    H256: From<<F::Block as Block>::Hash>,
-    F: ServiceFactory + Send + Sync,
-    <F as ServiceFactory>::Configuration: ForeignChainConfig + Clone + Send + Sync,
-    DigestItemFor<F::Block>: CompatibleDigestItem<F::Block, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<F::Block>, u16>,
+    context: Context<B>,
+) -> Result<PowImportQueue<B>, sp_consensus::Error> where
+    H256: From<<B as Block>::Hash>,
+    DigestItemFor<B>: CompatibleDigestItem<B, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<B>, u16>,
     C: ProvideRuntimeApi + 'static + Send + Sync,
     C: HeaderBackend<Block>,
     C: BlockBody<Block>,
@@ -164,7 +162,7 @@ pub fn import_queue<F, C, AccountId, AuthorityId>(
     <C as ProvideRuntimeApi>::Api: ShardingAPI<Block> + YeePOWApi<Block>,
     AccountId: Codec + Send + Sync + Clone + Default + 'static,
     AuthorityId: Decode + Encode + Clone + Send + Sync + 'static,
-    substrate_service::config::Configuration<<F as ServiceFactory>::Configuration, <F as ServiceFactory>::Genesis> : Clone,
+    //substrate_service::config::Configuration<<F as ServiceFactory>::Configuration, <F as ServiceFactory>::Genesis> : Clone,
 {
     register_inherent_data_provider(&inherent_data_providers, shard_extra.coinbase.clone())?;
 
@@ -178,7 +176,7 @@ pub fn import_queue<F, C, AccountId, AuthorityId>(
             context,
         }
     );
-    Ok(BasicQueue::<F::Block>::new(verifier, block_import, justification_import))
+    Ok(BasicQueue::<B>::new(verifier, block_import, justification_import))
 }
 
 pub fn register_inherent_data_provider<AccountId: 'static + Codec + Send + Sync>(

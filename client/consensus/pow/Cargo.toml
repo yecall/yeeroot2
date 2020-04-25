@@ -14,6 +14,7 @@ pow_primitives = { package = "yee-consensus-pow-primitives", path = "../../../pr
 sc-client-api = { package = "sc-client-api", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 sp-runtime = { package = "sp-runtime", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 sp-blockchain = { package = "sp-blockchain", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-arithmetic = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 sp-consensus = { package = "sp-consensus", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 sp-inherents = { package = "sp-inherents", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 sp-core = { package = "sp-core", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }

@@ -26,6 +26,7 @@ use sp_runtime::{
     generic::{BlockId, Digest},
     Proof as ExtrinsicProof,
 };
+use sp_arithmetic::traits::BaseArithmetic;
 use sp_blockchain::HeaderBackend;
 use pow_primitives::{PowTarget, YeePOWApi};
 use crate::CompatibleDigestItem;
@@ -225,7 +226,7 @@ fn to_common_error<E: Debug>(e: E) -> sp_consensus::Error {
 pub fn calc_pow_target<B, C, AuthorityId>(client: Arc<C>, header: &<B as Block>::Header, timestamp: u64, context: &Context<B>)
     -> Result<PowTarget, sp_consensus::Error> where
     B: Block,
-    NumberFor<B>: SimpleArithmetic,
+    NumberFor<B>: BaseArithmetic,
     //DigestFor<B>: Digest,
     DigestItemFor<B>: super::CompatibleDigestItem<B, AuthorityId>,
     C: HeaderBackend<B>,

@@ -23,6 +23,7 @@ use sp_runtime::traits::Block as BlockT;
 use node_executor::NativeExecutor;
 use sc_network::NetworkService;
 use sc_offchain::OffchainWorkers;
+use sp_core::ed25519;
 
 // mod foreign;
 // use foreign::{start_foreign_network};

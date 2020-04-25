@@ -62,39 +62,39 @@ use sp_core::H256;
 use yee_context::Context;
 
 /// Verifier for POW blocks.
-pub struct PowVerifier< C, AccountId, AuthorityId> {
+pub struct PowVerifier<B, C, AccountId, AuthorityId> {
     pub client: Arc<C>,
     pub inherent_data_providers: InherentDataProviders,
-    pub foreign_chains: Arc<RwLock<Option<ForeignChain<F>>>>,
+    //pub foreign_chains: Arc<RwLock<Option<ForeignChain<F>>>>,
     pub phantom: PhantomData<AuthorityId>,
     pub shard_extra: ShardExtra<AccountId>,
-    pub context: Context<F::Block>,
+    pub context: Context<B>,
 }
 
 #[forbid(deprecated)]
-impl<F, C, AccountId, AuthorityId> Verifier<F::Block> for PowVerifier<F, C, AccountId, AuthorityId> where
-    DigestItemFor<F::Block>: CompatibleDigestItem<F::Block, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<F::Block>, u16>,
+impl<B, C, AccountId, AuthorityId> Verifier<B> for PowVerifier<B, C, AccountId, AuthorityId> where
+    DigestItemFor<B>: CompatibleDigestItem<B, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<B>, u16>,
     C: Send + Sync,
     AccountId: Decode + Encode + Clone + Send + Sync + Default,
     AuthorityId: Decode + Encode + Clone + Send + Sync,
     //F: ServiceFactory + Send + Sync,
     //<F as ServiceFactory>::Configuration: ForeignChainConfig + Clone + Send + Sync,
-    C: HeaderBackend<F::Block> + ProvideRuntimeApi,
+    C: HeaderBackend<B> + ProvideRuntimeApi,
     //C: BlockBody<<F as ServiceFactory>::Block>,
     //C: BlockchainEvents<<F as ServiceFactory>::Block>,
     //C: ChainHead<<F as ServiceFactory>::Block>,
     //<C as ProvideRuntimeApi>::Api: ShardingAPI<<F as ServiceFactory>::Block> + YeePOWApi<<F as ServiceFactory>::Block>,
-    H256: From<<F::Block as Block>::Hash>,
+    H256: From<<B as Block>::Hash>,
     //substrate_service::config::Configuration<<F as ServiceFactory>::Configuration, <F as ServiceFactory>::Genesis>: Clone,
 {
     fn verify(
         &self,
         origin: BlockOrigin,
-        header: <F::Block as Block>::Header,
+        header: <B as Block>::Header,
         justification: Option<Justification>,
         // proof: Option<Proof>,
-        body: Option<Vec<<F::Block as Block>::Extrinsic>>,
-    ) -> Result<(ImportBlock<F::Block>, Option<Vec<AuthorityIdFor<F::Block>>>), String> {
+        body: Option<Vec<<B as Block>::Extrinsic>>,
+    ) -> Result<(ImportBlock<B>, Option<Vec<AuthorityIdFor<B>>>), String> {
         let number = header.number().clone();
         let hash = header.hash();
 
@@ -141,8 +141,8 @@ impl<F, C, AccountId, AuthorityId> Verifier<F::Block> for PowVerifier<F, C, Acco
     }
 }
 
-impl<F, C, AccountId, AuthorityId> PowVerifier<F, C, AccountId, AuthorityId> where
-    DigestItemFor<F::Block>: CompatibleDigestItem<F::Block, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<F::Block>, u16>,
+impl<B, C, AccountId, AuthorityId> PowVerifier<B, C, AccountId, AuthorityId> where
+    DigestItemFor<B>: CompatibleDigestItem<B, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<B>, u16>,
     C: Send + Sync,
     AccountId: Decode + Encode + Clone + Send + Sync + Default,
     AuthorityId: Decode + Encode + Clone + Send + Sync,
@@ -152,15 +152,15 @@ impl<F, C, AccountId, AuthorityId> PowVerifier<F, C, AccountId, AuthorityId> whe
     //C: BlockBody<<F as ServiceFactory>::Block>,
     //C: BlockchainEvents<<F as ServiceFactory>::Block>,
     // C: ChainHead<<F as ServiceFactory>::Block>,
-    //H256: From<<F::Block as Block>::Hash>,
+    //H256: From<<B as Block>::Hash>,
     //substrate_service::config::Configuration<<F as ServiceFactory>::Configuration, <F as ServiceFactory>::Genesis>: Clone,
 {
     /// check body
-    fn check_body(&self, body: &Option<Vec<<F::Block as Block>::Extrinsic>>, pre_header: &<F::Block as Block>::Header, proof_root: H256) -> Result<Option<Proof>, String> {
+    fn check_body(&self, body: &Option<Vec<<B as Block>::Extrinsic>>, pre_header: &<B as Block>::Header, proof_root: H256) -> Result<Option<Proof>, String> {
         match body.as_ref() {
             Some(exs) => {
                 // check proof root
-                let (root, proof) = gen_extrinsic_proof::<F::Block>(&pre_header, &exs);
+                let (root, proof) = gen_extrinsic_proof::<B>(&pre_header, &exs);
                 if root != proof_root {
                     return Err("Proof is invalid.".to_string());
                 }
@@ -202,7 +202,7 @@ impl<F, C, AccountId, AuthorityId> PowVerifier<F, C, AccountId, AuthorityId> whe
     }
 
     /// check relay transfer
-    fn check_relay_transfer(&self, logs: &[DigestItemFor<F::Block>], exs: &[<F::Block as Block>::Extrinsic]) -> Result<(), String> {
+    fn check_relay_transfer(&self, logs: &[DigestItemFor<B>], exs: &[<B as Block>::Extrinsic]) -> Result<(), String> {
         let err_str = "Block contains invalid extrinsic.";
         let shard_info: Option<(u16, u16)> = logs.iter().rev()
             .filter_map(ShardingDigestItem::as_sharding_info)
@@ -212,34 +212,34 @@ impl<F, C, AccountId, AuthorityId> PowVerifier<F, C, AccountId, AuthorityId> whe
             None => { return Err("Can't get shard info in header".to_string()); }
         };
         for tx in exs {
-            match RelayTransfer::decode(tx.encode().as_slice()) {
-                Some(rt) => {
-                    let rt: RelayTransfer<AccountId, u128, <F::Block as Block>::Hash> = rt;
-                    let h = rt.hash();
-                    let id = generic::BlockId::hash(h);
-                    let ds = yee_sharding_primitives::utils::shard_num_for(&rt.transfer.sender(), tc as u16)
-                        .expect("Internal error. Get shard num failed.");
-                    if let Some(lc) = self.foreign_chains.read().as_ref().unwrap().get_shard_component(ds) {
-                        match lc.client().proof(&id).map_err(|_| err_str)? {
-                            Some(proof) => {
-                                let proof = MultiLayerProof::from_bytes(proof.as_slice()).map_err(|_| err_str)?;
-                                if proof.contains(ds, h) {
-                                    continue;
-                                }
-                            }
-                            None => { return Err(err_str.to_string()); }
-                        }
-                    }
-                    panic!("Internal error. Can't get shard component");
-                }
-                None => continue,
-            }
+            // match RelayTransfer::decode(tx.encode().as_slice()) {
+            //     Some(rt) => {
+            //         let rt: RelayTransfer<AccountId, u128, <B as Block>::Hash> = rt;
+            //         let h = rt.hash();
+            //         let id = generic::BlockId::hash(h);
+            //         let ds = yee_sharding_primitives::utils::shard_num_for(&rt.transfer.sender(), tc as u16)
+            //             .expect("Internal error. Get shard num failed.");
+            //         if let Some(lc) = self.foreign_chains.read().as_ref().unwrap().get_shard_component(ds) {
+            //             match lc.client().proof(&id).map_err(|_| err_str)? {
+            //                 Some(proof) => {
+            //                     let proof = MultiLayerProof::from_bytes(proof.as_slice()).map_err(|_| err_str)?;
+            //                     if proof.contains(ds, h) {
+            //                         continue;
+            //                     }
+            //                 }
+            //                 None => { return Err(err_str.to_string()); }
+            //             }
+            //         }
+            //         panic!("Internal error. Can't get shard component");
+            //     }
+            //     None => continue,
+            // }
         }
         Ok(())
     }
 
     /// Check if block header has a valid POW target
-    fn check_header(&self, mut header: <F::Block as Block>::Header, hash: <F::Block as Block>::Hash) -> Result<(<F::Block as Block>::Header, DigestItemFor<F::Block>), String> {
+    fn check_header(&self, mut header: <B as Block>::Header, hash: <B as Block>::Hash) -> Result<(<B as Block>::Header, DigestItemFor<B>), String> {
         // pow work proof MUST be last digest item
         let digest_item = match header.digest_mut().pop() {
             Some(x) => x,
@@ -261,7 +261,7 @@ impl<F, C, AccountId, AuthorityId> PowVerifier<F, C, AccountId, AuthorityId> whe
     }
 
     /// check pow_target in seal
-    fn check_pow_target(&self, header: &<F::Block as Block>::Header, seal: &PowSeal<F::Block, AuthorityId>) -> Result<(), String> {
+    fn check_pow_target(&self, header: &<B as Block>::Header, seal: &PowSeal<B, AuthorityId>) -> Result<(), String> {
         let pow_target = calc_pow_target(self.client.clone(), header, seal.timestamp, &self.context).map_err(|e| format!("{:?}", e))?;
         if seal.pow_target != pow_target {
             return Err("check_pow_target failed, pow target not match.".to_string());
@@ -270,7 +270,7 @@ impl<F, C, AccountId, AuthorityId> PowVerifier<F, C, AccountId, AuthorityId> whe
     }
 
     /// check shard info
-    fn check_shard_info(&self, header: &<F::Block as Block>::Header) -> Result<(), String> {
+    fn check_shard_info(&self, header: &<B as Block>::Header) -> Result<(), String> {
         // actual shard num in this node util status to Committed
         let (digest_shard_num, digest_shard_count): (u16, u16) = header.digest().logs().iter().rev()
             .filter_map(ShardingDigestItem::as_sharding_info).next()
@@ -419,7 +419,7 @@ impl<F, C, AccountId, AuthorityId> PowVerifier<F, C, AccountId, AuthorityId> whe
         }
 
         // check scale
-        check_scale::<F::Block, AccountId>(header, self.shard_extra.clone())?;
+        check_scale::<B, AccountId>(header, self.shard_extra.clone())?;
 
         //check header shard info (normal or scaling)
         let (header_shard_num, header_shard_count): (u16, u16) = header.digest().logs().iter().rev()
@@ -434,7 +434,7 @@ impl<F, C, AccountId, AuthorityId> PowVerifier<F, C, AccountId, AuthorityId> whe
     }
 
     /// check other digest
-    fn check_other_logs(&self, header: &<F::Block as Block>::Header) -> Result<(), String> {
+    fn check_other_logs(&self, header: &<B as Block>::Header) -> Result<(), String> {
         Ok(())
     }
 }
