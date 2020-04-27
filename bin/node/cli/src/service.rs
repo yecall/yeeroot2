@@ -85,29 +85,25 @@ macro_rules! new_full_start {
 			.with_import_queue(|_config, client, mut select_chain, _transaction_pool| {
 				let select_chain = select_chain.take()
 					.ok_or_else(|| sc_service::Error::SelectChainRequired)?;
-				let (grandpa_block_import, grandpa_link) = grandpa::block_import(
-					client.clone(),
-					&(client.clone() as Arc<_>),
-					select_chain,
-				)?;
-				let justification_import = grandpa_block_import.clone();
 
-				let (block_import, babe_link) = sc_consensus_babe::block_import(
-					sc_consensus_babe::Config::get_or_compute(&*client)?,
-					grandpa_block_import,
-					client.clone(),
-				)?;
+				let (grandpa_block_import, grandpa_link) =
+					sc_crfg::block_import(client.clone(), &(client.clone() as Arc<_>), select_chain)?;
 
-				let import_queue = sc_consensus_babe::import_queue(
-					babe_link.clone(),
-					block_import.clone(),
-					Some(Box::new(justification_import)),
+				let aura_block_import = sc_consensus_aura::AuraBlockImport::<_, _, _, AuraPair>::new(
+					grandpa_block_import.clone(), client.clone(),
+				);
+
+				let import_queue = sc_consensus_aura::import_queue::<_, _, _, AuraPair>(
+					sc_consensus_aura::slot_duration(&*client)?,
+					aura_block_import,
+					Some(Box::new(grandpa_block_import.clone())),
 					None,
 					client,
 					inherent_data_providers.clone(),
 				)?;
 
-				import_setup = Some((block_import, grandpa_link, babe_link));
+				import_setup = Some((grandpa_block_import, grandpa_link));
+
 				Ok(import_queue)
 			})?
 			.with_rpc_extensions(|builder| -> std::result::Result<RpcExtension, _> {
@@ -169,40 +165,41 @@ macro_rules! new_full {
 		($with_startup_data)(&block_import, &babe_link);
 
 		// pow
-                if let Some(ref key) = key {
-                    info!("Using authority key {}", key.public());
-                    let proposer = Arc::new(ProposerFactory {
-                        client: service.client(),
-                        transaction_pool: service.transaction_pool(),
-                        inherents_pool: service.inherents_pool(),
-                    });
-                    let client = service.client();
+        if let Some(ref key) = key {
+            info!("Using authority key {}", key.public());
+            let proposer = Arc::new(ProposerFactory {
+                client: service.client(),
+                transaction_pool: service.transaction_pool(),
+                inherents_pool: service.inherents_pool(),
+            });
+            let client = service.client();
+            let custom_params = CustomParams.read().unwrap();
+            let params = yc_consensus_pow::Params{
+                force_authoring: service.config.force_authoring,
+                mine: custom_params.mine,
+                shard_extra: consensus::ShardExtra {
+                    coinbase: custom_params.coinbase.clone(),
+                    shard_num: custom_params.shard_num,
+                    shard_count: custom_params.shard_count,
+                    scale_out: custom_params.scale_out.clone(),
+                    trigger_exit: service.config.custom.trigger_exit.clone().expect("qed"),
+                },
+                context: service.config.custom.context.clone().expect("qed"),
+            };
+            let pow = yc_consensus_pow::start_pow::<Self::Block, _, _, _, _, _, _, _>(
+                key.clone(),
+                client.clone(),
+                block_import.clone(),
+                proposer,
+                service.network(),
+                service.on_exit(),
+                service.config.custom.inherent_data_providers.clone(),
+                service.config.custom.job_manager.clone(),
+                params,
+            )?;
 
-                    let params = consensus::Params{
-                        force_authoring: service.config.force_authoring,
-                        mine: service.config.custom.mine,
-                        shard_extra: consensus::ShardExtra {
-                            coinbase: service.config.custom.coinbase.clone(),
-                            shard_num: service.config.custom.shard_num,
-                            shard_count: service.config.custom.shard_count,
-                            scale_out: service.config.custom.scale_out.clone(),
-                            trigger_exit: service.config.custom.trigger_exit.clone().expect("qed"),
-                        },
-                        context: service.config.custom.context.clone().expect("qed"),
-                    };
-
-                    executor.spawn(start_pow::<Self::Block, _, _, _, _, _, _, _>(
-                        key.clone(),
-                        client.clone(),
-                        block_import.clone(),
-                        proposer,
-                        service.network(),
-                        service.on_exit(),
-                        service.config.custom.inherent_data_providers.clone(),
-                        service.config.custom.job_manager.clone(),
-                        params,
-                    )?);
-                }
+            service.spawn_task("pow", pow);
+        }
 
 		// if let sc_service::config::Role::Authority { .. } = &role {
 		// 	let proposer = sc_basic_authorship::ProposerFactory::new(

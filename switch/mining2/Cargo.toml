@@ -23,7 +23,7 @@ yee-serde-hex = { package = "serde-hex", path = "../../utils/serde-hex" }
 yee-rpc = { package = "yee-rpc", path = "../../client/rpc" }
 yee-sharding = { package = "yee-sharding", path = "../../client/sharding" }
 yee-consensus-pow-primitives = { package = "yee-consensus-pow-primitives", path = "../../primitives/pow" }
-yee-consensus-pow = { package = "yee-consensus-pow", path = "../../client/consensus/pow" }
+yee-consensus-pow = { package = "yc-consensus-pow", path = "../../client/consensus/pow" }
 merkle_light = { git = "https://github.com/yeeco/merkle_light.git", branch = "yee-2.0" }
 sp-runtime = { package = "sp-runtime", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 # runtime-primitives = { package = "sr-primitives", git = "https://github.com/yeeco/substrate.git",  branch = "yee", default_features = false, branch = "yee-v1.0" }

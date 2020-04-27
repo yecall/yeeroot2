@@ -77,6 +77,8 @@ sc-service = { version = "0.8.0-dev", default-features = false, git = "https://g
 sc-tracing = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 sc-telemetry = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 sc-authority-discovery = { version = "0.8.0-dev",  git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+#yc-crfg = { path = "../../../client/crfg" }
+yc-consensus-pow = { path = "../../../client/consensus/pow" }
 
 # frame dependencies
 pallet-indices = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }

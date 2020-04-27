@@ -39,7 +39,6 @@ use sp_runtime::{
     generic::Digest,
     traits::{Block, Header, DigestFor, DigestItemFor, NumberFor}
 };
-
 use super::{
     CompatibleDigestItem, WorkProof, ProofNonce,
 };
@@ -50,6 +49,7 @@ use crate::ShardExtra;
 use crate::verifier::check_scale;
 use sp_core::H256;
 use ansi_term::Colour;
+use std::collections::HashMap;
 
 pub trait PowWorker<JM: JobManager> {
     type Error: Debug + Send;
@@ -65,16 +65,16 @@ pub trait PowWorker<JM: JobManager> {
     fn on_work(&self, iter: u64) -> Self::OnWork;
 }
 
-pub struct DefaultWorker<B, I, JM, AccountId, AuthorityId> {
+pub struct DefaultWorker<B, C, I, JM, AccountId, AuthorityId> {
     job_manager: Arc<JM>,
     block_import: Arc<I>,
     inherent_data_providers: InherentDataProviders,
     stop_sign: Arc<RwLock<bool>>,
     shard_extra: ShardExtra<AccountId>,
-    phantom: PhantomData<(B, AuthorityId)>,
+    phantom: PhantomData<(B, C, AuthorityId)>,
 }
 
-impl<B, I, JM, AccountId, AuthorityId> DefaultWorker<B, I, JM, AccountId, AuthorityId> where
+impl<B, C, I, JM, AccountId, AuthorityId> DefaultWorker<B, C, I, JM, AccountId, AuthorityId> where
     B: Block,
     JM: JobManager,
 {
@@ -95,8 +95,10 @@ impl<B, I, JM, AccountId, AuthorityId> DefaultWorker<B, I, JM, AccountId, Author
     }
 }
 
-impl<B, I, JM, AccountId, AuthorityId> PowWorker<JM> for DefaultWorker<B, I, JM, AccountId, AuthorityId> where
+impl<B, C, I, JM, AccountId, AuthorityId> PowWorker<JM> for DefaultWorker<B, C, I, JM, AccountId, AuthorityId> where
     B: Block,
+    //C: ProvideRuntimeApi<B> + BlockOf + ProvideCache<B> + Sync,
+    //C::Api: AuraApi<B, AuthorityId<P>>,
     //DigestFor<B>: Digest,
     I: BlockImport<B, Error=sp_consensus::Error> + Send + Sync + 'static,
     DigestItemFor<B>: CompatibleDigestItem<B, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<B>, u16>,
@@ -125,7 +127,7 @@ impl<B, I, JM, AccountId, AuthorityId> PowWorker<JM> for DefaultWorker<B, I, JM,
     fn on_work(&self,
               iter: u64,
     ) -> Self::OnWork {
-        let block_import = self.block_import.clone();
+        let mut block_import = self.block_import.clone();
 
         let job = self.on_job().into_future();
 
@@ -156,16 +158,21 @@ impl<B, I, JM, AccountId, AuthorityId> PowWorker<JM> for DefaultWorker<B, I, JM,
 
                     check_scale::<B, AccountId>(&header, shard_extra)?;
 
-                    let import_block: ImportBlock<B> = ImportBlock {
+                    let import_block: BlockImportParams<B, sp_api::TransactionFor<C, B>> = BlockImportParams {
                         origin: BlockOrigin::Own,
                         header,
                         justification: None,
-                        proof: Some(xts_proof),
+                        //proof: Some(xts_proof),
                         post_digests: vec![post_digest],
                         body: Some(body),
+                        storage_changes: None,
                         finalized: false,
+                        intermediates: HashMap::new(),
                         auxiliary: Vec::new(),
-                        fork_choice: ForkChoiceStrategy::LongestChain,
+                        allow_missing_state: false,
+                        fork_choice: Some(ForkChoiceStrategy::LongestChain),
+                        import_existing: false,
+                        post_hash: None,
                     };
                     block_import.import_block(import_block, Default::default())?;
 
@@ -196,7 +203,7 @@ pub fn to_common_error<E: Debug>(e: E) -> sp_consensus::Error {
 
 pub fn start_worker<W, SO, OnExit, JM>(
     worker: Arc<W>,
-    sync_oracle: SO,
+    sync_oracle: &mut SO,
     on_exit: OnExit,
     mine: bool,
 ) -> Result<impl Future<Item=(), Error=()>, sp_consensus::Error> where

@@ -27,7 +27,7 @@ use sc_client_api::BlockchainEvents;
 use sp_runtime::{RuntimeString, traits::{Block, DigestItemFor, NumberFor}};
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
-use sp_consensus::{BlockImport, Environment, Proposer, SyncOracle};
+use sp_consensus::{BlockImport, Environment, Proposer, SyncOracle, import_queue::{BoxBlockImport, BoxJustificationImport}};
 use sp_consensus::import_queue::{
     BasicQueue
 };
@@ -78,12 +78,12 @@ pub fn start_pow<B, P, C, I, E, AccountId, SO, OnExit>(
     B: Block,
     P: Pair + 'static,
     <P as Pair>::Public: Clone + Debug + Decode + Encode + Send + Sync,
-    C: ChainHead<B> + HeaderBackend<B> + ProvideRuntimeApi + 'static,
-    <C as ProvideRuntimeApi>::Api: YeePOWApi<B>,
+    //C: ChainHead<B> + HeaderBackend<B> + ProvideRuntimeApi + 'static,
+    <C as ProvideRuntimeApi<B>>::Api: YeePOWApi<B>,
     I: BlockImport<B, Error=sp_consensus::Error> + Send + Sync + 'static,
     E: Environment<B> + Send + Sync + 'static,
     <E as Environment<B>>::Error: Debug + Send,
-    <<<E as Environment<B>>::Proposer as Proposer<B>>::Create as IntoFuture>::Future: Send + 'static,
+    //<<<E as Environment<B>>::Proposer as Proposer<B>>::Create as IntoFuture>::Future: Send + 'static,
     AccountId: Clone + Debug + Decode + Encode + Default + Send + Sync + 'static,
     SO: SyncOracle + Send + Sync + Clone,
     OnExit: Future<Item=(), Error=()>,
@@ -125,8 +125,7 @@ pub fn start_pow<B, P, C, I, E, AccountId, SO, OnExit>(
 }
 
 /// POW chain import queue
-pub type PowImportQueue<B> = BasicQueue<B>;
-
+pub type PowImportQueue<B, C> = BasicQueue<B, sp_api::TransactionFor<C, B>>;
 
 pub trait TriggerExit: Send + Sync{
     fn trigger_restart(&self);
@@ -144,22 +143,22 @@ pub struct ShardExtra<AccountId> {
 
 /// Start import queue for POW consensus
 pub fn import_queue<B, C, AccountId, AuthorityId>(
-    block_import: SharedBlockImport<B>,
-    justification_import: Option<SharedJustificationImport<B>>,
+    block_import: BoxBlockImport<B, sp_api::TransactionFor<C, B>>,
+    justification_import: Option<BoxJustificationImport<B>>,
     client: Arc<C>,
     inherent_data_providers: InherentDataProviders,
-    foreign_chains: Arc<RwLock<Option<ForeignChain<F>>>>,
+    //foreign_chains: Arc<RwLock<Option<ForeignChain<F>>>>,
     shard_extra: ShardExtra<AccountId>,
     context: Context<B>,
-) -> Result<PowImportQueue<B>, sp_consensus::Error> where
+) -> Result<PowImportQueue<B, sp_api::TransactionFor<C, B>>, sp_consensus::Error> where
     H256: From<<B as Block>::Hash>,
     DigestItemFor<B>: CompatibleDigestItem<B, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<B>, u16>,
-    C: ProvideRuntimeApi + 'static + Send + Sync,
-    C: HeaderBackend<Block>,
-    C: BlockBody<Block>,
-    C: BlockchainEvents<Block>,
-    C: ChainHead<Block>,
-    <C as ProvideRuntimeApi>::Api: ShardingAPI<Block> + YeePOWApi<Block>,
+    C: ProvideRuntimeApi<B> + 'static + Send + Sync,
+    C: HeaderBackend<B>,
+    //C: BlockBody<Block>,
+    C: BlockchainEvents<B>,
+    //C: ChainHead<Block>,
+    <C as ProvideRuntimeApi<B>>::Api: ShardingAPI<B> + YeePOWApi<B>,
     AccountId: Codec + Send + Sync + Clone + Default + 'static,
     AuthorityId: Decode + Encode + Clone + Send + Sync + 'static,
     //substrate_service::config::Configuration<<F as ServiceFactory>::Configuration, <F as ServiceFactory>::Genesis> : Clone,
@@ -170,13 +169,13 @@ pub fn import_queue<B, C, AccountId, AuthorityId>(
         verifier::PowVerifier {
             client,
             inherent_data_providers,
-            foreign_chains,
+            //foreign_chains,
             phantom: PhantomData,
             shard_extra,
             context,
         }
     );
-    Ok(BasicQueue::<B>::new(verifier, block_import, justification_import))
+    Ok(BasicQueue::<B, sp_api::TransactionFor<C, B>>::new(verifier, block_import, justification_import, None))
 }
 
 pub fn register_inherent_data_provider<AccountId: 'static + Codec + Send + Sync>(

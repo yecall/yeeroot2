@@ -85,7 +85,7 @@ impl<B, C, AccountId, AuthorityId> Verifier<B> for PowVerifier<B, C, AccountId, 
     AuthorityId: Decode + Encode + Clone + Send + Sync,
     //F: ServiceFactory + Send + Sync,
     //<F as ServiceFactory>::Configuration: ForeignChainConfig + Clone + Send + Sync,
-    C: HeaderBackend<B> + ProvideRuntimeApi,
+    C: HeaderBackend<B> + ProvideRuntimeApi<B>,
     //C: BlockBody<<F as ServiceFactory>::Block>,
     //C: BlockchainEvents<<F as ServiceFactory>::Block>,
     //C: ChainHead<<F as ServiceFactory>::Block>,
@@ -149,10 +149,10 @@ impl<B, C, AccountId, AuthorityId> Verifier<B> for PowVerifier<B, C, AccountId, 
         //import_block.post_digests.push(verified_info.seal);
         import_block.body = body;
         import_block.justification = justification;
-        import_block.intermediates.insert(
-            Cow::from(INTERMEDIATE_KEY),
-            Box::new(BabeIntermediate::<Block> { epoch_descriptor }) as Box<dyn Any>,
-        );
+        // import_block.intermediates.insert(
+        //     Cow::from(INTERMEDIATE_KEY),
+        //     Box::new(BabeIntermediate::<Block> { epoch_descriptor }) as Box<dyn Any>,
+        // );
         import_block.post_hash = Some(hash);
 
         Ok((import_block, Default::default()))

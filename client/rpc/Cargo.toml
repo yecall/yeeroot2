@@ -29,7 +29,7 @@ jsonrpc-core = "10.0.1"
 #substrate-primitives = { package = "substrate-primitives", git = "https://github.com/yeeco/substrate.git",  branch = "yee", branch = "yee-v1.0" }
 serde = { version = "1.0", features = ["derive"] }
 #yee-runtime = { package = "node-runtime", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
-yee-consensus-pow = { package = "yee-consensus-pow", path = "../../client/consensus/pow" }
+yee-consensus-pow = { package = "yc-consensus-pow", path = "../../client/consensus/pow" }
 yee-consensus-pow-primitives = { package = "yee-consensus-pow-primitives", path = "../../primitives/pow" }
 parking_lot = "0.7.1"
 log = "0.4"
