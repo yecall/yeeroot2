@@ -5,7 +5,7 @@ members = [
 #	"bootnodes-router",
 	"client",
 	#"client/cli",
-	"client/consensus/pow",
+	"client/consensus/pow-sc",
 #	"client/context",
 #	"client/crfg",
 #	"client/finality-tracker",

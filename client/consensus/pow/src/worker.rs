@@ -203,7 +203,7 @@ pub fn to_common_error<E: Debug>(e: E) -> sp_consensus::Error {
 
 pub fn start_worker<W, SO, OnExit, JM>(
     worker: Arc<W>,
-    sync_oracle: &mut SO,
+    sync_oracle: &'static mut SO,
     on_exit: OnExit,
     mine: bool,
 ) -> Result<impl Future<Item=(), Error=()>, sp_consensus::Error> where

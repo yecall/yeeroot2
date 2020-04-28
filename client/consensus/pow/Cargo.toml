@@ -19,6 +19,7 @@ sp-consensus = { package = "sp-consensus", git = "https://github.com/yeeco/subst
 sp-inherents = { package = "sp-inherents", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 sp-core = { package = "sp-core", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 sp-api = { git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-state-machine = { git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
 codec = { package = "parity-scale-codec", version = "1.3.0", features = ["derive"] }
 #
 #pallet-timestamp = { package = "pallet-timestamp", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }

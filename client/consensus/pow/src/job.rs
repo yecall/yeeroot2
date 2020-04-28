@@ -37,7 +37,7 @@ use {
 	},
 	sp_inherents::InherentDataProviders,
 	sp_runtime::{
-		traits::{Block, DigestItemFor, NumberFor},
+		traits::{Block, Header, DigestItemFor, NumberFor},
 		generic::Digest
 	},
 	sp_api::ProvideRuntimeApi,
@@ -87,7 +87,7 @@ pub trait JobManager: Send + Sync
 	type Job : Job;
 
 	/// get job with unknown proof
-	fn get_job(&self) -> Box<dyn Future<Item=Self::Job, Error=sp_consensus::Error> + Send>;
+	fn get_job(&mut self) -> Box<dyn Future<Item=Self::Job, Error=sp_consensus::Error> + Send>;
 
 	/// submit job
 	fn submit_job(&self, job: Self::Job) -> Box<dyn Future<Item=<Self::Job as Job>::Hash, Error=sp_consensus::Error> + Send>;
@@ -157,11 +157,11 @@ impl<B, C, E, AccountId, AuthorityId, I> JobManager for DefaultJobManager<B, C, 
 {
 	type Job = DefaultJob<B, AuthorityId>;
 
-	fn get_job(&self) -> Box<dyn Future<Item=Self::Job, Error=sp_consensus::Error> + Send> {
+	fn get_job(&mut self) -> Box<dyn Future<Item=Self::Job, Error=sp_consensus::Error> + Send> {
 		let get_data = || {
 			let chain_head = self.client.best_block_header()
 				.map_err(to_common_error)?;
-			let proposer = self.env.init(&chain_head, &vec![])
+			let proposer = self.env.init(&chain_head)
 				.map_err(to_common_error)?;
 			let inherent_data = self.inherent_data_providers.create_inherent_data()
 				.map_err(to_common_error)?;

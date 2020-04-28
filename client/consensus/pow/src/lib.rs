@@ -24,7 +24,7 @@ use {
     parking_lot::RwLock,
 };
 use sc_client_api::BlockchainEvents;
-use sp_runtime::{RuntimeString, traits::{Block, DigestItemFor, NumberFor}};
+use sp_runtime::{RuntimeString, traits::{Block, Header, DigestItemFor, NumberFor}};
 use sp_api::ProvideRuntimeApi;
 use sp_blockchain::HeaderBackend;
 use sp_consensus::{BlockImport, Environment, Proposer, SyncOracle, import_queue::{BoxBlockImport, BoxJustificationImport}};
@@ -69,7 +69,7 @@ pub fn start_pow<B, P, C, I, E, AccountId, SO, OnExit>(
     client: Arc<C>,
     block_import: Arc<I>,
     env: Arc<E>,
-    sync_oracle: SO,
+    sync_oracle: &'static mut SO,
     on_exit: OnExit,
     inherent_data_providers: InherentDataProviders,
     job_manager: Arc<RwLock<Option<Arc<dyn JobManager<Job=DefaultJob<B, P::Public>>>>>>,
@@ -78,7 +78,7 @@ pub fn start_pow<B, P, C, I, E, AccountId, SO, OnExit>(
     B: Block,
     P: Pair + 'static,
     <P as Pair>::Public: Clone + Debug + Decode + Encode + Send + Sync,
-    //C: ChainHead<B> + HeaderBackend<B> + ProvideRuntimeApi + 'static,
+    C: ProvideRuntimeApi<B> + HeaderBackend<B> + 'static,
     <C as ProvideRuntimeApi<B>>::Api: YeePOWApi<B>,
     I: BlockImport<B, Error=sp_consensus::Error> + Send + Sync + 'static,
     E: Environment<B> + Send + Sync + 'static,
@@ -111,7 +111,7 @@ pub fn start_pow<B, P, C, I, E, AccountId, SO, OnExit>(
         }
     }
 
-    let worker = Arc::new(worker::DefaultWorker::new(
+    let worker: Arc<worker::DefaultWorker<B, C, I, job::DefaultJobManager<B, C, E, AccountId, <P as sp_core::crypto::Pair>::Public, I>, AccountId, <P as sp_core::crypto::Pair>::Public>> = Arc::new(worker::DefaultWorker::new(
         inner_job_manager.clone(),
         block_import,
         inherent_data_providers.clone(),
@@ -150,18 +150,17 @@ pub fn import_queue<B, C, AccountId, AuthorityId>(
     //foreign_chains: Arc<RwLock<Option<ForeignChain<F>>>>,
     shard_extra: ShardExtra<AccountId>,
     context: Context<B>,
-) -> Result<PowImportQueue<B, sp_api::TransactionFor<C, B>>, sp_consensus::Error> where
+) -> Result<BasicQueue<B, sp_api::TransactionFor<C, B>>, sp_consensus::Error> where
+    B: Block,
     H256: From<<B as Block>::Hash>,
     DigestItemFor<B>: CompatibleDigestItem<B, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<B>, u16>,
     C: ProvideRuntimeApi<B> + 'static + Send + Sync,
     C: HeaderBackend<B>,
-    //C: BlockBody<Block>,
     C: BlockchainEvents<B>,
-    //C: ChainHead<Block>,
     <C as ProvideRuntimeApi<B>>::Api: ShardingAPI<B> + YeePOWApi<B>,
     AccountId: Codec + Send + Sync + Clone + Default + 'static,
     AuthorityId: Decode + Encode + Clone + Send + Sync + 'static,
-    //substrate_service::config::Configuration<<F as ServiceFactory>::Configuration, <F as ServiceFactory>::Genesis> : Clone,
+    <<<C as ProvideRuntimeApi<B>>::Api as sp_api::ApiExt<B>>::StateBackend as sp_state_machine::backend::Backend<<<B as Block>::Header as Header>::Hashing>>::Transaction: sp_api::ProvideRuntimeApi<B>
 {
     register_inherent_data_provider(&inherent_data_providers, shard_extra.coinbase.clone())?;
 

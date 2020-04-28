@@ -89,16 +89,12 @@ macro_rules! new_full_start {
 				let (grandpa_block_import, grandpa_link) =
 					sc_crfg::block_import(client.clone(), &(client.clone() as Arc<_>), select_chain)?;
 
-				let aura_block_import = sc_consensus_aura::AuraBlockImport::<_, _, _, AuraPair>::new(
-					grandpa_block_import.clone(), client.clone(),
+				let pow_block_import = sc_consensus_pow::PowBlockImport::<_, _, _, u128, _>::new(
+				    grandpa_block_import.clone(), client.clone(), Some(select_chain), Zero::zero(), inherent_data_providers.clone()
 				);
 
-				let import_queue = sc_consensus_aura::import_queue::<_, _, _, AuraPair>(
-					sc_consensus_aura::slot_duration(&*client)?,
-					aura_block_import,
-					Some(Box::new(grandpa_block_import.clone())),
-					None,
-					client,
+				let import_queue = sc_consensus_pow::import_queue::<_, _>(
+					pow_block_import,
 					inherent_data_providers.clone(),
 				)?;
 
@@ -164,42 +160,35 @@ macro_rules! new_full {
 
 		($with_startup_data)(&block_import, &babe_link);
 
-		// pow
-        if let Some(ref key) = key {
-            info!("Using authority key {}", key.public());
-            let proposer = Arc::new(ProposerFactory {
-                client: service.client(),
-                transaction_pool: service.transaction_pool(),
-                inherents_pool: service.inherents_pool(),
-            });
+		if role.is_authority() {
+		    let proposer =
+			    sc_basic_authorship::ProposerFactory::new(service.client(), service.transaction_pool());
+
             let client = service.client();
-            let custom_params = CustomParams.read().unwrap();
-            let params = yc_consensus_pow::Params{
-                force_authoring: service.config.force_authoring,
-                mine: custom_params.mine,
-                shard_extra: consensus::ShardExtra {
-                    coinbase: custom_params.coinbase.clone(),
-                    shard_num: custom_params.shard_num,
-                    shard_count: custom_params.shard_count,
-                    scale_out: custom_params.scale_out.clone(),
-                    trigger_exit: service.config.custom.trigger_exit.clone().expect("qed"),
-                },
-                context: service.config.custom.context.clone().expect("qed"),
-            };
-            let pow = yc_consensus_pow::start_pow::<Self::Block, _, _, _, _, _, _, _>(
-                key.clone(),
-                client.clone(),
-                block_import.clone(),
+            let select_chain = service.select_chain()
+                .ok_or(ServiceError::SelectChainRequired)?;
+
+            let can_author_with =
+                sp_consensus::CanAuthorWithNativeVersion::new(client.executor().clone());
+
+            let aura = sc_consensus_pow::start_aura::<_, _, _, _, _, AuraPair, _, _, _>(
+                sc_consensus_aura::slot_duration(&*client)?,
+                client,
+                select_chain,
+                service.block_import,
                 proposer,
                 service.network(),
-                service.on_exit(),
-                service.config.custom.inherent_data_providers.clone(),
-                service.config.custom.job_manager.clone(),
-                params,
+                inherent_data_providers.clone(),
+                force_authoring,
+                service.keystore(),
+                can_author_with,
             )?;
 
-            service.spawn_task("pow", pow);
-        }
+            // the AURA authoring task is considered essential, i.e. if it
+            // fails we take down the service with it.
+            service.spawn_essential_task("aura", aura);
+
+		}
 
 		// if let sc_service::config::Role::Authority { .. } = &role {
 		// 	let proposer = sc_basic_authorship::ProposerFactory::new(

@@ -1,0 +1,27 @@
+[package]
+name = "sc-consensus-pow"
+version = "0.4.0"
+description = "PoW consensus algorithm for substrate"
+edition = "2018"
+license = "GPL-3.0"
+homepage = "https://substrate.dev"
+repository = "https://github.com/paritytech/substrate/"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "1.3.0", features = ["derive"] }
+sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-blockchain = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sc-client-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-block-builder = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-inherents = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-consensus-pow = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+sp-consensus = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+log = "0.4.8"
+futures = { version = "0.3.1", features = ["compat"] }
+sp-timestamp = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git",  branch = "yee" }
+derive_more = "0.99.2"

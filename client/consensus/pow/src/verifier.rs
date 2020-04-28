@@ -64,7 +64,7 @@ use sp_core::H256;
 use yee_context::Context;
 
 /// Verifier for POW blocks.
-pub struct PowVerifier<B, C, AccountId, AuthorityId> {
+pub struct PowVerifier<B: Block, C, AccountId, AuthorityId> {
     pub client: Arc<C>,
     pub inherent_data_providers: InherentDataProviders,
     //pub foreign_chains: Arc<RwLock<Option<ForeignChain<F>>>>,
@@ -79,22 +79,17 @@ pub static INTERMEDIATE_KEY: &[u8] = b"yee-pow";
 
 #[forbid(deprecated)]
 impl<B, C, AccountId, AuthorityId> Verifier<B> for PowVerifier<B, C, AccountId, AuthorityId> where
+    B: sp_runtime::traits::Block,
     DigestItemFor<B>: CompatibleDigestItem<B, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<B>, u16>,
     C: Send + Sync,
     AccountId: Decode + Encode + Clone + Send + Sync + Default,
     AuthorityId: Decode + Encode + Clone + Send + Sync,
-    //F: ServiceFactory + Send + Sync,
-    //<F as ServiceFactory>::Configuration: ForeignChainConfig + Clone + Send + Sync,
     C: HeaderBackend<B> + ProvideRuntimeApi<B>,
-    //C: BlockBody<<F as ServiceFactory>::Block>,
-    //C: BlockchainEvents<<F as ServiceFactory>::Block>,
-    //C: ChainHead<<F as ServiceFactory>::Block>,
-    //<C as ProvideRuntimeApi>::Api: ShardingAPI<<F as ServiceFactory>::Block> + YeePOWApi<<F as ServiceFactory>::Block>,
+    <C as ProvideRuntimeApi<B>>::Api: ShardingAPI<B> + YeePOWApi<B>,
     H256: From<<B as Block>::Hash>,
-    //substrate_service::config::Configuration<<F as ServiceFactory>::Configuration, <F as ServiceFactory>::Genesis>: Clone,
 {
     fn verify(
-        &self,
+        &mut self,
         origin: BlockOrigin,
         header: <B as Block>::Header,
         justification: Option<Justification>,
@@ -160,6 +155,7 @@ impl<B, C, AccountId, AuthorityId> Verifier<B> for PowVerifier<B, C, AccountId, 
 }
 
 impl<B, C, AccountId, AuthorityId> PowVerifier<B, C, AccountId, AuthorityId> where
+    B: sp_runtime::traits::Block,
     DigestItemFor<B>: CompatibleDigestItem<B, AuthorityId> + ShardingDigestItem<u16> + ScaleOutPhaseDigestItem<NumberFor<B>, u16>,
     C: Send + Sync,
     AccountId: Decode + Encode + Clone + Send + Sync + Default,
