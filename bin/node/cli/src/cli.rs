@@ -1,5 +1,20 @@
+// Copyright 2018-2020 Parity Technologies (UK) Ltd.
+// This file is part of Substrate.
 
-use yc_cli::{ImportParams, RunCmd, SharedParams};
+// Substrate is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+
+// Substrate is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License
+// along with Substrate.  If not, see <http://www.gnu.org/licenses/>.
+
+use sc_cli::{ImportParams, RunCmd, SharedParams};
 use structopt::StructOpt;
 
 /// An overarching CLI command definition.
@@ -18,7 +33,14 @@ pub struct Cli {
 pub enum Subcommand {
 	/// A set of base subcommands handled by `sc_cli`.
 	#[structopt(flatten)]
-	Base(yc_cli::Subcommand),
+	Base(sc_cli::Subcommand),
+	/// The custom factory subcommmand for manufacturing transactions.
+	#[structopt(
+		name = "factory",
+		about = "Manufactures num transactions from Alice to random accounts. \
+		Only supported for development or local testnet."
+	)]
+	Factory(FactoryCmd),
 
 	/// The custom inspect subcommmand for decoding blocks and extrinsics.
 	#[structopt(
@@ -30,14 +52,6 @@ pub enum Subcommand {
 	/// The custom benchmark subcommmand benchmarking runtime pallets.
 	#[structopt(name = "benchmark", about = "Benchmark runtime pallets.")]
 	Benchmark(frame_benchmarking_cli::BenchmarkCmd),
-
-	/// The custom bootnodes-router sub-command
-	#[structopt(name = "bootnodes-router", about = "Run yee in `bootnodes-router` mode.")]
-	BootnodesRouter(yc_cli::BootnodesRouterCmd),
-
-	/// The custom switch sub-command
-	#[structopt(name = "switch", about = "Run yee in `switch` mode.")]
-	Switch(yc_cli::SwitchCmd),
 }
 
 /// The `factory` command used to generate transactions.
