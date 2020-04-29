@@ -19,7 +19,7 @@ use sp_inherents::InherentDataProviders;
 use sc_service::{Service, NetworkStatus};
 use sc_client::{Client, LocalCallExecutor};
 use sc_client_db::Backend;
-use sp_runtime::traits::Block as BlockT;
+use sp_runtime::traits::{Block as BlockT, Zero};
 use node_executor::NativeExecutor;
 use sc_network::NetworkService;
 use sc_offchain::OffchainWorkers;
@@ -87,7 +87,7 @@ macro_rules! new_full_start {
 					.ok_or_else(|| sc_service::Error::SelectChainRequired)?;
 
 				let (grandpa_block_import, grandpa_link) =
-					sc_crfg::block_import(client.clone(), &(client.clone() as Arc<_>), select_chain)?;
+					grandpa::block_import(client.clone(), &(client.clone() as Arc<_>), select_chain)?;
 
 				let pow_block_import = sc_consensus_pow::PowBlockImport::<_, _, _, u128, _>::new(
 				    grandpa_block_import.clone(), client.clone(), Some(select_chain), Zero::zero(), inherent_data_providers.clone()
@@ -171,22 +171,18 @@ macro_rules! new_full {
             let can_author_with =
                 sp_consensus::CanAuthorWithNativeVersion::new(client.executor().clone());
 
-            let aura = sc_consensus_pow::start_aura::<_, _, _, _, _, AuraPair, _, _, _>(
-                sc_consensus_aura::slot_duration(&*client)?,
-                client,
-                select_chain,
-                service.block_import,
+            let pow = sc_consensus_pow::start_mine::<_,_,_,_,_,_,_>(
+			    block_import,
+			    client,
                 proposer,
+                None,
                 service.network(),
-                inherent_data_providers.clone(),
-                force_authoring,
-                service.keystore(),
-                can_author_with,
-            )?;
 
-            // the AURA authoring task is considered essential, i.e. if it
+			)?;
+
+            // the POW authoring task is considered essential, i.e. if it
             // fails we take down the service with it.
-            service.spawn_essential_task("aura", aura);
+            service.spawn_essential_task("pow", pow);
 
 		}
 

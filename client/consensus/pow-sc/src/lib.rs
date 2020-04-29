@@ -235,7 +235,7 @@ impl<B, I, C, D, S> BlockImport<B> for PowBlockImport<B, I, C, D, S> where
 	S: SelectChain<B>,
 	C: ProvideRuntimeApi<B> + Send + Sync + HeaderBackend<B> + AuxStore + ProvideCache<B> + BlockOf,
 	C::Api: BlockBuilderApi<B, Error = sp_blockchain::Error>,
-	D: TotalDifficulty + Default + Encode + Decode + Ord + Clone + Copy,
+	D: TotalDifficulty + Default + Encode + Decode + Ord + Clone + Copy + 'static,
 {
 	type Error = ConsensusError;
 	type Transaction = sp_api::TransactionFor<C, B>;
@@ -365,7 +365,7 @@ impl<B: BlockT, D> PowVerifier<B, D> {
 }
 
 impl<B: BlockT, D> Verifier<B> for PowVerifier<B, D> where
-	D: TotalDifficulty + Default + Encode + Decode + Ord + Clone + Copy,
+	D: TotalDifficulty + Default + Encode + Decode + Ord + Clone + Copy + std::marker::Sync + std::marker::Send + 'static,
 {
 	fn verify(
 		&mut self,
@@ -425,7 +425,7 @@ pub fn import_queue<B, Transaction>(
 {
 	register_pow_inherent_data_provider(&inherent_data_providers)?;
 
-	let verifier = PowVerifier::new();
+	let verifier = PowVerifier::<B, u128>::new();
 
 	Ok(BasicQueue::new(
 		verifier,
@@ -450,7 +450,6 @@ pub fn start_mine<B: BlockT, C, E, SO, S, CAW>(
 	client: Arc<C>,
 	mut env: E,
 	preruntime: Option<Vec<u8>>,
-	round: u32,
 	mut sync_oracle: SO,
 	build_time: std::time::Duration,
 	select_chain: Option<S>,
@@ -471,12 +470,11 @@ pub fn start_mine<B: BlockT, C, E, SO, S, CAW>(
 
 	thread::spawn(move || {
 		loop {
-			match mine_loop(
+			match mine_loop::<_,_,u128,_,_,_,_>(
 				&mut block_import,
 				client.as_ref(),
 				&mut env,
 				preruntime.as_ref(),
-				round,
 				&mut sync_oracle,
 				build_time.clone(),
 				select_chain.as_ref(),
@@ -499,7 +497,6 @@ fn mine_loop<B: BlockT, C, D, E, SO, S, CAW>(
 	client: &C,
 	env: &mut E,
 	preruntime: Option<&Vec<u8>>,
-	round: u32,
 	sync_oracle: &mut SO,
 	build_time: std::time::Duration,
 	select_chain: Option<&S>,
@@ -507,7 +504,7 @@ fn mine_loop<B: BlockT, C, D, E, SO, S, CAW>(
 	can_author_with: &CAW,
 ) -> Result<(), Error<B>> where
 	C: HeaderBackend<B> + AuxStore + ProvideRuntimeApi<B>,
-	D: TotalDifficulty + Default + Encode + Decode + Ord + Clone + Copy,
+	D: TotalDifficulty + Default + Encode + Decode + Ord + Clone + Copy + 'static,
 	E: Environment<B>,
 	E::Proposer: Proposer<B, Transaction = sp_api::TransactionFor<C, B>>,
 	E::Error: std::fmt::Debug,

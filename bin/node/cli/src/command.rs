@@ -7,7 +7,7 @@ use sc_cli::{SubstrateCli, CliConfiguration, ImportParams, Result, SharedParams}
 use sc_service::Configuration;
 //use yc_cli::{BootnodesRouterCmd, SwitchCmd};
 
-impl YeerootCli for Cli {
+impl SubstrateCli for Cli {
     fn impl_name() -> &'static str {
         "Yeeroot2 Node"
     }
