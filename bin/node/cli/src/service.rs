@@ -57,21 +57,17 @@ macro_rules! new_full_start {
 			.with_import_queue(|_config, client, mut select_chain, _transaction_pool| {
 				let select_chain = select_chain.take()
 					.ok_or_else(|| sc_service::Error::SelectChainRequired)?;
-				// let (grandpa_block_import, grandpa_link) = grandpa::block_import(
-				// 	client.clone(),
-				// 	&(client.clone() as Arc<_>),
-				// 	select_chain,
-				// )?;
-				// let justification_import = grandpa_block_import.clone();
-				//
-				// let (block_import, babe_link) = Sha3Algorithm::block_import(
-				// 	sc_consensus_babe::Config::get_or_compute(&*client)?,
-				// 	grandpa_block_import,
-				// 	client.clone(),
-				// )?;
+				let block_import = sc_consensus_pow::PowBlockImport::<_,_,_,_,_>::new(
+					client.clone(),
+					client.clone(),
+					Sha3Algorithm,
+					0,
+					Some(select_chain),
+					inherent_data_providers.clone()
+				);
 
 				let import_queue = sc_consensus_pow::import_queue(
-					Box::new(client.clone()),
+					Box::new(block_import),
 					None,
 					None,
 					Sha3Algorithm,
