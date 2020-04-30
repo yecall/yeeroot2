@@ -41,7 +41,7 @@ macro_rules! new_full_start {
 	($config:expr) => {{
 		use std::sync::Arc;
 		type RpcExtension = jsonrpc_core::IoHandler<sc_rpc::Metadata>;
-		//let mut import_setup = None;
+		let mut import_setup = None;
 		let inherent_data_providers = sp_inherents::InherentDataProviders::new();
 
 		let builder = sc_service::ServiceBuilder::new_full::<
@@ -67,18 +67,18 @@ macro_rules! new_full_start {
 				);
 
 				let import_queue = sc_consensus_pow::import_queue(
-					Box::new(block_import),
+					Box::new(block_import.clone()),
 					None,
 					None,
 					Sha3Algorithm,
 					inherent_data_providers.clone(),
 				)?;
 
-				//import_setup = Some((block_import, grandpa_link, babe_link));
+				import_setup = Some(block_import);
 				Ok(import_queue)
 			})?;
 
-		(builder, inherent_data_providers)
+		(builder, import_setup, inherent_data_providers)
 	}}
 }
 
@@ -104,7 +104,7 @@ macro_rules! new_full {
 			$config.disable_grandpa,
 		);
 
-		let (builder, inherent_data_providers) = new_full_start!($config);
+		let (builder, import_setup, inherent_data_providers) = new_full_start!($config);
 
 		let service = builder
 			.with_finality_proof_provider(|client, backend| {
@@ -117,9 +117,9 @@ macro_rules! new_full {
 		if role.is_authority(){
 			let proposer =
 				sc_basic_authorship::ProposerFactory::new(service.client(), service.transaction_pool());
-
+			let block_import = import_setup.unwrap();
 			sc_consensus_pow::start_mine(
-				Box::new(service.client().clone()),
+				Box::new(block_import),
 				service.client(),
 				Sha3Algorithm,
 				proposer,
@@ -167,35 +167,6 @@ pub fn new_light(config: Configuration)
 			Ok(pool)
 		})?
 		.with_import_queue_and_fprb(|_config, client, backend, fetcher, _select_chain, _tx_pool| {
-			// let fetch_checker = fetcher
-			// 	.map(|fetcher| fetcher.checker().clone())
-			// 	.ok_or_else(|| "Trying to start light import queue without active fetch checker")?;
-			// let grandpa_block_import = grandpa::light_block_import(
-			// 	client.clone(),
-			// 	backend,
-			// 	&(client.clone() as Arc<_>),
-			// 	Arc::new(fetch_checker),
-			// )?;
-			//
-			// let finality_proof_import = grandpa_block_import.clone();
-			// let finality_proof_request_builder =
-			// 	finality_proof_import.create_finality_proof_request_builder();
-			//
-			// let (babe_block_import, babe_link) = sc_consensus_babe::block_import(
-			// 	sc_consensus_babe::Config::get_or_compute(&*client)?,
-			// 	grandpa_block_import,
-			// 	client.clone(),
-			// )?;
-			//
-			// let import_queue = sc_consensus_babe::import_queue(
-			// 	babe_link,
-			// 	babe_block_import,
-			// 	None,
-			// 	Some(Box::new(finality_proof_import)),
-			// 	client.clone(),
-			// 	inherent_data_providers.clone(),
-			// )?;
-
 			let fprb = Box::new(DummyFinalityProofRequestBuilder::default()) as Box<_>;
 			let import_queue = sc_consensus_pow::import_queue(
 				Box::new(client.clone()),
