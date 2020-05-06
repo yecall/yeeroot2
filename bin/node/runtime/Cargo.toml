@@ -1,0 +1,74 @@
+[package]
+name = "node-template-runtime"
+version = "2.0.0-dev"
+authors = ["Anonymous"]
+edition = "2018"
+license = "Unlicense"
+homepage = "https://substrate.dev"
+repository = "https://github.com/paritytech/substrate/"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[dependencies]
+serde = { version = "1.0.101", optional = true, features = ["derive"] }
+codec = { package = "parity-scale-codec", version = "1.3.0", default-features = false, features = ["derive"] }
+
+aura = { version = "2.0.0-dev", default-features = false, package = "pallet-aura", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+balances = { version = "2.0.0-dev", default-features = false, package = "pallet-balances", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+frame-support = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+grandpa = { version = "2.0.0-dev", default-features = false, package = "pallet-grandpa", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+randomness-collective-flip = { version = "2.0.0-dev", default-features = false, package = "pallet-randomness-collective-flip", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sudo = { version = "2.0.0-dev", default-features = false, package = "pallet-sudo", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+system = { version = "2.0.0-dev", default-features = false, package = "frame-system", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+timestamp = { version = "2.0.0-dev", default-features = false, package = "pallet-timestamp", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+transaction-payment = { version = "2.0.0-dev", default-features = false, package = "pallet-transaction-payment", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+frame-executive = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+
+sp-api = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-block-builder = { default-features = false, version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee"}
+sp-consensus-aura = { version = "0.8.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-core = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-inherents = { default-features = false, version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-io = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-offchain = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-runtime = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-session = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-std = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-transaction-pool = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-version = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+
+template = { version = "2.0.0-dev", default-features = false, package = "pallet-template", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+
+[build-dependencies]
+wasm-builder-runner = { version = "1.0.5", package = "substrate-wasm-builder-runner", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+
+[features]
+default = ["std"]
+std = [
+	"aura/std",
+	"balances/std",
+	"codec/std",
+	"frame-executive/std",
+	"frame-support/std",
+	"grandpa/std",
+	"randomness-collective-flip/std",
+	"serde",
+	"sp-api/std",
+	"sp-block-builder/std",
+	"sp-consensus-aura/std",
+	"sp-core/std",
+	"sp-inherents/std",
+	"sp-io/std",
+	"sp-offchain/std",
+	"sp-runtime/std",
+	"sp-session/std",
+	"sp-std/std",
+	"sp-transaction-pool/std",
+	"sp-version/std",
+	"sudo/std",
+	"system/std",
+	"timestamp/std",
+	"transaction-payment/std",
+	"template/std",
+]
