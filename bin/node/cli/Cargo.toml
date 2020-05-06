@@ -44,7 +44,7 @@ tracing = "0.1.10"
 
 # primitives
 sp-authority-discovery = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
-sp-consensus-babe = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+#sp-consensus-babe = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 grandpa-primitives = { version = "2.0.0-dev", package = "sp-finality-grandpa", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }

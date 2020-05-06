@@ -3003,7 +3003,6 @@ dependencies = [
  "serde_json",
  "sp-authority-discovery",
  "sp-consensus",
- "sp-consensus-babe",
  "sp-core",
  "sp-finality-grandpa",
  "sp-finality-tracker",

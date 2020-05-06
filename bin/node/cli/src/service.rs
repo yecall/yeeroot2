@@ -107,11 +107,11 @@ macro_rules! new_full {
 		let (builder, import_setup, inherent_data_providers) = new_full_start!($config);
 
 		let service = builder
-			.with_finality_proof_provider(|client, backend| {
-				// GenesisAuthoritySetProvider is implemented for StorageAndProofProvider
-				let provider = client as Arc<dyn grandpa::StorageAndProofProvider<_, _>>;
-				Ok(Arc::new(grandpa::FinalityProofProvider::new(backend, provider)) as _)
-			})?
+			// .with_finality_proof_provider(|client, backend| {
+			// 	// GenesisAuthoritySetProvider is implemented for StorageAndProofProvider
+			// 	let provider = client as Arc<dyn grandpa::StorageAndProofProvider<_, _>>;
+			// 	Ok(Arc::new(grandpa::FinalityProofProvider::new(backend, provider)) as _)
+			// })?
 			.build()?;
 
 		if role.is_authority(){
