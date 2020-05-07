@@ -2519,7 +2519,6 @@ dependencies = [
  "pallet-grandpa",
  "pallet-randomness-collective-flip",
  "pallet-sudo",
- "pallet-template",
  "pallet-timestamp",
  "pallet-transaction-payment",
  "parity-scale-codec",
@@ -2795,16 +2794,6 @@ dependencies = [
  "sp-io",
  "sp-runtime",
  "sp-std",
-]
-
-[[package]]
-name = "pallet-template"
-version = "2.0.0-dev"
-source = "git+https://github.com/yeeco/substrate.git?branch=yee#c8286fd42a2c590911b8ef2be7bea855e901a65e"
-dependencies = [
- "frame-support",
- "frame-system",
- "parity-scale-codec",
 ]
 
 [[package]]
