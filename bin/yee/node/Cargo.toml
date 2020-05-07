@@ -1,15 +1,14 @@
 [package]
-name = "node-template"
+name = "yee-node"
 version = "2.0.0-dev"
 edition = "2018"
-license = "Unlicense"
 build = "build.rs"
 
 [package.metadata.docs.rs]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [[bin]]
-name = "node-template"
+name = "yee-node"
 
 [dependencies]
 futures = "0.3.4"
@@ -35,7 +34,7 @@ sc-client-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substra
 sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 sc-basic-authorship = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 
-node-template-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+node-runtime = { version = "2.0.0-dev", path = "../runtime" }
 
 [build-dependencies]
 substrate-build-script-utils = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
