@@ -1,0 +1,41 @@
+[package]
+name = "node-template"
+version = "2.0.0-dev"
+edition = "2018"
+license = "Unlicense"
+build = "build.rs"
+
+[package.metadata.docs.rs]
+targets = ["x86_64-unknown-linux-gnu"]
+
+[[bin]]
+name = "node-template"
+
+[dependencies]
+futures = "0.3.4"
+log = "0.4.8"
+structopt = "0.3.8"
+parking_lot = "0.10.0"
+
+sc-cli = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sc-executor = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sc-service = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-inherents = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sc-transaction-pool = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-transaction-pool = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sc-network = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sc-consensus-aura = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-consensus-aura = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-consensus = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sc-consensus = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sc-finality-grandpa = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-finality-grandpa = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sc-client-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sc-basic-authorship = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+
+node-template-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+
+[build-dependencies]
+substrate-build-script-utils = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }

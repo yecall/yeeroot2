@@ -34,7 +34,10 @@ pub use sp_runtime::{Permill, Perbill};
 pub use frame_support::{
 	StorageValue, construct_runtime, parameter_types,
 	traits::Randomness,
-	weights::{Weight, RuntimeDbWeight},
+	weights::{
+		Weight,
+		constants::{BlockExecutionWeight, ExtrinsicBaseWeight, RocksDbWeight, WEIGHT_PER_SECOND},
+	},
 };
 
 /// Importing a template pallet
@@ -82,12 +85,12 @@ pub mod opaque {
 	/// Opaque block identifier type.
 	pub type BlockId = generic::BlockId<Block>;
 
-	// impl_opaque_keys! {
-	// 	pub struct SessionKeys {
-	// 		pub aura: Aura,
-	// 		pub grandpa: Grandpa,
-	// 	}
-	// }
+	impl_opaque_keys! {
+		pub struct SessionKeys {
+			pub aura: Aura,
+			pub grandpa: Grandpa,
+		}
+	}
 }
 
 /// This runtime version.
@@ -122,17 +125,10 @@ pub fn native_version() -> NativeVersion {
 parameter_types! {
 	pub const BlockHashCount: BlockNumber = 250;
 	/// We allow for 2 seconds of compute with a 6 second average block time.
-	pub const MaximumBlockWeight: Weight = 2_000_000_000_000;
-	pub const ExtrinsicBaseWeight: Weight = 10_000_000;
+	pub const MaximumBlockWeight: Weight = 2 * WEIGHT_PER_SECOND;
 	pub const AvailableBlockRatio: Perbill = Perbill::from_percent(75);
 	pub const MaximumBlockLength: u32 = 5 * 1024 * 1024;
 	pub const Version: RuntimeVersion = VERSION;
-	/// This probably should not be changed unless you have specific
-	/// disk i/o conditions for the node.
-	pub const DbWeight: RuntimeDbWeight = RuntimeDbWeight {
-		read: 60_000_000, // ~0.06 ms = ~60 µs
-		write: 200_000_000, // ~0.2 ms = 200 µs
-	};
 }
 
 impl system::Trait for Runtime {
@@ -161,10 +157,10 @@ impl system::Trait for Runtime {
 	/// Maximum weight of each block.
 	type MaximumBlockWeight = MaximumBlockWeight;
 	/// The weight of database operations that the runtime can invoke.
-	type DbWeight = DbWeight;
+	type DbWeight = RocksDbWeight;
 	/// The weight of the overhead invoked on the block import process, independent of the
 	/// extrinsics included in that block.
-	type BlockExecutionWeight = ();
+	type BlockExecutionWeight = BlockExecutionWeight;
 	/// The base weight of any extrinsic processed by the runtime, independent of the
 	/// logic of that extrinsic. (Signature verification, nonce increment, fee, etc...)
 	type ExtrinsicBaseWeight = ExtrinsicBaseWeight;
@@ -186,13 +182,13 @@ impl system::Trait for Runtime {
 	type AccountData = balances::AccountData<Balance>;
 }
 
-// impl aura::Trait for Runtime {
-// 	type AuthorityId = AuraId;
-// }
+impl aura::Trait for Runtime {
+	type AuthorityId = AuraId;
+}
 
-// impl grandpa::Trait for Runtime {
-// 	type Event = Event;
-// }
+impl grandpa::Trait for Runtime {
+	type Event = Event;
+}
 
 parameter_types! {
 	pub const MinimumPeriod: u64 = SLOT_DURATION / 2;
@@ -201,7 +197,7 @@ parameter_types! {
 impl timestamp::Trait for Runtime {
 	/// A timestamp: milliseconds since the unix epoch.
 	type Moment = u64;
-	type OnTimestampSet = ();
+	type OnTimestampSet = Aura;
 	type MinimumPeriod = MinimumPeriod;
 }
 
@@ -250,8 +246,8 @@ construct_runtime!(
 		System: system::{Module, Call, Config, Storage, Event<T>},
 		RandomnessCollectiveFlip: randomness_collective_flip::{Module, Call, Storage},
 		Timestamp: timestamp::{Module, Call, Storage, Inherent},
-		//Aura: aura::{Module, Config<T>, Inherent(Timestamp)},
-		//Grandpa: grandpa::{Module, Call, Storage, Config, Event},
+		Aura: aura::{Module, Config<T>, Inherent(Timestamp)},
+		Grandpa: grandpa::{Module, Call, Storage, Config, Event},
 		Balances: balances::{Module, Call, Storage, Config<T>, Event<T>},
 		TransactionPayment: transaction_payment::{Module, Storage},
 		Sudo: sudo::{Module, Call, Config<T>, Storage, Event<T>},
@@ -347,31 +343,31 @@ impl_runtime_apis! {
 		}
 	}
 
-	// impl sp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
-	// 	fn slot_duration() -> u64 {
-	// 		Aura::slot_duration()
-	// 	}
-	//
-	// 	fn authorities() -> Vec<AuraId> {
-	// 		Aura::authorities()
-	// 	}
-	// }
+	impl sp_consensus_aura::AuraApi<Block, AuraId> for Runtime {
+		fn slot_duration() -> u64 {
+			Aura::slot_duration()
+		}
 
-	// impl sp_session::SessionKeys<Block> for Runtime {
-	// 	fn generate_session_keys(seed: Option<Vec<u8>>) -> Vec<u8> {
-	// 		opaque::SessionKeys::generate(seed)
-	// 	}
-	//
-	// 	fn decode_session_keys(
-	// 		encoded: Vec<u8>,
-	// 	) -> Option<Vec<(Vec<u8>, sp_core::crypto::KeyTypeId)>> {
-	// 		opaque::SessionKeys::decode_into_raw_public_keys(&encoded)
-	// 	}
-	// }
+		fn authorities() -> Vec<AuraId> {
+			Aura::authorities()
+		}
+	}
 
-	// impl fg_primitives::GrandpaApi<Block> for Runtime {
-	// 	fn grandpa_authorities() -> GrandpaAuthorityList {
-	// 		Grandpa::grandpa_authorities()
-	// 	}
-	// }
+	impl sp_session::SessionKeys<Block> for Runtime {
+		fn generate_session_keys(seed: Option<Vec<u8>>) -> Vec<u8> {
+			opaque::SessionKeys::generate(seed)
+		}
+
+		fn decode_session_keys(
+			encoded: Vec<u8>,
+		) -> Option<Vec<(Vec<u8>, sp_core::crypto::KeyTypeId)>> {
+			opaque::SessionKeys::decode_into_raw_public_keys(&encoded)
+		}
+	}
+
+	impl fg_primitives::GrandpaApi<Block> for Runtime {
+		fn grandpa_authorities() -> GrandpaAuthorityList {
+			Grandpa::grandpa_authorities()
+		}
+	}
 }
