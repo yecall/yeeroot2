@@ -3,5 +3,6 @@ members = [
     "bin/yee/node",
     "bin/yee/runtime",
     "client/pow",
+    "frame/balances",
     "primitives/core",
 ]
