@@ -2,5 +2,5 @@
 members = [
     "bin/yee/node",
     "bin/yee/runtime",
-    "client/consensus/pow",
+    #"client/consensus/pow",
 ]

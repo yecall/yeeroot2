@@ -34,7 +34,7 @@ sp-finality-grandpa = { version = "2.0.0-dev", git = "https://github.com/yeeco/s
 sc-client-api = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 sc-basic-authorship = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
-yc-consensus-pow = { path = "../../../client/consensus/pow" }
+#yc-consensus-pow = { path = "../../../client/consensus/pow" }
 
 yee-runtime = { version = "2.0.0-dev", path = "../runtime" }
 
