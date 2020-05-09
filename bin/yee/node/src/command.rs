@@ -73,7 +73,7 @@ pub fn run() -> sc_cli::Result<()> {
 			runner.run_node(
 				service::new_light,
 				service::new_full,
-				node_runtime::VERSION
+				yee_runtime::VERSION
 			)
 		}
 	}

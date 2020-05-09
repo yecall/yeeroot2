@@ -1,0 +1,17 @@
+[package]
+name = "yp-consensus-pow"
+version = "0.1.0"
+authors = ["YeeCo <contact@yeefoundation.com>"]
+edition = "2018"
+
+[dependencies]
+sp-core = { git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee" }
+sp-runtime = {  git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee" }
+sp-api = { git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee"  }
+
+[features]
+default = ["std"]
+std = [
+    "sp-core/std",
+    "sp-runtime/std",
+]
