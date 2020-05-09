@@ -19,17 +19,16 @@
 
 ///! Primitives for Yee Sharding
 
-pub mod utils;
+use codec::{Decode, Encode};
+use serde::Serialize;
 
 use {
     sp_api::decl_runtime_apis,
-    sp_runtime::traits::{NumberFor, Block},
+    sp_runtime::traits::NumberFor,
 };
 
-#[derive(Clone, Debug)]
-pub struct ScaleOut {
-    pub shard_num: u16,
-}
+pub mod inherents;
+pub mod utils;
 
 pub trait ShardingInfo<N> {
     /// get total shard number in genesis block
@@ -51,4 +50,20 @@ decl_runtime_apis! {
         /// get scale_out_observe_blocks
         fn get_scale_out_observe_blocks() -> NumberFor<Block>;
     }
+}
+
+#[derive(Clone, PartialEq, Eq)]
+#[derive(Decode, Encode)]
+#[cfg_attr(feature = "std", derive(Debug, Serialize))]
+pub struct ShardInfo<N> {
+    pub num: N,
+    pub count: N,
+    pub scale_out: Option<ScaleOut<N>>,
+}
+
+#[derive(Clone, PartialEq, Eq)]
+#[derive(Decode, Encode)]
+#[cfg_attr(feature = "std", derive(Debug, Serialize))]
+pub struct ScaleOut<N> {
+    pub shard_num: N,
 }

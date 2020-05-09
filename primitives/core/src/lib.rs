@@ -15,10 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with YeeChain.  If not, see <https://www.gnu.org/licenses/>.
 
-use bech32::{ToBase32, Error, FromBase32};
 use std::fmt;
-use serde::{Serialize, Deserialize, Serializer, Deserializer};
+
+use bech32::{Error, FromBase32, ToBase32};
 use codec::alloc::collections::HashMap;
+use serde::Deserialize;
 
 #[derive(Clone, Eq, PartialEq, Debug)]
 pub enum Hrp {
@@ -119,11 +120,12 @@ impl Config{
 
 #[cfg(test)]
 mod tests {
+	use substrate_primitives::crypto::Ss58Codec;
+	use substrate_primitives::sr25519::Public;
+
+	use crate::Address;
 	use crate::AddressCodec;
 	use crate::Hrp;
-	use crate::Address;
-	use substrate_primitives::sr25519::Public;
-	use substrate_primitives::crypto::Ss58Codec;
 
 	#[test]
 	fn test_to_address() {

@@ -2756,6 +2756,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-pow"
+version = "0.1.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-sharding",
+ "pallet-timestamp",
+ "parity-scale-codec",
+ "serde",
+ "sp-core",
+ "sp-inherents",
+ "sp-runtime",
+ "sp-std",
+ "yp-consensus-pow",
+ "yp-sharding",
+]
+
+[[package]]
 name = "pallet-randomness-collective-flip"
 version = "2.0.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
@@ -2784,6 +2802,21 @@ dependencies = [
  "sp-staking",
  "sp-std",
  "sp-trie",
+]
+
+[[package]]
+name = "pallet-sharding"
+version = "0.1.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "serde",
+ "sp-arithmetic",
+ "sp-inherents",
+ "sp-runtime",
+ "sp-std",
+ "yp-sharding",
 ]
 
 [[package]]
@@ -2841,38 +2874,6 @@ dependencies = [
  "sp-api",
  "sp-runtime",
  "sp-std",
-]
-
-[[package]]
-name = "pallet-yee-pow"
-version = "0.1.0"
-dependencies = [
- "frame-support",
- "frame-system",
- "pallet-timestamp",
- "pallet-yee-sharding",
- "parity-scale-codec",
- "serde",
- "sp-core",
- "sp-inherents",
- "sp-runtime",
- "sp-std",
- "yp-sharding",
-]
-
-[[package]]
-name = "pallet-yee-sharding"
-version = "0.1.0"
-dependencies = [
- "frame-support",
- "frame-system",
- "parity-scale-codec",
- "serde",
- "sp-arithmetic",
- "sp-inherents",
- "sp-runtime",
- "sp-std",
- "yp-sharding",
 ]
 
 [[package]]
@@ -6422,7 +6423,7 @@ dependencies = [
  "hex-literal",
  "log",
  "merkle_light 0.3.1 (git+https://github.com/yeeco/merkle_light.git?branch=yee)",
- "pallet-yee-pow",
+ "pallet-pow",
  "parity-scale-codec",
  "parking_lot 0.7.1",
  "sc-consensus",
@@ -6538,9 +6539,14 @@ dependencies = [
 name = "yp-consensus-pow"
 version = "0.1.0"
 dependencies = [
+ "parity-scale-codec",
+ "serde",
  "sp-api",
  "sp-core",
+ "sp-inherents",
  "sp-runtime",
+ "sp-std",
+ "sp-timestamp",
 ]
 
 [[package]]
@@ -6570,8 +6576,10 @@ dependencies = [
  "parity-scale-codec",
  "rand 0.6.5",
  "schnorrkel",
+ "serde",
  "sp-api",
  "sp-core",
+ "sp-inherents",
  "sp-runtime",
  "yee-runtime",
  "yp-core",
