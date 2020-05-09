@@ -1,0 +1,28 @@
+[package]
+name = "yp-sharding"
+version = "0.1.0"
+authors = ["YeeCo <contact@yeefoundation.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+sp-core = { git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee" }
+sp-runtime = { git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee" }
+codec = { package = "parity-scale-codec", version = "1.3.0", default-features = false, features = ["derive"] }
+sp-api = { git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee"  }
+
+[dev-dependencies]
+yee-runtime = { package = "yee-runtime", path = "../../bin/yee/runtime" }
+hex = "0.3.1"
+yp-core = { path = "../../primitives/core" }
+rand = "0.6.5"
+schnorrkel = { version = "0.9.1", features = ["preaudit_deprecated"] }
+
+[features]
+default = ["std"]
+std = [
+    "sp-core/std",
+    "sp-runtime/std",
+    "codec/std",
+]
