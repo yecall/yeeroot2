@@ -1,0 +1,20 @@
+[package]
+name = "yp-relay"
+version = "0.4.0"
+authors = ["YeeCo <contact@yeefoundation.com>"]
+edition = "2018"
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "1.3.0", default-features = false, features = ["derive"] }
+sp-core = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-std = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-runtime = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+
+[features]
+default = ["std"]
+std = [
+	"codec/std",
+    "sp-core/std",
+    "sp-runtime/std",
+    "sp-std/std",
+]

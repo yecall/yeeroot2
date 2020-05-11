@@ -1,30 +1,25 @@
 [package]
-name = "pallet-balances"
-version = "2.0.0-dev"
-authors = ["Yeeco Technologies"]
+name = "pallet-assets"
+version = "0.4.0"
+authors = ["YeeCo <contact@yeefoundation.com>"]
 edition = "2018"
-license = "GPL-3.0"
-
-[package.metadata.docs.rs]
-targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
-serde = { version = "1.0.101", optional = true }
+serde = { version = "1.0", optional = true }
 codec = { package = "parity-scale-codec", version = "1.3.0", default-features = false, features = ["derive"] }
 sp-std = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 sp-io = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 sp-runtime = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
-frame-benchmarking = { version = "2.0.0-dev", default-features = false, optional = true, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 frame-support = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 frame-system = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 sp-arithmetic = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 yp-sharding = { path = "../../primitives/sharding", default-features = false }
-#yp-pow = { path = "../../primitives/pow" }
 yp-relay = { path = "../../primitives/relay", default-features = false }
 
 [dev-dependencies]
 sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
-pallet-transaction-payment = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-std = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-io = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 
 [features]
 default = ["std"]
@@ -34,10 +29,8 @@ std = [
 	"sp-std/std",
 	"sp-io/std",
 	"sp-runtime/std",
-	"frame-benchmarking/std",
 	"frame-support/std",
 	"frame-system/std",
 	"yp-sharding/std",
 	"yp-relay/std",
 ]
-runtime-benchmarks = ["frame-benchmarking"]

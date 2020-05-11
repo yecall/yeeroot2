@@ -12,7 +12,9 @@ targets = ["x86_64-unknown-linux-gnu"]
 codec = { package = "parity-scale-codec", version = "1.3.0", default-features = false, features = ["derive"] }
 
 aura = { version = "2.0.0-dev", default-features = false, package = "pallet-aura", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
-balances = { default-features = false, package = "yee-balances", path = "../../../frame/balances" }
+assets = { default-features = false, package = "pallet-assets", path = "../../../frame/assets"}
+balances = { default-features = false, package = "pallet-balances", path = "../../../frame/balances" }
+relay = { default-features = false, package = "pallet-relay", path = "../../../frame/relay" }
 frame-support = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 grandpa = { version = "2.0.0-dev", default-features = false, package = "pallet-grandpa", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 randomness-collective-flip = { version = "2.0.0-dev", default-features = false, package = "pallet-randomness-collective-flip", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
@@ -42,7 +44,9 @@ wasm-builder-runner = { version = "1.0.5", package = "substrate-wasm-builder-run
 default = ["std"]
 std = [
 	"aura/std",
+	"assets/std",
 	"balances/std",
+	"relay/std",
 	"codec/std",
 	"frame-executive/std",
 	"frame-support/std",

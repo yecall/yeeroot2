@@ -174,8 +174,12 @@ use sp_runtime::{
 	},
 };
 use frame_system::{self as system, ensure_signed, ensure_root};
+use sp_arithmetic::traits::BaseArithmetic;
+use yp_sharding::ShardingInfo;
+use yp_relay::{OriginExtrinsic, RelayTypes};
 
 pub use self::imbalances::{PositiveImbalance, NegativeImbalance};
+use crate::tests_local::ExistentialDeposit;
 
 pub trait Subtrait<I: Instance = DefaultInstance>: frame_system::Trait {
 	/// The balance of an account.
@@ -187,6 +191,13 @@ pub trait Subtrait<I: Instance = DefaultInstance>: frame_system::Trait {
 
 	/// The means of storing the balances of an account.
 	type AccountStore: StoredMap<Self::AccountId, AccountData<Self::Balance>>;
+
+	/// Type for shard number
+	type ShardNum: Parameter + Member + BaseArithmetic + Codec + Default + Copy +
+	MaybeSerializeDeserialize + Debug;
+
+	/// Sharding info
+	type Sharding: ShardingInfo<Self::ShardNum>;
 }
 
 pub trait Trait<I: Instance = DefaultInstance>: frame_system::Trait {
@@ -205,12 +216,21 @@ pub trait Trait<I: Instance = DefaultInstance>: frame_system::Trait {
 
 	/// The means of storing the balances of an account.
 	type AccountStore: StoredMap<Self::AccountId, AccountData<Self::Balance>>;
+
+	/// Type for shard number
+	type ShardNum: Parameter + Member + BaseArithmetic + Codec + Default + Copy +
+		MaybeSerializeDeserialize + Debug;
+
+	/// Sharding info
+	type Sharding: ShardingInfo<Self::ShardNum>;
 }
 
 impl<T: Trait<I>, I: Instance> Subtrait<I> for T {
 	type Balance = T::Balance;
 	type ExistentialDeposit = T::ExistentialDeposit;
 	type AccountStore = T::AccountStore;
+	type ShardNum = T::ShardNum;
+	type Sharding = T::Sharding;
 }
 
 decl_event!(
@@ -412,7 +432,8 @@ decl_module! {
 		/// Transfer some liquid free balance to another account.
 		///
 		/// `transfer` will set the `FreeBalance` of the sender and receiver.
-		/// It will decrease the total issuance of the system by the `TransferFee`.
+		/// It will decrease the total issuance of the system by the `
+		/// `.
 		/// If the sender's account is below the existential deposit as a result
 		/// of the transfer, the account will be reaped.
 		///
@@ -671,6 +692,26 @@ impl<T: Trait<I>, I: Instance> Module<T, I> {
 			}
 		}
 	}
+
+	/// execute relay transfer
+	pub fn relay_transfer(transfer: Vec<u8>) -> DispatchResult {
+		let tx: OriginExtrinsic<T::AccountId, T::Balance> = OriginExtrinsic::decode(RelayTypes::Balance, transfer).unwrap();
+		let value = tx.amount();
+		if value.is_zero() { return Ok(()) }
+
+		Self::try_mutate_account(tx.to(), |to_acount| -> DispatchResult {
+			to_acount.free = to_acount.free.checked_add(&value).ok_or(Error::<T, I>::Overflow)?;
+			let ed = T::ExistentialDeposit::get();
+			ensure!(to_acount.total() >= ed, Error::<T, I>::ExistentialDepost);
+
+			Ok(())
+		})?;
+
+		// Emit transfer event.
+		Self::deposit_event(RawEvent::Transfer(tx.from(), tx.to(), value));
+
+		Ok(())
+	}
 }
 
 // wrapping these imbalances in a private module is necessary to ensure absolute privacy
@@ -876,6 +917,8 @@ impl<T: Subtrait<I>, I: Instance> Trait<I> for ElevatedTrait<T, I> {
 	type DustRemoval = ();
 	type ExistentialDeposit = T::ExistentialDeposit;
 	type AccountStore = T::AccountStore;
+	type ShardNum = T::ShardNum;
+	type Sharding = T::Sharding;
 }
 
 impl<T: Trait<I>, I: Instance> Currency<T::AccountId> for Module<T, I> where
@@ -964,17 +1007,38 @@ impl<T: Trait<I>, I: Instance> Currency<T::AccountId> for Module<T, I> where
 	) -> DispatchResult {
 		if value.is_zero() || transactor == dest { return Ok(()) }
 
-		Self::try_mutate_account(dest, |to_account| -> DispatchResult {
+		let (cn, c) = (T::Sharding::get_curr_shard().expect("can't get current shard num").as_() as u16, T::Sharding::get_shard_count().as_() as u16);
+		let dn = yp_sharding::utils::shard_num_for(dest, c).expect("can't get target shard num");
+		if cn == dn {
+			Self::try_mutate_account(dest, |to_account| -> DispatchResult {
+				Self::try_mutate_account(transactor, |from_account| -> DispatchResult {
+					from_account.free = from_account.free.checked_sub(&value)
+						.ok_or(Error::<T, I>::InsufficientBalance)?;
+
+					// NOTE: total stake being stored in the same type means that this could never overflow
+					// but better to be safe than sorry.
+					to_account.free = to_account.free.checked_add(&value).ok_or(Error::<T, I>::Overflow)?;
+
+					let ed = T::ExistentialDeposit::get();
+					ensure!(to_account.total() >= ed, Error::<T, I>::ExistentialDeposit);
+
+					Self::ensure_can_withdraw(
+						transactor,
+						value,
+						WithdrawReason::Transfer.into(),
+						from_account.free,
+					)?;
+
+					let allow_death = existence_requirement == ExistenceRequirement::AllowDeath;
+					let allow_death = allow_death && system::Module::<T>::allow_death(transactor);
+					ensure!(allow_death || from_account.free >= ed, Error::<T, I>::KeepAlive);
+
+					Ok(())
+				})
+			})?;
+		} else {
 			Self::try_mutate_account(transactor, |from_account| -> DispatchResult {
-				from_account.free = from_account.free.checked_sub(&value)
-					.ok_or(Error::<T, I>::InsufficientBalance)?;
-
-				// NOTE: total stake being stored in the same type means that this could never overflow
-				// but better to be safe than sorry.
-				to_account.free = to_account.free.checked_add(&value).ok_or(Error::<T, I>::Overflow)?;
-
-				let ed = T::ExistentialDeposit::get();
-				ensure!(to_account.total() >= ed, Error::<T, I>::ExistentialDeposit);
+				from_account.free = from_account.free.checked_sub(&value).ok_or(Error::<T, I>::InsufficientBalance)?;
 
 				Self::ensure_can_withdraw(
 					transactor,
@@ -983,13 +1047,13 @@ impl<T: Trait<I>, I: Instance> Currency<T::AccountId> for Module<T, I> where
 					from_account.free,
 				)?;
 
+				let ed = T::ExistentialDeposit::get();
 				let allow_death = existence_requirement == ExistenceRequirement::AllowDeath;
 				let allow_death = allow_death && system::Module::<T>::allow_death(transactor);
 				ensure!(allow_death || from_account.free >= ed, Error::<T, I>::KeepAlive);
-
 				Ok(())
-			})
-		})?;
+			})?;
+		}
 
 		// Emit transfer event.
 		Self::deposit_event(RawEvent::Transfer(transactor.clone(), dest.clone(), value));

@@ -2,7 +2,13 @@
 members = [
     "bin/yee/node",
     "bin/yee/runtime",
-    "client/pow",
+    "frame/assets",
     "frame/balances",
+    "frame/sharding",
+    "frame/relay",
+    "primitives/consensus/pow",
+    "primitives/context",
     "primitives/core",
+    "primitives/relay",
+    "primitives/sharding",
 ]

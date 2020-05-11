@@ -248,6 +248,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b41b7ea54a0c9d92199de89e20e58d49f02f8e699814ef3fdf266f6f748d15c7"
 
 [[package]]
+name = "bech32"
+version = "0.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cdcf67bb7ba7797a081cd19009948ab533af7c355d5caf1d08c777582d351e9c"
+
+[[package]]
 name = "bindgen"
 version = "0.53.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1345,6 +1351,12 @@ checksum = "61565ff7aaace3525556587bd2dc31d4a07071957be715e63ce7b1eccf51a8f4"
 dependencies = [
  "libc",
 ]
+
+[[package]]
+name = "hex"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "805026a5d0141ffc30abb3be3173848ad46a1b1664fe632428479619a3644d77"
 
 [[package]]
 name = "hex"
@@ -2642,6 +2654,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-assets"
+version = "0.4.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "serde",
+ "sp-arithmetic",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+ "yp-relay",
+ "yp-sharding",
+]
+
+[[package]]
 name = "pallet-aura"
 version = "2.0.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
@@ -2665,16 +2694,20 @@ dependencies = [
 [[package]]
 name = "pallet-balances"
 version = "2.0.0-dev"
-source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
  "frame-system",
+ "pallet-transaction-payment",
  "parity-scale-codec",
  "serde",
+ "sp-arithmetic",
+ "sp-core",
  "sp-io",
  "sp-runtime",
  "sp-std",
+ "yp-relay",
+ "yp-sharding",
 ]
 
 [[package]]
@@ -2725,6 +2758,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-relay"
+version = "0.4.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-assets",
+ "pallet-balances",
+ "parity-scale-codec",
+ "sp-runtime",
+ "sp-std",
+ "yp-relay",
+]
+
+[[package]]
 name = "pallet-session"
 version = "2.0.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
@@ -2740,6 +2787,19 @@ dependencies = [
  "sp-staking",
  "sp-std",
  "sp-trie",
+]
+
+[[package]]
+name = "pallet-sharding"
+version = "0.1.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "serde",
+ "sp-inherents",
+ "sp-runtime",
+ "yp-sharding",
 ]
 
 [[package]]
@@ -3164,7 +3224,7 @@ dependencies = [
  "bitflags",
  "byteorder",
  "chrono",
- "hex",
+ "hex 0.4.2",
  "lazy_static",
  "libc",
  "libflate",
@@ -4036,7 +4096,7 @@ version = "2.0.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
 dependencies = [
  "derive_more",
- "hex",
+ "hex 0.4.2",
  "parking_lot 0.10.2",
  "rand 0.7.3",
  "serde_json",
@@ -4060,7 +4120,7 @@ dependencies = [
  "futures 0.3.4",
  "futures-timer 3.0.2",
  "futures_codec",
- "hex",
+ "hex 0.4.2",
  "ip_network",
  "libp2p",
  "linked-hash-map",
@@ -4819,7 +4879,7 @@ dependencies = [
  "futures 0.3.4",
  "hash-db",
  "hash256-std-hasher",
- "hex",
+ "hex 0.4.2",
  "impl-serde 0.3.0",
  "lazy_static",
  "libsecp256k1",
@@ -6255,10 +6315,12 @@ dependencies = [
  "frame-executive",
  "frame-support",
  "frame-system",
+ "pallet-assets",
  "pallet-aura",
  "pallet-balances",
  "pallet-grandpa",
  "pallet-randomness-collective-flip",
+ "pallet-relay",
  "pallet-sudo",
  "pallet-timestamp",
  "pallet-transaction-payment",
@@ -6277,22 +6339,6 @@ dependencies = [
  "sp-transaction-pool",
  "sp-version",
  "substrate-wasm-builder-runner",
-]
-
-[[package]]
-name = "yee-balances"
-version = "2.0.0-dev"
-dependencies = [
- "frame-benchmarking",
- "frame-support",
- "frame-system",
- "pallet-transaction-payment",
- "parity-scale-codec",
- "serde",
- "sp-core",
- "sp-io",
- "sp-runtime",
- "sp-std",
 ]
 
 [[package]]
@@ -6322,6 +6368,59 @@ dependencies = [
  "structopt",
  "substrate-build-script-utils",
  "yee-runtime",
+]
+
+[[package]]
+name = "yp-consensus-pow"
+version = "0.1.0"
+dependencies = [
+ "sp-api",
+ "sp-core",
+ "sp-runtime",
+]
+
+[[package]]
+name = "yp-context"
+version = "0.6.0"
+dependencies = [
+ "sp-runtime",
+ "yp-consensus-pow",
+]
+
+[[package]]
+name = "yp-core"
+version = "0.5.0"
+dependencies = [
+ "bech32",
+ "hex 0.3.2",
+ "parity-scale-codec",
+ "serde",
+ "sp-core",
+]
+
+[[package]]
+name = "yp-relay"
+version = "0.4.0"
+dependencies = [
+ "parity-scale-codec",
+ "sp-core",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "yp-sharding"
+version = "0.1.0"
+dependencies = [
+ "hex 0.3.2",
+ "parity-scale-codec",
+ "rand 0.6.5",
+ "schnorrkel",
+ "sp-api",
+ "sp-core",
+ "sp-runtime",
+ "yee-runtime",
+ "yp-core",
 ]
 
 [[package]]
