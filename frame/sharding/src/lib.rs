@@ -145,7 +145,7 @@ decl_module! {
 
             match current_scale_out_phase {
                 None => {
-                    if let Some(scale_out) = info.scale_out {
+                    if let Some(_) = info.scale_out {
                         <Self as Store>::CurrentScaleOutPhase::mutate(|orig| {
                             *orig = Some(ScaleOutPhase::Started{
                                 observe_util: block_number + scale_out_observe_blocks,
@@ -155,7 +155,7 @@ decl_module! {
                     }
                 },
                 Some(current_scale_out_phase) => match current_scale_out_phase{
-                    ScaleOutPhase::Started{observe_util, shard_num} => {
+                    ScaleOutPhase::Started{observe_util, ..} => {
 
                         //TODO: check scaled shard_num percentage
                         if observe_util == block_number{
@@ -167,7 +167,7 @@ decl_module! {
                             });
                         }
                     },
-                    ScaleOutPhase::NativeReady{observe_util, shard_num} => {
+                    ScaleOutPhase::NativeReady{observe_util, ..} => {
 
                         //TODO: check foreign scale out phase
                         if observe_util == block_number{
@@ -180,7 +180,7 @@ decl_module! {
                         }
 
                     },
-                    ScaleOutPhase::Ready{observe_util, shard_num} => {
+                    ScaleOutPhase::Ready{observe_util, ..} => {
 
                         if observe_util == block_number{
 
@@ -202,7 +202,7 @@ decl_module! {
                             });
                         });
                     },
-                    ScaleOutPhase::Committed{shard_num, shard_count} => {
+                    ScaleOutPhase::Committed{..} => {
 
                         <Self as Store>::CurrentScaleOutPhase::mutate(|orig| {
                             *orig = None;
@@ -213,7 +213,7 @@ decl_module! {
 
         }
 
-        fn on_finalize(block_number: T::BlockNumber) {
+        fn on_finalize(_block_number: T::BlockNumber) {
 
             if let Some(shard_info) = Self::current_shard_info() {
                 Self::deposit_log(RawLog::ShardMarker(shard_info.num, shard_info.count));
