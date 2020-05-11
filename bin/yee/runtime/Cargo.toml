@@ -1,5 +1,5 @@
 [package]
-name = "yee-runtime"
+name = "node-runtime"
 version = "2.0.0-dev"
 authors = ["Anonymous"]
 edition = "2018"

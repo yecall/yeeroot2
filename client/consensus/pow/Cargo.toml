@@ -1,0 +1,46 @@
+[package]
+name = "yc-consensus-pow"
+version = "0.1.0"
+authors = ["YeeCo <contact@yeefoundation.com>"]
+edition = "2018"
+
+[dependencies]
+log = "0.4"
+codec = { package = "parity-scale-codec", version = "1.3.0", default-features = false, features = ["derive"] }
+parking_lot = "0.7.1"
+hash-db = "0.12"
+ansi_term = "0.11"
+futures = { version = "0.3.1", features = ["compat"] }
+futures-timer = "3.0.1"
+serde = { version = "1.0", optional = true, features = ["derive"] }
+merkle_light = { git = "https://github.com/yeeco/merkle_light.git", branch = "yee2" }
+
+sc-consensus = { git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-blockchain = { git = "https://github.com/yeeco/substrate.git", branch = "yee"}
+sp-inherents = { git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-core = { git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-runtime = { git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-api = { git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-consensus = { git = "https://github.com/yeeco/substrate.git", branch = "yee" }
+sp-arithmetic = { git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee" }
+
+pallet-pow = { path = "../../../frame/pow" }
+yee-runtime = { package = "yee-runtime", path = "../../../bin/yee/runtime" }
+yc-sharding = { path = "../../sharding" }
+yc-util-merkle = { path = "../../util/merkle" }
+yc-util = { path = "../../util" }
+yp-consensus-pow = { path = "../../../primitives/consensus/pow" }
+yp-sharding = { path = "../../../primitives/sharding" }
+yp-context = { path = "../../../primitives/context" }
+
+#foreign_chain = { package = "yee-foreign-chain", path = "../../../foreign/chain" }
+
+[dev-dependencies]
+hex-literal = "0.2"
+hex = "0.3.1"
+
+[features]
+default = ["std"]
+std = [
+	"serde",
+]

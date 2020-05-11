@@ -36,7 +36,7 @@ sp-runtime = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.
 sc-basic-authorship = { version = "0.8.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 #yc-consensus-pow = { path = "../../../client/consensus/pow" }
 
-yee-runtime = { version = "2.0.0-dev", path = "../runtime" }
+node-runtime = { version = "2.0.0-dev", path = "../runtime" }
 
 [build-dependencies]
 substrate-build-script-utils = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }

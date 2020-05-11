@@ -17,15 +17,20 @@
 
 #![cfg_attr(not(feature = "std"), no_std)]
 
-///! Primitives for Yee POW
+use codec::{Decode, Encode};
+use serde::Serialize;
 
 use {
+    sp_api::decl_runtime_apis,
     sp_runtime::{
         ConsensusEngineId,
         traits::NumberFor,
     },
-    sp_api::decl_runtime_apis,
 };
+
+///! Primitives for Yee POW
+
+pub mod inherents;
 
 /// `ConsensusEngineId` of Yee POW consensus.
 pub const YEE_POW_ENGINE_ID: ConsensusEngineId = [b'Y', b'e', b'e', b'!'];
@@ -43,4 +48,20 @@ decl_runtime_apis! {
         /// Target block time in seconds
         fn target_block_time() -> u64;
     }
+}
+
+#[derive(Clone, PartialEq, Eq)]
+#[derive(Decode, Encode)]
+#[cfg_attr(feature = "std", derive(Debug, Serialize))]
+pub struct PowInfo<AccountId> {
+    pub coinbase: AccountId,
+    pub reward_condition: RewardCondition,
+}
+
+#[derive(Clone, PartialEq, Eq)]
+#[derive(Decode, Encode)]
+#[cfg_attr(feature = "std", derive(Debug, Serialize))]
+pub enum RewardCondition {
+    Normal,
+    Slash,//TODO: provide slash reason
 }

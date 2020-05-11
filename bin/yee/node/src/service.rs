@@ -4,7 +4,7 @@ use std::sync::Arc;
 use std::time::Duration;
 use sc_client_api::ExecutorProvider;
 use sc_consensus::LongestChain;
-use yee_runtime::{self, opaque::Block, RuntimeApi};
+use node_runtime::{self, opaque::Block, RuntimeApi};
 use sc_service::{error::{Error as ServiceError}, AbstractService, Configuration, ServiceBuilder};
 use sp_inherents::InherentDataProviders;
 use sc_executor::native_executor_instance;
@@ -17,8 +17,8 @@ use sc_finality_grandpa::{
 // Our native executor instance.
 native_executor_instance!(
 	pub Executor,
-	yee_runtime::api::dispatch,
-	yee_runtime::native_version,
+	node_runtime::api::dispatch,
+	node_runtime::native_version,
 );
 
 /// Starts a `ServiceBuilder` for a full service.
@@ -34,7 +34,7 @@ macro_rules! new_full_start {
 		let inherent_data_providers = sp_inherents::InherentDataProviders::new();
 
 		let builder = sc_service::ServiceBuilder::new_full::<
-			yee_runtime::opaque::Block, yee_runtime::RuntimeApi, crate::service::Executor
+			node_runtime::opaque::Block, node_runtime::RuntimeApi, crate::service::Executor
 		>($config)?
 			.with_select_chain(|_config, backend| {
 				Ok(sc_consensus::LongestChain::new(backend.clone()))

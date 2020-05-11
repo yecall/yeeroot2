@@ -1,0 +1,13 @@
+[package]
+name = "yc-util"
+version = "0.4.0"
+authors = ["YeeCo <contact@yeefoundation.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+codec = { package = "parity-scale-codec", version = "1.3.0", default-features = false, features = ["derive"] }
+sp-std = {  git = "https://github.com/yeeco/substrate.git", default-features = false, branch = "yee" }
+sp-runtime = { git = "https://github.com/yeeco/substrate.git", default-features = false, branch = "yee" }
+sp-core = { git = "https://github.com/yeeco/substrate.git", branch = "yee", default-features = false }

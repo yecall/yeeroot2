@@ -2,6 +2,7 @@
 members = [
     "bin/yee/node",
     "bin/yee/runtime",
+    "client/consensus/pow",
     "frame/assets",
     "frame/balances",
     "frame/sharding",
