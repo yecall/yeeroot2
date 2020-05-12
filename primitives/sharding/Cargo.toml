@@ -15,7 +15,7 @@ sp-inherents = { git = "https://github.com/yeeco/substrate.git", default_feature
 serde = { version = "1.0", optional = true }
 
 [dev-dependencies]
-yee-runtime = { package = "yee-runtime", path = "../../bin/yee/runtime" }
+yee-runtime = { package = "node-runtime", path = "../../bin/yee/runtime" }
 hex = "0.3.1"
 yp-core = { path = "../../primitives/core" }
 rand = "0.6.5"

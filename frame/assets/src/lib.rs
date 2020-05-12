@@ -20,13 +20,14 @@
 // Ensure we're `no_std` when compiling for Wasm.
 #![cfg_attr(not(feature = "std"), no_std)]
 
-use codec::{Decode, Encode, Compact, Input};
+use codec::{Encode};
 use frame_support::{StorageValue, StorageMap, Parameter, decl_module, decl_event, decl_storage, ensure};
 use sp_runtime::{traits::{Member, AtLeast32Bit, Zero, One, StaticLookup}, DispatchResult, DispatchError};
 use yp_sharding::ShardingInfo;
-use frame_system::ensure_signed;
+use frame_system::{self as system, ensure_signed};
 use sp_std::prelude::Vec;
-use yp_relay::{RelayTypes, RelayParams, OriginExtrinsic, SHARD_CODE_SIZE};
+use sp_std::convert::TryInto;
+use yp_relay::{RelayTypes, OriginExtrinsic, SHARD_CODE_SIZE};
 
 pub trait Trait: sharding::Trait {
 	/// The overarching event type.
@@ -35,10 +36,13 @@ pub trait Trait: sharding::Trait {
 	/// The units in which we record balances.
 	type Balance: Member + Parameter + AtLeast32Bit + Default + Copy;
 
+	/// The arithmetic type of asset identifier.
+	type AssetId: Parameter + AtLeast32Bit + Default + Copy;
+
 	type Sharding: ShardingInfo<Self::ShardNum>;
 }
 
-type AssetId = u32;
+// type AssetId = u32;
 
 type Decimals = u16;
 
@@ -52,11 +56,11 @@ decl_module! {
 		/// such assets and they'll all belong to the `origin` initially. It will have an
 		/// identifier `AssetId` instance: this will be specified in the `Issued` event.
 		#[weight = 0]
-		fn issue(origin, name: Vec<u8>, #[compact] total: T::Balance, #[compact] decimals: Decimals) -> Result {
+		fn issue(origin, name: Vec<u8>, #[compact] total: T::Balance, #[compact] decimals: Decimals) -> DispatchResult {
 			let origin = ensure_signed(origin)?;
 
 			if name.len() > MAX_NAME_SIZE {
-				return Err("Asset's name's length overflow.")
+				return Err(DispatchError::Other("Asset's name's length overflow."))
 			}
 			Self::issue_asset(origin, name, total, decimals);
 
@@ -67,7 +71,7 @@ decl_module! {
 		#[weight = 0]
 		fn transfer(origin,
 			shard_code: Vec<u8>,
-			#[compact] id: AssetId,
+			#[compact] id: T::AssetId,
 			target: <T::Lookup as StaticLookup>::Source,
 			#[compact] amount: T::Balance
 		) {
@@ -82,8 +86,9 @@ decl_module! {
 			<Balances<T>>::insert(origin_account, origin_balance - amount);
 			let target = T::Lookup::lookup(target)?;
 
-			let (cn, c) = (T::Sharding::get_curr_shard().expect("can't get current shard num").as_() as u16, T::Sharding::get_shard_count().as_() as u16);
-			let dn = sharding_primitives::utils::shard_num_for(&target, c).expect("can't get target shard num");
+			let (cn, c) = (T::Sharding::get_curr_shard().expect("qed").try_into().ok().expect("qed") as u16,
+									T::Sharding::get_shard_count().try_into().ok().expect("qed") as u16);
+			let dn = yp_sharding::utils::shard_num_for(&target, c).expect("qed");
 			// in same sharding
 			if cn == dn {
 				<Balances<T>>::mutate((shard_code.clone(), id, target.clone()), |balance| *balance += amount);
@@ -95,28 +100,32 @@ decl_module! {
 }
 
 decl_event!(
-	pub enum Event<T> where <T as system::Trait>::AccountId, <T as Trait>::Balance {
+	pub enum Event<T> where
+		<T as system::Trait>::AccountId,
+		<T as Trait>::Balance,
+		<T as Trait>::AssetId
+	{
 		/// Some assets were issued.
-		Issued(Vec<u8>, u32, Vec<u8>, AccountId, Balance, u16),
+		Issued(Vec<u8>, AssetId, Vec<u8>, AccountId, Balance, u16),
 		/// Some assets were transferred.
-		Transferred(Vec<u8>, u32, AccountId, AccountId, Balance),
+		Transferred(Vec<u8>, AssetId, AccountId, AccountId, Balance),
 	}
 );
 
 decl_storage! {
 	trait Store for Module<T: Trait> as Assets {
 		/// The number of units of assets held by any given account.
-		Balances: map hasher(blake2_128_concat) (Vec<u8>, AssetId, T::AccountId) => T::Balance;
+		Balances: map hasher(blake2_128_concat) (Vec<u8>, T::AssetId, T::AccountId) => T::Balance;
 		/// The next asset identifier up for grabs.
-		NextAssetId get(fn next_asset_id) config(): AssetId;
+		NextAssetId get(fn next_asset_id) config(): T::AssetId;
 		/// The name of an asset.
-		AssetsName: map AssetId => Vec<u8>;
+		AssetsName: map hasher(twox_64_concat) T::AssetId => Vec<u8>;
 		/// The total unit supply of an asset
-		TotalSupply: map AssetId => T::Balance;
+		TotalSupply: map hasher(twox_64_concat) T::AssetId => T::Balance;
 		/// The Asset's decimals.
-		AssetsDecimals: map AssetId => Decimals;
+		AssetsDecimals: map hasher(twox_64_concat) T::AssetId => Decimals;
 		/// The asset's issuer.
-		AssetsIssuer: map AssetId => T::AccountId;
+		AssetsIssuer: map hasher(twox_64_concat) T::AssetId => T::AccountId;
 	}
 }
 
@@ -140,28 +149,28 @@ impl<T: Trait> Module<T> {
 	}
 
 	/// Get the asset `id` balance of `who`.
-	pub fn balance(shard_code: Vec<u8>, id: AssetId, who: T::AccountId) -> T::Balance {
+	pub fn balance(shard_code: Vec<u8>, id: T::AssetId, who: T::AccountId) -> T::Balance {
 		<Balances<T>>::get((shard_code, id, who))
 	}
 
 	/// Get the total supply of an asset `id`
-	pub fn total_supply(id: AssetId) -> T::Balance {
+	pub fn total_supply(id: T::AssetId) -> T::Balance {
 		<TotalSupply<T>>::get(id)
 	}
 
 	/// Get the name of an asset `id`
-	pub fn name(id: AssetId) -> Vec<u8> { <AssetsName<T>>::get(id) }
+	pub fn name(id: T::AssetId) -> Vec<u8> { <AssetsName<T>>::get(id) }
 
 	/// Get the decimals of an asset `id`
-	pub fn decimals(id: AssetId) -> Decimals { <AssetsDecimals<T>>::get(id) }
+	pub fn decimals(id: T::AssetId) -> Decimals { <AssetsDecimals<T>>::get(id) }
 
 	/// Get the issuer of an asset `id`
-	pub fn issuer(id: AssetId) -> T::AccountId { <AssetsIssuer<T>>::get(id) }
+	pub fn issuer(id: T::AssetId) -> T::AccountId { <AssetsIssuer<T>>::get(id) }
 
 	/// relay transfer
 	pub fn relay_transfer(input: Vec<u8>) -> DispatchResult {
 		if let Some(tx) = OriginExtrinsic::<T::AccountId, T::Balance>::decode(RelayTypes::Assets, input) {
-			let asset_id = tx.asset_id().unwrap();
+			let asset_id: T::AssetId = tx.asset_id().unwrap().into();
 			<Balances<T>>::mutate((tx.shard_code(), asset_id, tx.to()), |balance| *balance += tx.amount());
 			Self::deposit_event(RawEvent::Transferred(tx.shard_code(), asset_id, tx.from(), tx.to(), tx.amount()));
 			Ok(())

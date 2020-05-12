@@ -92,8 +92,8 @@ pub mod opaque {
 
 /// This runtime version.
 pub const VERSION: RuntimeVersion = RuntimeVersion {
-	spec_name: create_runtime_str!("node-template"),
-	impl_name: create_runtime_str!("node-template"),
+	spec_name: create_runtime_str!("yeeroot"),
+	impl_name: create_runtime_str!("yeeroot"),
 	authoring_version: 1,
 	spec_version: 1,
 	impl_version: 1,
@@ -205,11 +205,30 @@ parameter_types! {
 impl balances::Trait for Runtime {
 	/// The type for recording an account's balance.
 	type Balance = Balance;
+	type DustRemoval = ();
 	/// The ubiquitous event type.
 	type Event = Event;
-	type DustRemoval = ();
 	type ExistentialDeposit = ExistentialDeposit;
 	type AccountStore = System;
+	type ShardNum = u16;
+	type Sharding = sharding::Module<Runtime>;
+}
+
+impl assets::Trait for Runtime {
+	type Event = Event;
+	/// The type for recording an account's balance.
+	type Balance = Balance;
+	type AssetId = u32;
+	type Sharding = sharding::Module<Runtime>;
+}
+
+impl relay::Trait for Runtime {
+	type Runtime = Runtime;
+}
+
+impl sharding::Trait for Runtime {
+	type ShardNum = u16;
+	type Log = Log;
 }
 
 parameter_types! {
@@ -240,7 +259,10 @@ construct_runtime!(
 		Timestamp: timestamp::{Module, Call, Storage, Inherent},
 		Aura: aura::{Module, Config<T>, Inherent(Timestamp)},
 		Grandpa: grandpa::{Module, Call, Storage, Config, Event},
+		Assets: assets::{Module, Call, Storage, Config<T>, Event<T>},
 		Balances: balances::{Module, Call, Storage, Config<T>, Event<T>},
+		Relay: relay::{Module, Call},
+		Sharding: sharding::{Module, Call, Storage, Config<T>, Inherent},
 		TransactionPayment: transaction_payment::{Module, Storage},
 		Sudo: sudo::{Module, Call, Config<T>, Storage, Event<T>},
 	}

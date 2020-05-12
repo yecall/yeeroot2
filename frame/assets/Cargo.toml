@@ -15,6 +15,7 @@ frame-system = { version = "2.0.0-dev", default-features = false, git = "https:/
 sp-arithmetic = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 yp-sharding = { path = "../../primitives/sharding", default-features = false }
 yp-relay = { path = "../../primitives/relay", default-features = false }
+sharding = { package = "pallet-sharding", default-features = false, path = "../sharding" }
 
 [dev-dependencies]
 sp-core = { version = "2.0.0-dev", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
@@ -33,4 +34,5 @@ std = [
 	"frame-system/std",
 	"yp-sharding/std",
 	"yp-relay/std",
+	"sharding/std",
 ]

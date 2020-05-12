@@ -2,7 +2,7 @@
 
 use codec::{Encode, Decode, Codec, Input, Compact};
 use sp_std::prelude::*;
-use sp_core::{Blake2Hasher, Hasher, H256};
+use sp_core::{Blake2Hasher, Hasher};
 use sp_runtime::generic::Era;
 
 pub const SHARD_CODE_SIZE: usize = 2;
@@ -126,20 +126,22 @@ pub enum RelayTypes {
 /// OriginAsset for asset transfer
 pub struct OriginExtrinsic<AccountId, Balance> where
     AccountId: Codec + Clone + Default,
+    // AssetId: Codec + Clone + Default,
     Balance: Codec + Clone,
 {
     shard: Vec<u8>,
     id: Option<u32>,
     sender: AccountId,
-    signature: Vec<u8>,
-    index: Compact<u64>,
-    era: Era,
+    _signature: Vec<u8>,
+    _index: Compact<u64>,
+    _era: Era,
     dest: AccountId,
     amount: Balance,
 }
 
 impl<AccountId, Balance> OriginExtrinsic<AccountId, Balance> where
     AccountId: Codec + Clone + Default,
+    // AssetId: Codec + Clone + Default,
     Balance: Codec + Clone,
 {
     pub fn decode(relay_type: RelayTypes, input: Vec<u8>) -> Option<OriginExtrinsic<AccountId, Balance>> {
@@ -254,9 +256,9 @@ impl<AccountId, Balance> OriginExtrinsic<AccountId, Balance> where
             Err(_) => return None
         };
         if relay_type == RelayTypes::Assets {
-            Some(Self { shard: shard_code, id: Some(id.0), sender, signature, index, era, dest, amount })
+            Some(Self { shard: shard_code, id: Some(id.0), sender, _signature: signature, _index: index, _era: era, dest, amount })
         } else if relay_type == RelayTypes::Balance {
-            Some(Self { shard: shard_code, id: None, sender, signature, index, era, dest, amount })
+            Some(Self { shard: shard_code, id: None, sender, _signature: signature, _index: index, _era: era, dest, amount })
         } else {
             None
         }

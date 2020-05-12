@@ -15,6 +15,7 @@ aura = { version = "2.0.0-dev", default-features = false, package = "pallet-aura
 assets = { default-features = false, package = "pallet-assets", path = "../../../frame/assets"}
 balances = { default-features = false, package = "pallet-balances", path = "../../../frame/balances" }
 relay = { default-features = false, package = "pallet-relay", path = "../../../frame/relay" }
+sharding = { default-features = false, package = "pallet-sharding", path = "../../../frame/sharding"}
 frame-support = { version = "2.0.0-dev", default-features = false, git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 grandpa = { version = "2.0.0-dev", default-features = false, package = "pallet-grandpa", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
 randomness-collective-flip = { version = "2.0.0-dev", default-features = false, package = "pallet-randomness-collective-flip", git = "https://github.com/yeeco/substrate.git", branch = "yee" }
@@ -47,6 +48,7 @@ std = [
 	"assets/std",
 	"balances/std",
 	"relay/std",
+	"sharding/std",
 	"codec/std",
 	"frame-executive/std",
 	"frame-support/std",

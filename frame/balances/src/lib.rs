@@ -155,7 +155,7 @@ mod tests_composite;
 mod benchmarking;
 
 use sp_std::prelude::*;
-use sp_std::{cmp, result, mem, fmt::Debug, ops::BitOr, convert::Infallible};
+use sp_std::{cmp, result, mem, fmt::Debug, ops::BitOr, convert::{Infallible, TryInto}};
 use codec::{Codec, Encode, Decode};
 use frame_support::{
 	StorageValue, Parameter, decl_event, decl_storage, decl_module, decl_error, ensure,
@@ -179,7 +179,6 @@ use yp_sharding::ShardingInfo;
 use yp_relay::{OriginExtrinsic, RelayTypes};
 
 pub use self::imbalances::{PositiveImbalance, NegativeImbalance};
-use crate::tests_local::ExistentialDeposit;
 
 pub trait Subtrait<I: Instance = DefaultInstance>: frame_system::Trait {
 	/// The balance of an account.
@@ -699,7 +698,8 @@ impl<T: Trait<I>, I: Instance> Module<T, I> {
 		let value = tx.amount();
 		if value.is_zero() { return Ok(()) }
 
-		Self::try_mutate_account(tx.to(), |to_acount| -> DispatchResult {
+		let dest = tx.to();
+		Self::try_mutate_account(&dest, |to_acount| -> DispatchResult {
 			to_acount.free = to_acount.free.checked_add(&value).ok_or(Error::<T, I>::Overflow)?;
 			let ed = T::ExistentialDeposit::get();
 			ensure!(to_acount.total() >= ed, Error::<T, I>::ExistentialDepost);
@@ -1007,8 +1007,9 @@ impl<T: Trait<I>, I: Instance> Currency<T::AccountId> for Module<T, I> where
 	) -> DispatchResult {
 		if value.is_zero() || transactor == dest { return Ok(()) }
 
-		let (cn, c) = (T::Sharding::get_curr_shard().expect("can't get current shard num").as_() as u16, T::Sharding::get_shard_count().as_() as u16);
-		let dn = yp_sharding::utils::shard_num_for(dest, c).expect("can't get target shard num");
+		let (cn, c) = (T::Sharding::get_curr_shard().expect("qed").try_into().ok().expect("qed") as u16,
+					   T::Sharding::get_shard_count().try_into().ok().expect("qed") as u16);
+		let dn = yp_sharding::utils::shard_num_for(dest, c).expect("qed");
 		if cn == dn {
 			Self::try_mutate_account(dest, |to_account| -> DispatchResult {
 				Self::try_mutate_account(transactor, |from_account| -> DispatchResult {

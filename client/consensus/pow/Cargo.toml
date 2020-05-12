@@ -25,7 +25,7 @@ sp-consensus = { git = "https://github.com/yeeco/substrate.git", branch = "yee" 
 sp-arithmetic = { git = "https://github.com/yeeco/substrate.git", default_features = false, branch = "yee" }
 
 pallet-pow = { path = "../../../frame/pow" }
-yee-runtime = { package = "yee-runtime", path = "../../../bin/yee/runtime" }
+yee-runtime = { package = "node-runtime", path = "../../../bin/yee/runtime" }
 yc-sharding = { path = "../../sharding" }
 yc-util-merkle = { path = "../../util/merkle" }
 yc-util = { path = "../../util" }

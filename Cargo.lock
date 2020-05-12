@@ -248,6 +248,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b41b7ea54a0c9d92199de89e20e58d49f02f8e699814ef3fdf266f6f748d15c7"
 
 [[package]]
+name = "bech32"
+version = "0.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "cdcf67bb7ba7797a081cd19009948ab533af7c355d5caf1d08c777582d351e9c"
+
+[[package]]
 name = "bindgen"
 version = "0.53.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -606,7 +612,7 @@ dependencies = [
  "lazy_static",
  "maybe-uninit",
  "memoffset",
- "scopeguard",
+ "scopeguard 1.1.0",
 ]
 
 [[package]]
@@ -1309,6 +1315,12 @@ dependencies = [
 
 [[package]]
 name = "hash-db"
+version = "0.12.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0b3c95a428c86ed4633d83e07ef9e0a147a906da01e931f07e74a85bedce5a43"
+
+[[package]]
+name = "hash-db"
 version = "0.15.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d23bd4e7b5eda0d0f3a307e8b381fdc8ba9000f26fbe912250c0a4cc3956364a"
@@ -1349,6 +1361,12 @@ checksum = "61565ff7aaace3525556587bd2dc31d4a07071957be715e63ce7b1eccf51a8f4"
 dependencies = [
  "libc",
 ]
+
+[[package]]
+name = "hex"
+version = "0.3.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "805026a5d0141ffc30abb3be3173848ad46a1b1664fe632428479619a3644d77"
 
 [[package]]
 name = "hex"
@@ -2239,11 +2257,21 @@ dependencies = [
 
 [[package]]
 name = "lock_api"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "62ebf1391f6acad60e5c8b43706dde4582df75c06698ab44511d15016bc2442c"
+dependencies = [
+ "owning_ref",
+ "scopeguard 0.3.3",
+]
+
+[[package]]
+name = "lock_api"
 version = "0.3.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c4da24a77a3d8a6d4862d95f72e6fdb9c09a643ecdb402d754004a557f2bec75"
 dependencies = [
- "scopeguard",
+ "scopeguard 1.1.0",
 ]
 
 [[package]]
@@ -2317,7 +2345,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "be512cb2ccb4ecbdca937fdd4a62ea5f09f8e7195466a85e4632b3d5bcce82e6"
 dependencies = [
  "ahash",
- "hash-db",
+ "hash-db 0.15.2",
  "hashbrown",
  "parity-util-mem",
 ]
@@ -2327,6 +2355,14 @@ name = "memory_units"
 version = "0.3.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "71d96e3f3c0b6325d8ccd83c33b28acb183edcb6c67938ba104ec546854b0882"
+
+[[package]]
+name = "merkle_light"
+version = "0.3.1"
+source = "git+https://github.com/yeeco/merkle_light.git?branch=yee2#4a35545836282a5b11dcbaae925ac2ca811e0108"
+dependencies = [
+ "parity-scale-codec",
+]
 
 [[package]]
 name = "merlin"
@@ -2509,10 +2545,13 @@ dependencies = [
  "frame-executive",
  "frame-support",
  "frame-system",
+ "pallet-assets",
  "pallet-aura",
  "pallet-balances",
  "pallet-grandpa",
  "pallet-randomness-collective-flip",
+ "pallet-relay",
+ "pallet-sharding",
  "pallet-sudo",
  "pallet-timestamp",
  "pallet-transaction-payment",
@@ -2677,6 +2716,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-assets"
+version = "0.4.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-sharding",
+ "parity-scale-codec",
+ "serde",
+ "sp-arithmetic",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-std",
+ "yp-relay",
+ "yp-sharding",
+]
+
+[[package]]
 name = "pallet-aura"
 version = "2.0.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
@@ -2700,16 +2757,20 @@ dependencies = [
 [[package]]
 name = "pallet-balances"
 version = "2.0.0-dev"
-source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
 dependencies = [
  "frame-benchmarking",
  "frame-support",
  "frame-system",
+ "pallet-transaction-payment",
  "parity-scale-codec",
  "serde",
+ "sp-arithmetic",
+ "sp-core",
  "sp-io",
  "sp-runtime",
  "sp-std",
+ "yp-relay",
+ "yp-sharding",
 ]
 
 [[package]]
@@ -2747,6 +2808,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "pallet-pow"
+version = "0.1.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-sharding",
+ "pallet-timestamp",
+ "parity-scale-codec",
+ "serde",
+ "sp-core",
+ "sp-inherents",
+ "sp-runtime",
+ "sp-std",
+ "yp-consensus-pow",
+ "yp-sharding",
+]
+
+[[package]]
 name = "pallet-randomness-collective-flip"
 version = "2.0.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
@@ -2757,6 +2836,20 @@ dependencies = [
  "safe-mix",
  "sp-runtime",
  "sp-std",
+]
+
+[[package]]
+name = "pallet-relay"
+version = "0.4.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "pallet-assets",
+ "pallet-balances",
+ "parity-scale-codec",
+ "sp-runtime",
+ "sp-std",
+ "yp-relay",
 ]
 
 [[package]]
@@ -2775,6 +2868,21 @@ dependencies = [
  "sp-staking",
  "sp-std",
  "sp-trie",
+]
+
+[[package]]
+name = "pallet-sharding"
+version = "0.1.0"
+dependencies = [
+ "frame-support",
+ "frame-system",
+ "parity-scale-codec",
+ "serde",
+ "sp-arithmetic",
+ "sp-inherents",
+ "sp-runtime",
+ "sp-std",
+ "yp-sharding",
 ]
 
 [[package]]
@@ -2964,11 +3072,21 @@ checksum = "ddfc878dac00da22f8f61e7af3157988424567ab01d9920b962ef7dcbd7cd865"
 
 [[package]]
 name = "parking_lot"
+version = "0.7.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ab41b4aed082705d1056416ae4468b6ea99d52599ecf3169b00088d43113e337"
+dependencies = [
+ "lock_api 0.1.5",
+ "parking_lot_core 0.4.0",
+]
+
+[[package]]
+name = "parking_lot"
 version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "f842b1982eb6c2fe34036a4fbfb06dd185a3f5c8edfaacdf7d1ea10b07de6252"
 dependencies = [
- "lock_api",
+ "lock_api 0.3.4",
  "parking_lot_core 0.6.2",
  "rustc_version",
 ]
@@ -2979,8 +3097,21 @@ version = "0.10.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d3a704eb390aafdc107b0e392f56a82b668e3a71366993b5340f5833fd62505e"
 dependencies = [
- "lock_api",
+ "lock_api 0.3.4",
  "parking_lot_core 0.7.2",
+]
+
+[[package]]
+name = "parking_lot_core"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "94c8c7923936b28d546dfd14d4472eaf34c99b14e1c973a32b3e6d4eb04298c9"
+dependencies = [
+ "libc",
+ "rand 0.6.5",
+ "rustc_version",
+ "smallvec 0.6.13",
+ "winapi 0.3.8",
 ]
 
 [[package]]
@@ -3199,7 +3330,7 @@ dependencies = [
  "bitflags",
  "byteorder",
  "chrono",
- "hex",
+ "hex 0.4.2",
  "lazy_static",
  "libc",
  "libflate",
@@ -3833,7 +3964,7 @@ dependencies = [
  "derive_more",
  "fnv",
  "futures 0.3.5",
- "hash-db",
+ "hash-db 0.15.2",
  "hex-literal",
  "kvdb",
  "lazy_static",
@@ -3867,7 +3998,7 @@ version = "0.8.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
 dependencies = [
  "blake2-rfc",
- "hash-db",
+ "hash-db 0.15.2",
  "kvdb",
  "kvdb-memorydb",
  "kvdb-rocksdb",
@@ -4071,7 +4202,7 @@ version = "2.0.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
 dependencies = [
  "derive_more",
- "hex",
+ "hex 0.4.2",
  "parking_lot 0.10.2",
  "rand 0.7.3",
  "serde_json",
@@ -4095,7 +4226,7 @@ dependencies = [
  "futures 0.3.5",
  "futures-timer 3.0.2",
  "futures_codec",
- "hex",
+ "hex 0.4.2",
  "ip_network",
  "libp2p",
  "linked-hash-map",
@@ -4193,7 +4324,7 @@ version = "2.0.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
 dependencies = [
  "futures 0.3.5",
- "hash-db",
+ "hash-db 0.15.2",
  "jsonrpc-core",
  "jsonrpc-pubsub",
  "log",
@@ -4268,7 +4399,7 @@ dependencies = [
  "futures 0.1.29",
  "futures 0.3.5",
  "futures-timer 3.0.2",
- "hash-db",
+ "hash-db 0.15.2",
  "lazy_static",
  "log",
  "netstat2",
@@ -4440,6 +4571,12 @@ dependencies = [
  "subtle 2.2.2",
  "zeroize",
 ]
+
+[[package]]
+name = "scopeguard"
+version = "0.3.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "94258f53601af11e6a49f722422f6e3425c52b06245a5cf9bc09908b174f5e27"
 
 [[package]]
 name = "scopeguard"
@@ -4721,7 +4858,7 @@ name = "sp-api"
 version = "2.0.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
 dependencies = [
- "hash-db",
+ "hash-db 0.15.2",
  "parity-scale-codec",
  "sp-api-proc-macro",
  "sp-core",
@@ -4852,9 +4989,9 @@ dependencies = [
  "byteorder",
  "ed25519-dalek",
  "futures 0.3.5",
- "hash-db",
+ "hash-db 0.15.2",
  "hash256-std-hasher",
- "hex",
+ "hex 0.4.2",
  "impl-serde 0.3.1",
  "lazy_static",
  "libsecp256k1",
@@ -4954,7 +5091,7 @@ version = "2.0.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
 dependencies = [
  "futures 0.3.5",
- "hash-db",
+ "hash-db 0.15.2",
  "libsecp256k1",
  "log",
  "parity-scale-codec",
@@ -5090,7 +5227,7 @@ name = "sp-state-machine"
 version = "0.8.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
 dependencies = [
- "hash-db",
+ "hash-db 0.15.2",
  "log",
  "num-traits 0.2.11",
  "parity-scale-codec",
@@ -5163,7 +5300,7 @@ name = "sp-trie"
 version = "2.0.0-dev"
 source = "git+https://github.com/yeeco/substrate.git?branch=yee#694aeeda41f8cc054bb22084ad8f4cd6b8b39c43"
 dependencies = [
- "hash-db",
+ "hash-db 0.15.2",
  "memory-db",
  "parity-scale-codec",
  "sp-core",
@@ -5838,7 +5975,7 @@ version = "0.20.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "bcc309f34008563989045a4c4dbcc5770467f3a3785ee80a9b5cc0d83362475f"
 dependencies = [
- "hash-db",
+ "hash-db 0.15.2",
  "hashbrown",
  "log",
  "rustc-hex",
@@ -5851,7 +5988,7 @@ version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "652931506d2c1244d7217a70b99f56718a7b4161b37f04e7cd868072a99f68cd"
 dependencies = [
- "hash-db",
+ "hash-db 0.15.2",
 ]
 
 [[package]]
@@ -6284,6 +6421,71 @@ dependencies = [
 ]
 
 [[package]]
+name = "yc-consensus-pow"
+version = "0.1.0"
+dependencies = [
+ "ansi_term 0.11.0",
+ "futures 0.3.5",
+ "futures-timer 3.0.2",
+ "hash-db 0.12.4",
+ "hex 0.3.2",
+ "hex-literal",
+ "log",
+ "merkle_light",
+ "node-runtime",
+ "pallet-pow",
+ "parity-scale-codec",
+ "parking_lot 0.7.1",
+ "sc-consensus",
+ "serde",
+ "sp-api",
+ "sp-arithmetic",
+ "sp-blockchain",
+ "sp-consensus",
+ "sp-core",
+ "sp-inherents",
+ "sp-runtime",
+ "yc-sharding",
+ "yc-util",
+ "yc-util-merkle",
+ "yp-consensus-pow",
+ "yp-context",
+ "yp-sharding",
+]
+
+[[package]]
+name = "yc-sharding"
+version = "0.1.0"
+dependencies = [
+ "log",
+ "parity-scale-codec",
+ "regex",
+ "sc-network",
+ "sp-runtime",
+]
+
+[[package]]
+name = "yc-util"
+version = "0.4.0"
+dependencies = [
+ "parity-scale-codec",
+ "sp-core",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "yc-util-merkle"
+version = "0.4.0"
+dependencies = [
+ "log",
+ "merkle_light",
+ "parity-scale-codec",
+ "sp-core",
+ "sp-runtime",
+]
+
+[[package]]
 name = "yeeroot"
 version = "2.0.0-dev"
 dependencies = [
@@ -6310,6 +6512,66 @@ dependencies = [
  "sp-transaction-pool",
  "structopt",
  "substrate-build-script-utils",
+]
+
+[[package]]
+name = "yp-consensus-pow"
+version = "0.1.0"
+dependencies = [
+ "parity-scale-codec",
+ "serde",
+ "sp-api",
+ "sp-core",
+ "sp-inherents",
+ "sp-runtime",
+ "sp-std",
+ "sp-timestamp",
+]
+
+[[package]]
+name = "yp-context"
+version = "0.6.0"
+dependencies = [
+ "sp-runtime",
+ "yp-consensus-pow",
+]
+
+[[package]]
+name = "yp-core"
+version = "0.5.0"
+dependencies = [
+ "bech32",
+ "hex 0.3.2",
+ "parity-scale-codec",
+ "serde",
+ "sp-core",
+]
+
+[[package]]
+name = "yp-relay"
+version = "0.4.0"
+dependencies = [
+ "parity-scale-codec",
+ "sp-core",
+ "sp-runtime",
+ "sp-std",
+]
+
+[[package]]
+name = "yp-sharding"
+version = "0.1.0"
+dependencies = [
+ "hex 0.3.2",
+ "node-runtime",
+ "parity-scale-codec",
+ "rand 0.6.5",
+ "schnorrkel",
+ "serde",
+ "sp-api",
+ "sp-core",
+ "sp-inherents",
+ "sp-runtime",
+ "yp-core",
 ]
 
 [[package]]

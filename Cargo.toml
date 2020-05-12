@@ -5,6 +5,7 @@ members = [
     "client/consensus/pow",
     "frame/assets",
     "frame/balances",
+    "frame/pow",
     "frame/sharding",
     "frame/relay",
     "primitives/consensus/pow",
